@@ -9,7 +9,7 @@
             width="auto">
         <div class="layout-logo-left">
           <img class="logo" src="../assets/images/logo.png" alt="">
-          欣荣钱包
+          蒲公英后台
         </div>
         <div class="user-panel">
           <div class="pull-left hand" @click="OpenCenter">
@@ -275,7 +275,6 @@
       display: inline-block;
       width: 35px;
       height: 35px;
-      margin-right: 5px;
     }
   }
   /*右边用户信息*/

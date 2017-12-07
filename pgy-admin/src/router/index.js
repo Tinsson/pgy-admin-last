@@ -19,13 +19,6 @@ import listAuth from '@/views/auth/listAuth'
 
 //用户管理
 import consumerList from '@/views/user/consumerList'
-import consumerEdit from '@/views/user/consumerEdit'
-import consumerDetails from '@/views/user/consumerDetails'
-import BaseInfo from '@/views/user/details/BaseInfo'
-import ThirdParty from '@/views/user/details/ThirdParty'
-import LendInfo from '@/views/user/details/LendInfo'
-import RelationInfo from '@/views/user/details/RelationInfo'
-import OptRecord from '@/views/user/details/OptRecord'
 import blackList from '@/views/user/BlackList'
 
 //交易记录
@@ -43,9 +36,6 @@ import contractInfo from '@/views/loan/contract/contractInfo'
 //催收管理
 import urgeList from '@/views/urge/urgeList'
 import badDebtList from '@/views/urge/badDebtList'
-
-//工作流平台
-import workliuList from '@/views/workliu/workliuList'
 
 //推送管理
 import autoPost from '@/views/post/autoPost'
@@ -97,8 +87,6 @@ const componentList = {
   urgeList,
   badDebtList,
 
-  workliuList,
-
   autoPost,
   templateEdit,
 
@@ -129,49 +117,6 @@ const routes = [
     path: '/login',
     name: '登录',
     component: Login
-  },
-  {
-    path: '/user',
-    name: '用户详情',
-    component: AdminFrame,
-    children: [
-      {
-        path: '/consumerDetails',
-        name: '查看客户详情',
-        component: consumerDetails,
-        children: [
-          {
-            path: '/',
-            redirect: {path: 'BaseInfo'}
-          },
-          {
-            path: 'BaseInfo',
-            name: '基本信息',
-            component: BaseInfo
-          },
-          {
-            path: 'ThirdParty',
-            name: '第三方授权',
-            component: ThirdParty
-          },
-          {
-            path: 'LendInfo',
-            name: '借贷信息',
-            component: LendInfo
-          },
-          {
-            path: 'RelationInfo',
-            name: '关联关系',
-            component: RelationInfo
-          },
-          {
-            path: 'OptRecord',
-            name: '操作记录',
-            component: OptRecord
-          }
-        ]
-      }
-    ]
   },{
     path: '/contractInfo',
     name: '合同详细信息',

@@ -290,7 +290,7 @@
       InitData(url,params = {}){
         const that = this;
         this.loading = true;
-        this.$post('Promote/topIndex').then(d=>{
+        this.$fetch('Promote/topIndex').then(d=>{
           this.CountData.forEach(val=>{
             val.count = d.data[val.status];
           })

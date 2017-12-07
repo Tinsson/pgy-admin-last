@@ -86,7 +86,6 @@
 </template>
 
 <script>
-  import { getLocal } from '@/util/util'
   export default {
     name: 'listRole',
     data () {
@@ -118,24 +117,7 @@
             align: 'center',
             width: '200',
             render: (h, params)=>{
-              let BtnArr = [];
-              this.BtnData.forEach((val)=>{
-                const btn = h('Button',{
-                  props: {
-                      type: val.color
-                  },
-                  style: {
-                      marginRight: '5px'
-                  },
-                  on: {
-                      click: ()=>{
-                          this[val.class](params.row)
-                      }
-                  },
-                },val.name);
-                BtnArr.push(btn);
-              });
-              return h('div',BtnArr);
+              return h('div',this.$renderBtn(h, params, this.BtnData));
             }
           }
         ],
@@ -179,7 +161,7 @@
       //初始化数据
       InitData(callback = ()=>{}){
         const that = this;
-        const auth_id = getLocal('auth_id');
+        const auth_id = this.$getLocal('auth_id');
         this.loading = true;
         //列表数据获取
         this.$post('Auth/roleList').then((d)=>{

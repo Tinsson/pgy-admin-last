@@ -193,8 +193,7 @@
             align: 'center',
             width: '220',
             render: (h, params)=>{
-              let BtnArr = [];
-              BtnArr = this.RenderBtn(h, params, this.BtnData);
+              let BtnArr = this.$renderBtn(h, params, this.BtnData);
               if(!params.row.hasAdd){
                 BtnArr.shift();
               }
@@ -261,27 +260,6 @@
       this.InitData();
     },
     methods: {
-      //循环渲染按钮
-      RenderBtn(h,params,bdata){
-        let res = [];
-        bdata.forEach((val)=>{
-          const btn = h('Button',{
-            props: {
-              type: val.color
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: ()=>{
-                this[val.class](params.row)
-              }
-            },
-          },val.name);
-          res.push(btn);
-        });
-        return res;
-      },
       //初始化数据
       InitData(callback = ()=>{}){
         const that = this;

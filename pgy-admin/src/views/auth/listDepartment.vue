@@ -80,24 +80,7 @@
             align: 'center',
             width: '220',
             render: (h, params)=>{
-              let BtnArr = [];
-              this.BtnData.forEach((val)=>{
-                const btn = h('Button',{
-                  props: {
-                    type: val.color
-                  },
-                  style: {
-                    marginRight: '5px'
-                  },
-                  on: {
-                    click: ()=>{
-                      this[val.class](params.row)
-                    }
-                  },
-                },val.name);
-                BtnArr.push(btn);
-              });
-              return h('div',BtnArr);
+              return h('div',this.$renderBtn(h, params, this.BtnData));
             }
           }
         ],

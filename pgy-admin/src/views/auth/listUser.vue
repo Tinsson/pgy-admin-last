@@ -187,45 +187,13 @@
               let BtnArr = [];
               if(params.row.id === 1){
                 BtnArr = '超级管理员，无法操作'
-              }else if(this.BtnData.length < 4){
-                BtnArr = this.RenderBtn(h, params, this.BtnData);
               }else{
-                BtnArr = this.RenderBtn(h, params, this.BtnData.slice(0,2));
-                let moreBtn = [];
-                this.BtnData.slice(2).forEach((val)=>{
-                  const btn = h('DropdownItem',[h('Button',{
-                    props: {
-                      type: val.color
-                    },
-                    on: {
-                      click: ()=>{
-                        this[val.class](params.row)
-                      }
-                    }
-                  },val.name)]);
-                  moreBtn.push(btn);
-                });
-                BtnArr.push(h('Dropdown',{
-                  attrs:{
-                    trigger: 'click'
-                  }
-                },[
-                  h('Button',{
-                    props: {
-                      type: 'info'
-                    }
-                  },[
-                    '更多 ',
-                    h('Icon',{
-                      props: {
-                        type: 'arrow-down-b'
-                      }
-                    })
-                  ]),
-                  h('DropdownMenu',{
-                    slot: 'list'
-                  }, moreBtn)
-                ]));
+                const rule = {
+                  name: 'is_status',
+                  right: '已启用',
+                  wbtn: '禁用'
+                };
+                BtnArr = this.$renderBtn(h, params, this.BtnData,rule);
               }
               return h('div',BtnArr);
             }
@@ -286,46 +254,6 @@
       this.InitData();
     },
     methods: {
-      //循环渲染按钮
-      RenderBtn(h,params,bdata){
-        let res = [];
-        bdata.forEach((val)=>{
-          let btn = '';
-          if(val.class === 'ChangeStatus'){
-            const color = (params.row.is_status === '已启用')?'warning':val.color;
-            const name = (params.row.is_status === '已启用')?'禁用': val.name;
-            btn = h('Button',{
-              props: {
-                type: color
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: ()=>{
-                  this[val.class](params.row)
-                }
-              },
-            },name);
-          }else{
-            btn = h('Button',{
-              props: {
-                type: val.color
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: ()=>{
-                  this[val.class](params.row)
-                }
-              },
-            },val.name);
-          }
-          res.push(btn);
-        });
-        return res;
-      },
       //初始化数据
       InitData(callback = ()=>{}){
         const that = this;

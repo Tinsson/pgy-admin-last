@@ -146,7 +146,7 @@
             align: 'center',
             width: '180',
             render: (h, params)=>{
-              return h('div',this.RenderBtn(h, params, [{
+              return h('div',this.$renderBtn(h, params, [{
                 color: 'primary',
                 name: '修改',
                 class: 'EditParams'
@@ -172,7 +172,7 @@
             align: 'center',
             width: '180',
             render: (h, params)=>{
-              return h('div',this.RenderBtn(h, params, [{
+              return h('div',this.$renderBtn(h, params, [{
                 color: 'primary',
                 name: '修改',
                 class: 'EditParams'
@@ -220,7 +220,7 @@
             align: 'center',
             width: '330',
             render: (h, params)=>{
-              return h('div',this.RenderBtn(h, params, this.BtnData));
+              return h('div',this.$renderBtn(h, params, this.BtnData));
             }
           }
         ],
@@ -271,27 +271,6 @@
       }
     },
     methods: {
-      //循环渲染按钮
-      RenderBtn(h,params,bdata){
-        let res = [];
-        bdata.forEach((val)=>{
-          const btn = h('Button',{
-            props: {
-              type: val.color
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: ()=>{
-                this[val.class](params.row)
-              }
-            },
-          },val.name);
-          res.push(btn);
-        });
-        return res;
-      },
       //渲染公式
       RenderFormula(zid){
         let text = '';

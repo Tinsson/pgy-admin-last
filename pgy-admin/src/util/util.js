@@ -47,3 +47,82 @@ export function delLocal(name){
 export function transTimeToBack(row){
   return row.split('.')[0].replace('T',' ');
 }
+
+/**
+ * renderBtn 渲染按钮
+ * @param h
+ * @param params
+ * @param bdata 按钮的数据
+ * @param rule(name: 状态，right：开启的结果，wbtn：开启的提示)选填
+ * @returns {Promise}
+ */
+export function renderBtn(h, params, bdata ,rule = {name: '',right: '', wbtn: ''}){
+  let BtnArr = [];
+  const that = this;
+  if(bdata.length < 4){
+    BtnArr = loopBtn(that, h, params, bdata,rule);
+  }else{
+    BtnArr = loopBtn(that, h, params, bdata.slice(0,2), rule);
+    let moreBtn = [];
+    bdata.slice(2).forEach((val)=>{
+      let color = (val.class === 'ChangeStatus' && params.row[rule.name] === rule.right)?'warning':val.color,
+          name = (val.class === 'ChangeStatus' && params.row[rule.name] === rule.right)?rule.wbtn: val.name;
+      const btn = h('DropdownItem',[h('Button',{
+        props: {
+          type: color
+        },
+        on: {
+          click: ()=>{
+            this[val.class](params.row)
+          }
+        }
+      },name)]);
+      moreBtn.push(btn);
+    });
+    BtnArr.push(h('Dropdown',{
+      attrs:{
+        trigger: 'click'
+      }
+    },[
+      h('Button',{
+        props: {
+          type: 'info'
+        }
+      },[
+        '更多 ',
+        h('Icon',{
+          props: {
+            type: 'arrow-down-b'
+          }
+        })
+      ]),
+      h('DropdownMenu',{
+        slot: 'list'
+      }, moreBtn)
+    ]));
+  }
+  return BtnArr;
+}
+
+export function loopBtn(proto, h, params, bdata,rule){
+  let res = [];
+  bdata.forEach((val)=>{
+    let color = (val.class === 'ChangeStatus' && params.row[rule.name] === rule.right)?'warning':val.color,
+      name = (val.class === 'ChangeStatus' && params.row[rule.name] === rule.right)?rule.wbtn: val.name;
+    const btn = h('Button',{
+      props: {
+        type: color
+      },
+      style: {
+        marginRight: '5px'
+      },
+      on: {
+        click: ()=>{
+          proto[val.class](params.row)
+        }
+      },
+    },name);
+    res.push(btn);
+  });
+  return res;
+}

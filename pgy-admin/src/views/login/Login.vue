@@ -1,7 +1,7 @@
 <template>
   <div id="login" class="login">
     <div class="center-area">
-      <h1 class="head-text">欣荣钱包</h1>
+      <h1 class="head-text">蒲公英小微贷</h1>
       <div class="input-box">
         <h2 class="tips">登陆</h2>
         <Input v-model="username"

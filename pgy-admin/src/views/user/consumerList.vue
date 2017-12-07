@@ -1,6 +1,6 @@
 <template>
   <div id="consumer">
-    <div id="listRole" v-show="!isEdit">
+    <div id="listRole">
       <h1 class="list-title">
         <span class="tit-text">{{ title }}</span>
         <Button class="tit-btn"
@@ -224,23 +224,17 @@
                   :AllId="Audit.allId"
                   @CloseModal="AuditCancel"></AuditModal>
     </div>
-    <ConsumerEdit v-show="isEdit"
-                  :info="EditData"
-                  :uid="EditId"
-                  @BackOpt="ListShow"></ConsumerEdit>
   </div>
 </template>
 
 <script>
   import { getLocal } from '@/util/util'
-  import ConsumerEdit from '@/views/user/consumerEdit'
   import PushApp from '@/components/groupModal/PushApp'
   import AuditModal from '@/components/infoModal/AuditModal'
 
   export default {
     name: 'consumerList',
     components: {
-      ConsumerEdit,
       PushApp,
       AuditModal
     },
@@ -250,7 +244,6 @@
         auth_id: '',
         loading: true,
         allTime: [],
-        isEdit: false, //是否为编辑操作
         //基础筛选数据
         ScreenData: {
           phone: '',
@@ -327,7 +320,7 @@
             align: 'center',
             width: '150',
             render: (h, params)=>{
-              return h('div',this.RenderBtn(h, params, this.BtnData));
+              return h('div',this.$renderBtn(h, params, this.BtnData));
             }
           }
         ],
@@ -345,8 +338,6 @@
           size: 20,
         },
         BtnData: [],      //按钮数据
-        EditData: {},      //点击编辑后的数据
-        EditId: 0,
         Audit:{
           modal: false,
           id: '',
@@ -381,27 +372,6 @@
       }
     },
     methods: {
-      //循环渲染按钮
-      RenderBtn(h,params,bdata){
-        let res = [];
-        bdata.forEach((val)=>{
-          const btn = h('Button',{
-            props: {
-              type: val.color
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: ()=>{
-                this[val.class](params.row)
-              }
-            },
-          },val.name);
-          res.push(btn);
-        });
-        return res;
-      },
       //选择时间
       PickDate(time){
         this.allTime = time;
@@ -607,22 +577,6 @@
           this.Idtmte2 = false;
           this.CheckAll2 = false;
         }
-      },
-      //编辑操作
-      EditOpt(row){
-        this.EditId = row.id;
-        this.$fetch('User/editUser',{uid: row.id}).then((d)=>{
-          this.EditData = d.data;
-          this.isEdit = true;
-        }).catch(()=>{
-          this.$Message.error('服务器繁忙，请稍后再试！');
-        });
-      },
-      //从编辑返回
-      ListShow(){
-        this.InitData().then(()=>{
-          this.isEdit = false;
-        });
       },
       //审核面板
       DetailsOpt(row){

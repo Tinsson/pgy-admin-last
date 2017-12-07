@@ -6,7 +6,7 @@
       class="all-modal"
       :styles="{top: '50px'}"
       @on-cancel="CloseBtn">
-      <div class="head-area" slot="header">npm
+      <div class="head-area" slot="header">
         <h2 class="big-head">数据详情（{{ EditData.info.name }}）</h2>
       </div>
       <div slot="close">

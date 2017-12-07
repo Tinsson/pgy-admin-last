@@ -225,7 +225,12 @@
             align: 'center',
             width: '330',
             render: (h, params)=>{
-              return h('div',this.RenderBtn(h, params, this.BtnData));
+              const rule = {
+                name: 'disable',
+                right: '已启用',
+                wbtn: '禁用'
+              };
+              return h('div',this.$renderBtn(h, params, this.BtnData, rule));
             }
           }
         ],
@@ -288,47 +293,6 @@
       }
     },
     methods: {
-      //循环渲染按钮
-      RenderBtn(h,params,bdata){
-        let res = [];
-        bdata.forEach((val)=>{
-          let btn = '';
-          if(val.class === 'ChangeStatus'){
-            const color = params.row.disable?'warning':val.color;
-            const name = params.row.disable?'禁用': val.name;
-            btn = h('Button',{
-              props: {
-                type: color
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: ()=>{
-                  this[val.class](params.row)
-                }
-              },
-            },name);
-          }else{
-            btn = h('Button',{
-              props: {
-                type: val.color
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: ()=>{
-                  this[val.class](params.row)
-                }
-              },
-            },val.name);
-          }
-
-          res.push(btn);
-        });
-        return res;
-      },
       //去除data数据里绑定的监视器
       RemoveObserve(rowdata){
         return JSON.parse(JSON.stringify(rowdata));

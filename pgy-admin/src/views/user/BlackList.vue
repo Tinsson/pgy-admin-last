@@ -160,7 +160,7 @@
             align: 'center',
             width: '330',
             render: (h, params)=>{
-              return h('div',this.RenderBtn(h, params, this.BtnData));
+              return h('div',this.$renderBtn(h, params, this.BtnData));
             }
           }
         ],
@@ -213,27 +213,6 @@
       this.InitData(this.apiUrl);
     },
     methods: {
-      //循环渲染按钮
-      RenderBtn(h,params,bdata){
-        let res = [];
-        bdata.forEach((val)=>{
-          const btn = h('Button',{
-            props: {
-              type: val.color
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: ()=>{
-                this[val.class](params.row)
-              }
-            },
-          },val.name);
-          res.push(btn);
-        });
-        return res;
-      },
       //去除data数据里绑定的监视器
       RemoveObserve(rowdata){
         return JSON.parse(JSON.stringify(rowdata));
