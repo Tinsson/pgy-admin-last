@@ -224,12 +224,12 @@
         const that = this;
         this.loading = true;
         //获取按钮信息
-        this.$fetch('Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
+        this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
         });
         //列表数据获取
         return new Promise((resolve)=>{
-          this.$post('Contract/contractList',params).then((d)=>{
+          this.$post('/backend/Contract/contractList',params).then((d)=>{
             let res = d.data.list;
             this.Page.count = d.data.count;
             this.RowUserData = res;
@@ -270,13 +270,13 @@
       ExportData(){
         let sinfo = this.RemoveObserve(this.ScreenData);
         sinfo.expro = 1;
-        this.UploadData('Contract/contractList',sinfo).then((url)=>{
+        this.UploadData('/backend/Contract/contractList',sinfo).then((url)=>{
             window.location.href = url;
         });
       },
       //查看合同
       DetailsOpt(){
-        this.UploadData('Contract/contractShow',{id: row.id});
+        this.UploadData('/backend/Contract/contractShow',{id: row.id});
       },
       //删除合同
       Delopt(row){
@@ -285,7 +285,7 @@
           title: '温馨提示',
           content: '<p class="confirm-text">确认删除此合同吗？</p>',
           onOk: ()=>{
-            this.UploadData('Contract/contractDel',{id: row.id});
+            this.UploadData('/backend/Contract/contractDel',{id: row.id});
           }
         })
       },

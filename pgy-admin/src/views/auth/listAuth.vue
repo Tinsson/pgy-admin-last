@@ -52,9 +52,11 @@
             <Option value="DelayOpt">展期按钮</Option>
             <Option value="MarkOpt">标记按钮</Option>
             <Option value="LoanOpt">放款按钮</Option>
+            <Option value="QuitOpt">离职按钮</Option>
             <Option value="RejectOpt">拒绝按钮</Option>
             <Option value="AuditPanel">审核面板按钮</Option>
             <Option value="ChangeStatus">禁用启用按钮</Option>
+            <Option value="AssignUrge">主动分配按钮</Option>
             <Option value="AssignAuth">权限分配按钮</Option>
             <Option value="AssignDep">分配部门按钮</Option>
             <Option value="AssignRole">分配角色按钮</Option>
@@ -118,9 +120,11 @@
             <Option value="DelayOpt">展期按钮</Option>
             <Option value="MarkOpt">标记按钮</Option>
             <Option value="LoanOpt">放款按钮</Option>
+            <Option value="QuitOpt">离职按钮</Option>
             <Option value="RejectOpt">拒绝按钮</Option>
             <Option value="AuditPanel">审核面板按钮</Option>
             <Option value="ChangeStatus">禁用启用按钮</Option>
+            <Option value="AssignUrge">主动分配按钮</Option>
             <Option value="AssignAuth">权限分配按钮</Option>
             <Option value="AssignDep">分配部门按钮</Option>
             <Option value="AssignRole">分配角色按钮</Option>
@@ -265,11 +269,11 @@
         const that = this;
         this.loading = true;
         //获取按钮信息
-        this.$fetch('Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
+        this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
         })
         //列表数据获取
-        this.$post('Auth/authList').then((d)=>{
+        this.$post('/backend/Auth/authList').then((d)=>{
           let info = d.data;
           let res = [];
           that.RowDepData = info;
@@ -362,7 +366,7 @@
       AddOver(){
         this.$refs['AddInfo'].validate((valid)=>{
           if(valid){
-            this.UploadData('Auth/authAdd',this.AddInfo).then(()=>{
+            this.UploadData('/backend/Auth/authAdd',this.AddInfo).then(()=>{
               this.AddModal = false;
             });
           }
@@ -409,7 +413,7 @@
       EditOver(){
         this.$refs['EditInfo'].validate(valid=>{
           if(valid){
-            this.UploadData('Auth/authUp',this.EditInfo).then(()=>{
+            this.UploadData('/backend/Auth/authUp',this.EditInfo).then(()=>{
               this.EditModal = false;
             });
           }
@@ -422,7 +426,7 @@
           title: '温馨提示',
           content: '<p class="confirm-text">确认删除此项菜单吗？</p>',
           onOk: ()=>{
-            this.UploadData('Auth/authDel',{id: row.id});
+            this.UploadData('/backend/Auth/authDel',{id: row.id});
           }
         })
       }

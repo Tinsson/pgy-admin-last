@@ -12,7 +12,7 @@ export default {
     return new Promise((resolve)=>{
       //const token = getLocal('token');
       //axios.defaults.headers.common['TOKEN'] = token
-      post('Menuauth/listLeftAuthGet').then((d)=>{
+      post('/backend/Menuauth/listLeftAuthGet').then((d)=>{
         let info = d.data;
         let view = [];
         info.forEach((val,index)=>{

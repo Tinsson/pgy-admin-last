@@ -17,6 +17,9 @@
               筛选查询
             </h3>
             <div class="btn-box">
+              <Upload class="upload-btn" :before-upload="ImportData" action="http://api.pgyxwd.com/">
+                <Button type="primary" icon="upload">批量导入</Button>
+              </Upload>
               <Button type="ghost" icon="reply" @click="ResetScreen">重置筛选</Button>
               <Button type="success" icon="search" @click="SimpleSearch">查询结果</Button>
               <Button type="warning" icon="clipboard" @click="SeniorShow">高级检索</Button>
@@ -308,7 +311,7 @@
             align: 'center',
             key: 'type'
           },{
-            title: '是否黑名单',
+            title: '来源渠道',
             align: 'center',
             key: 'black'
           },{
@@ -383,6 +386,11 @@
       RemoveObserve(rowdata){
         return JSON.parse(JSON.stringify(rowdata));
       },
+      //批量导入
+      ImportData(file){
+        console.log(file);
+        return false;
+      },
       //筛选操作(重置筛选)
       ResetScreen(){
           for(let key in this.ScreenData){
@@ -421,12 +429,12 @@
         const that = this;
         this.loading = true;
         //获取按钮信息
-        this.$fetch('Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
+        this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
         });
         //列表数据获取
         return new Promise((resolve, reject)=>{
-          this.$post('User/getUserList',params).then((d)=>{
+          this.$post('/backend/User/getUserList',params).then((d)=>{
               if(d.status === 1){
                 if(d.data.length === 0){
                   this.Page.count = 0;
@@ -435,7 +443,7 @@
                   let res = d.data.list;
                   this.Page.count = d.data.count;
                   this.RowUserData = res;
-                  this.UserData = this.TransText(res,'black','否','是');
+                  this.UserData = res;
                 }
                 that.loading = false;
                 resolve();
@@ -444,20 +452,6 @@
               }
           })
         });
-      },
-      /**
-       * 转换数字状态成中文
-       * @param data 初始数据（object）
-       * @param key 转换的键值（string）
-       * @param val1 1对应的字符（string）
-       * @param val2 0对应的字符（string）
-       * @returns data(object);
-       */
-      TransText(data,key,val1,val2){
-        data.forEach((val)=>{
-          val[key] = (val[key] === 0)?val1:val2;
-        });
-        return data;
       },
       /**
        * 转换中文状态成数字
@@ -720,6 +714,9 @@
     overflow-y: auto;
     overflow-x: hidden;
     max-height: 530px;
+  }
+  .upload-btn{
+    display: inline-block;
   }
 
 </style>

@@ -96,7 +96,7 @@
     data () {
       return {
         title: '推广配置',
-        apiUrl: 'Promote/promoteList',
+        apiUrl: '/backend/PromoteConfig/promoteList',
         auth_id: '',
         loading: true,
         ClipBoard: {},
@@ -324,7 +324,7 @@
       //初始图片数据
       InitPic(){
         this.picloading = true;
-        this.$post('Promote/imgList').then(d=>{
+        this.$post('/backend/PromoteConfig/imgList').then(d=>{
           this.PicData = d.data;
           this.picloading = false;
         })
@@ -335,10 +335,10 @@
         this.loading = true;
         //列表数据获取
         return new Promise((resolve)=>{
-          this.$post(url,params).then((d)=>{
+          this.$fetch(url,params).then((d)=>{
             let res = d.data;
             this.RowUserData = res;
-            this.$fetch('Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
+            this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
               this.BtnData = d.data.operation;
               this.UserData = res;
               that.loading = false;
@@ -393,7 +393,7 @@
             this.ModeModal.modal = false;
             let ninfo = this.RemoveObserve(this.ModeModal.data);
             const isEdit = this.ModeModal.isEdit;
-            const url = isEdit?'Promote/promoteEdit':'Promote/promoteAdd';
+            const url = isEdit?'/backend/PromoteConfig/promoteEdit':'/backend/PromoteConfig/promoteAdd';
             if(isEdit){
               ninfo.id = this.ModeModal.id;
             }
@@ -420,7 +420,7 @@
           title: '提示',
           content: `<p class="confirm-text">删除此推广渠道吗？</p>`,
           onOk: ()=>{
-            this.UploadData('Promote/promoteDel',{id: row.id}).then(()=>{
+            this.UploadData('/backend/PromoteConfig/promoteDel',{id: row.id}).then(()=>{
               this.InitData(this.apiUrl);
             });
           }
@@ -454,7 +454,7 @@
             this.PicModal.modal = false;
             let ninfo = this.RemoveObserve(this.PicModal.data);
             const isEdit = this.PicModal.isEdit;
-            const url = isEdit?'Promote/imgEdit':'Promote/imgAdd';
+            const url = isEdit?'/backend/PromoteConfig/imgEdit':'/backend/PromoteConfig/imgAdd';
             if(isEdit){
               ninfo.id = this.PicModal.id;
             }
@@ -469,7 +469,7 @@
           title: '提示',
           content: `<p class="confirm-text">删除此图片吗？</p>`,
           onOk: ()=>{
-            this.UploadData('Promote/imgDel',{id: row.id}).then(()=>{
+            this.UploadData('/backend/PromoteConfig/imgDel',{id: row.id}).then(()=>{
               this.InitPic();
             });
           }

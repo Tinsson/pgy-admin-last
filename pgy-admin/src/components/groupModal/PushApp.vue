@@ -91,7 +91,7 @@
     },
     methods: {
       GetModeList(){
-        this.$fetch('Autopush/modelList').then(d=>{
+        this.$fetch('/backend/Autopush/modelList').then(d=>{
           this.ModeOpt = d.data;
         })
       },

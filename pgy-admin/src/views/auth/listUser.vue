@@ -188,11 +188,15 @@
               if(params.row.id === 1){
                 BtnArr = '超级管理员，无法操作'
               }else{
-                const rule = {
+                let rule = {};
+                rule.btns = [{
+                  class: 'ChangeStatus',
                   name: 'is_status',
+                  type: 'warning',
                   right: '已启用',
                   wbtn: '禁用'
-                };
+                }];
+                rule.size = 2;
                 BtnArr = this.$renderBtn(h, params, this.BtnData,rule);
               }
               return h('div',BtnArr);
@@ -260,7 +264,7 @@
         const auth_id = getLocal('auth_id');
         this.loading = true;
         //列表数据获取
-        this.$post('Auth/adminUserList').then((d)=>{
+        this.$post('/backend/Auth/adminUserList').then((d)=>{
           let info = d.data;
           const auth_id = getLocal('auth_id');
           that.RowUserData = info;
@@ -272,7 +276,7 @@
           callback();
         });
         //部门数据获取
-        this.$post('Auth/deparList').then((d)=>{
+        this.$post('/backend/Auth/deparList').then((d)=>{
           that.DeparList = d.data;
           that.SeeDepList = [];
           d.data.forEach((val,index)=>{
@@ -284,11 +288,11 @@
           })
         });
         //角色数据获取
-        this.$post('Auth/roleList').then((d)=>{
+        this.$post('/backend/Auth/roleList').then((d)=>{
           that.RoleList = d.data;
         });
         //获取按钮信息
-        this.$fetch('Menuauth/listAuthGet',{auth_id}).then((d)=>{
+        this.$fetch('/backend/Menuauth/listAuthGet',{auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
         })
       },
@@ -338,7 +342,7 @@
       AddOver(){
         this.$refs['AddInfo'].validate((valid)=>{
           if(valid){
-            this.UploadData('Auth/adminUserAdd',this.AddInfo).then(()=>{
+            this.UploadData('/backend/Auth/adminUserAdd',this.AddInfo).then(()=>{
               this.AddModal = false;
             });
           }
@@ -353,7 +357,7 @@
             this.EditInfo[key] = row[key]
           }
         }
-        this.$fetch('Auth/getUseAuth',{admin_id: row.id}).then(d=>{
+        this.$fetch('/backend/Auth/getUseAuth',{admin_id: row.id}).then(d=>{
           this.EditModal = true;
           this.AuthData = d.data;
           this.AuthData.forEach(val=>{
@@ -369,15 +373,15 @@
       EditOver(){
         this.$refs['EditInfo'].validate(valid=>{
           if(valid){
-            this.UploadData('Auth/adminUserUpdate',this.EditInfo).then(()=>{
+            this.UploadData('/backend/Auth/adminUserUpdate',this.EditInfo).then(()=>{
               this.EditModal = false;
             })
           }
         });
       },
       //启用禁用
-      ChangeStatus(id){
-        this.UploadData('Auth/adminUserStatus',{admin_id: id});
+      ChangeStatus(row){
+        this.UploadData('/backend/Auth/adminUserStatus',{admin_id: row.id});
       },
       //分配部门
       AssignDep(row){
@@ -394,7 +398,7 @@
           admin_id: info.id,
           depar_id: info.depar_id
         };
-        this.UploadData('Auth/deparAdminUser',data);
+        this.UploadData('/backend/Auth/deparAdminUser',data);
       },
       //分配角色
       AssignRole(row){
@@ -417,7 +421,7 @@
           admin_id: info.id,
           role_id: info.check_id.join(',')
         };
-        this.UploadData('Auth/roleAllotment',data);
+        this.UploadData('/backend/Auth/roleAllotment',data);
       },
       //可视部门
       SeeDep(row){
@@ -440,7 +444,7 @@
           admin_id: info.id,
           depar_id: info.check_id.join(',')
         };
-        this.UploadData('Auth/dataScope',data);
+        this.UploadData('/backend/Auth/dataScope',data);
       }
     }
   }

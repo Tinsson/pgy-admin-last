@@ -22,13 +22,13 @@ import consumerList from '@/views/user/consumerList'
 import blackList from '@/views/user/BlackList'
 
 //交易记录
-import bindApply from '@/views/loan/bindApply'
-import bindList from '@/views/loan/bindList'
-import loanApply from '@/views/loan/loanApply'
+//import bindApply from '@/views/loan/bindApply'
+//import bindList from '@/views/loan/bindList'
+//import loanApply from '@/views/loan/loanApply'
 import loanList from '@/views/loan/loanList'
-import delayApply from '@/views/loan/delayApply'
+//import delayApply from '@/views/loan/delayApply'
 import delayList from '@/views/loan/delayList'
-import repayApply from '@/views/loan/repayApply'
+//import repayApply from '@/views/loan/repayApply'
 import repayList from '@/views/loan/repayList'
 import contractList from '@/views/loan/contractList'
 import contractInfo from '@/views/loan/contract/contractInfo'
@@ -36,6 +36,10 @@ import contractInfo from '@/views/loan/contract/contractInfo'
 //催收管理
 import urgeList from '@/views/urge/urgeList'
 import badDebtList from '@/views/urge/badDebtList'
+import repayConfirm from '@/views/urge/repayConfirm'
+
+//工作流平台
+import workliuList from '@/views/workliu/workliuList'
 
 //推送管理
 import autoPost from '@/views/post/autoPost'
@@ -44,15 +48,18 @@ import templateEdit from '@/views/post/templateEdit'
 //配置管理
 import userConfig from '@/views/config/userConfig'
 import formulaConfig from '@/views/config/formulaConfig'
-import certifyConfig from '@/views/config/certifyConfig'
 import versionConfig from '@/views/config/versionConfig'
 import unifiedConfig from '@/views/config/unifiedConfig'
 import payConfig from '@/views/config/payConfig'
 import commissionFormula from '@/views/config/commissionFormula'
+import reviewConfig from '@/views/config/reviewConfig'
+import urgeConfig from '@/views/config/urgeConfig'
 
 //推广管理
 import generalizeConfig from '@/views/generalize/generalizeConfig'
 import generalizeList from '@/views/generalize/generalizeList'
+import generalizeDetail from '@/views/generalize/generalizeDetail'
+import generalizeCount from '@/views/generalize/generalizeCount'
 import Extend from '@/views/generalize/Extend'
 import Registered from '@/views/generalize/Registered'
 
@@ -74,29 +81,28 @@ const componentList = {
   consumerList,
   blackList,
 
-  bindApply,
-  bindList,
-  loanApply,
   loanList,
-  delayApply,
   delayList,
-  repayApply,
   repayList,
   contractList,
 
   urgeList,
   badDebtList,
+  repayConfirm,
+
+  workliuList,
 
   autoPost,
   templateEdit,
 
   userConfig,
   formulaConfig,
-  certifyConfig,
   versionConfig,
   unifiedConfig,
   payConfig,
   commissionFormula,
+  reviewConfig,
+  urgeConfig,
 
   generalizeConfig,
   generalizeList,
@@ -135,6 +141,21 @@ const routes = [
     meta: {
       IsOpen: true
     }
+  },{
+    path: '/generalize',
+    name: '推广管理',
+    component: AdminFrame,
+    children: [
+      {
+        path: 'generalizeDetail',
+        name: '渠道详情',
+        component: generalizeDetail
+      },{
+        path: 'generalizeCount',
+        name: '渠道统计',
+        component: generalizeCount
+      }
+    ]
   },{
     path: '/notfind',
     name: '页面不存在',

@@ -112,7 +112,7 @@
     data () {
       return {
         title: '支付公式配置',
-        apiUrl: 'Sysconfig/sysFormulaList',
+        apiUrl: '/backend/Sysconfig/sysFormulaList',
         auth_id: '',
         loading: true,
         ParamsModal:{
@@ -270,7 +270,7 @@
       },
       //获取基础参数
       GetBaseParams(){
-        this.$fetch('Sysconfig/sysFormulaBList').then(d=>{
+        this.$fetch('/backend/Sysconfig/sysFormulaBList').then(d=>{
           const paramsAll = d.data;
           let fixedInit = [],dynamicInit = [];
           this.ParamsAll.BaseAll = paramsAll;
@@ -290,7 +290,7 @@
         const that = this;
         this.loading = true;
         //获取按钮信息
-        this.$fetch('Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
+        this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
         });
         //列表数据获取
@@ -424,7 +424,7 @@
           title: '温馨提示',
           content: '<p class="confirm-text">确认删除此参数吗？</p>',
           onOk: ()=>{
-            this.UploadData('Sysconfig/sysFormulaBDel',{id: row.id}).then(()=>{
+            this.UploadData('/backend/Sysconfig/sysFormulaBDel',{id: row.id}).then(()=>{
               this.GetBaseParams();
             });
           }

@@ -48,6 +48,8 @@ export function transTimeToBack(row){
   return row.split('.')[0].replace('T',' ');
 }
 
+
+
 /**
  * renderBtn 渲染按钮
  * @param h
@@ -56,17 +58,23 @@ export function transTimeToBack(row){
  * @param rule(name: 状态，right：开启的结果，wbtn：开启的提示)选填
  * @returns {Promise}
  */
-export function renderBtn(h, params, bdata ,rule = {name: '',right: '', wbtn: ''}){
+export function renderBtn(h, params, bdata ,rule = {btns:[{class: '',type: '',name:'',right: '',wbtn: ''}],size: 2}){
   let BtnArr = [];
   const that = this;
   if(bdata.length < 4){
     BtnArr = loopBtn(that, h, params, bdata,rule);
   }else{
-    BtnArr = loopBtn(that, h, params, bdata.slice(0,2), rule);
+    BtnArr = loopBtn(that, h, params, bdata.slice(0,rule.size), rule);
     let moreBtn = [];
-    bdata.slice(2).forEach((val)=>{
-      let color = (val.class === 'ChangeStatus' && params.row[rule.name] === rule.right)?'warning':val.color,
-          name = (val.class === 'ChangeStatus' && params.row[rule.name] === rule.right)?rule.wbtn: val.name;
+    bdata.slice(rule.size).forEach((val)=>{
+      let color = val.color,
+          name = val.name;
+      rule.btns.forEach(btn=>{
+        if(val.class === btn.class && params.row[btn.name] === btn.right){
+          color = btn.type;
+          name = btn.wbtn;
+        }
+      });
       const btn = h('DropdownItem',[h('Button',{
         props: {
           type: color
@@ -107,8 +115,14 @@ export function renderBtn(h, params, bdata ,rule = {name: '',right: '', wbtn: ''
 export function loopBtn(proto, h, params, bdata,rule){
   let res = [];
   bdata.forEach((val)=>{
-    let color = (val.class === 'ChangeStatus' && params.row[rule.name] === rule.right)?'warning':val.color,
-      name = (val.class === 'ChangeStatus' && params.row[rule.name] === rule.right)?rule.wbtn: val.name;
+    let color = val.color,
+      name = val.name;
+    rule.btns.forEach(btn=>{
+      if(val.class === btn.class && params.row[btn.name] === btn.right){
+        color = btn.type;
+        name = btn.wbtn;
+      }
+    });
     const btn = h('Button',{
       props: {
         type: color
@@ -125,4 +139,18 @@ export function loopBtn(proto, h, params, bdata,rule){
     res.push(btn);
   });
   return res;
+}
+/**
+ * 转换数字状态成中文
+ * @param data 初始数据（object）
+ * @param key 转换的键值（string）
+ * @param val1 1对应的字符（string）
+ * @param val2 0对应的字符（string）
+ * @returns data(object);
+ */
+export function transText(data,key,val1,val2){
+  data.forEach((val)=>{
+    val[key] = (val[key] === 0)?val1:val2;
+  });
+  return data;
 }

@@ -125,7 +125,7 @@
         const auth_id = getLocal('auth_id');
         this.loading = true;
         //列表数据获取
-        this.$post('Auth/deparList').then((d)=>{
+        this.$post('/backend/Auth/deparList').then((d)=>{
           let info = d.data;
           let res = [];
           that.RowDepData = info;
@@ -143,7 +143,7 @@
           callback();
         });
         //获取按钮信息
-        this.$fetch('Menuauth/listAuthGet',{auth_id}).then((d)=>{
+        this.$fetch('/backend/Menuauth/listAuthGet',{auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
         })
 
@@ -186,7 +186,7 @@
       AddOver(){
         this.$refs['AddInfo'].validate(valid=>{
           if(valid){
-            this.UploadData('Auth/deparAdd',this.AddInfo).then(()=>{
+            this.UploadData('/backend/Auth/deparAdd',this.AddInfo).then(()=>{
               this.AddModal = false;
             });
           }
@@ -210,7 +210,7 @@
       EditOver(){
         this.$refs['EditInfo'].validate(valid=>{
           if(valid){
-            this.UploadData('Auth/deparUp',this.EditInfo).then(()=>{
+            this.UploadData('/backend/Auth/deparUp',this.EditInfo).then(()=>{
               this.EditModal = false;
             });
           }
@@ -223,7 +223,7 @@
           title: '温馨提示',
           content: '<p class="confirm-text">确认删除此部门吗？</p>',
           onOk: ()=>{
-            this.UploadData('Auth/deparDel',{id: p.id});
+            this.UploadData('/backend/Auth/deparDel',{id: p.id});
           }
         })
       }

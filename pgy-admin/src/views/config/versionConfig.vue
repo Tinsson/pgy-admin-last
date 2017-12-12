@@ -61,7 +61,7 @@
     data () {
       return {
         title: '版本信息配置',
-        apiUrl: 'Sysconfig/sysVersionList',
+        apiUrl: '/backend/Sysconfig/sysVersionList',
         auth_id: '',
         loading: true,
         TextArr:{
@@ -142,7 +142,7 @@
         const that = this;
         this.loading = true;
         //获取按钮信息
-        this.$fetch('Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
+        this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
         });
         //列表数据获取
@@ -202,7 +202,7 @@
             this.ModeModal.modal = false;
             let ninfo = this.RemoveObserve(this.ModeModal.data);
             const isEdit = this.ModeModal.isEdit;
-            const url = isEdit?'Sysconfig/sysVersionUp':'Sysconfig/sysVersionAdd';
+            const url = isEdit?'/backend/Sysconfig/sysVersionUp':'/backend/Sysconfig/sysVersionAdd';
             if(isEdit){
               ninfo.id = this.ModeModal.id;
             }
@@ -231,7 +231,7 @@
           title: '提示',
           content: `<p class="confirm-text">删除此版本配置？</p>`,
           onOk: ()=>{
-            this.UploadData('Sysconfig/sysVersionDel',{id: row.id}).then(()=>{
+            this.UploadData('/backend/Sysconfig/sysVersionDel',{id: row.id}).then(()=>{
               this.InitData(this.apiUrl);
             });
           }

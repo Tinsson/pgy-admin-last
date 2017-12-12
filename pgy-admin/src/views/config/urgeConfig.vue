@@ -1,17 +1,61 @@
 <template>
-  <div id="certify-config">
+  <div id="user-config">
     <h1 class="list-title">
       <span class="tit-text">{{ title }}</span>
     </h1>
+    <div class="data-area">
+      <Card>
+        <div class="card-tit" slot="title">
+          <h3>
+            <Icon type="settings"></Icon>
+            分配方式
+          </h3>
+        </div>
+        <div class="mode-area">
+          <div class="ipt-area">
+            <RadioGroup v-model="ModeType.status">
+              <p class="ipt-line">
+                <Radio :label="0">按人数</Radio>
+                <span class="after-info" v-show="AccordPerson">
+                  每
+                  <Input v-show="ModeType.edit" class="line-control" v-model="ModeType.person"></Input>
+                  <span class="value" v-show="!ModeType.edit">{{ ModeType.person }}</span>
+                  <span class="unit">人</span>
+                </span>
+              </p>
+              <p class="ipt-line">
+                <Radio :label="1">按时间</Radio>
+                <span class="after-info" v-show="!AccordPerson">
+                  每
+                  <Input class="line-control" v-show="ModeType.edit" v-model="ModeType.time"></Input>
+                  <Select class="line-control" v-show="ModeType.edit" v-model="ModeType.tunit">
+                    <Option :value="1">天</Option>
+                    <Option :value="2">周</Option>
+                    <Option :value="3">月</Option>
+                  </Select>
+                  <span class="value" v-show="!ModeType.edit">{{ModeType.time}}</span>
+                  <span class="unit" v-show="!ModeType.edit">{{ TimeUnit }}</span>
+                </span>
+                <span class="sub-btn">
+                  <Button type="info" v-show="!ModeType.edit" @click="ModeBtn('fix')">修改</Button>
+                  <Button type="success" v-show="ModeType.edit" @click="ModeBtn('sub')">保存</Button>
+                  <Button type="error" v-show="ModeType.edit" @click="ModeBtn('cancel')">取消</Button>
+                </span>
+              </p>
+            </RadioGroup>
+          </div>
+        </div>
+      </Card>
+    </div>
     <div class="data-area">
       <Card :padding="0">
         <div class="card-tit" slot="title">
           <h3>
             <Icon type="clipboard"></Icon>
-            认证列表
+            人员列表
           </h3>
           <div class="btn-box">
-            <Button type="warning" size="large" icon="wrench" @click="AddModeModal">添加认证</Button>
+            <Button type="warning" size="large" icon="wrench" @click="AddModeModal">添加类型</Button>
           </div>
         </div>
         <Table :columns="UserCol"
@@ -21,42 +65,18 @@
     </div>
     <Modal
       v-model="ModeModal.modal"
-      title="添加认证">
+      title="设置等级">
       <Form ref="ModeModal" :model="ModeModal.data" :rules="ValidateRules" label-position="right" :label-width="100">
-        <FormItem label="状态：">
-          <RadioGroup v-model="ModeModal.data.status">
-            <Radio :label="1">开启</Radio>
-            <Radio :label="0">关闭</Radio>
-          </RadioGroup>
+        <FormItem label="等级：" prop="level">
+          <Input v-model="ModeModal.data.level"></Input>
         </FormItem>
-        <FormItem label="名称：" prop="cer_name">
-          <Input v-model="ModeModal.data.cer_name"></Input>
-        </FormItem>
-        <FormItem label="模型名称：" prop="cer_model">
-          <Input v-model="ModeModal.data.cer_model"></Input>
-        </FormItem>
-        <FormItem label="排序：" prop="sort">
-          <InputNumber v-model="ModeModal.data.sort"></InputNumber>
+        <FormItem label="备注：">
+          <Input v-model="ModeModal.data.remark"></Input>
         </FormItem>
       </Form>
       <div slot="footer">
         <Button type="text" @click="ModalCancel" size="large">取消</Button>
         <Button type="primary" @click="AddOver" size="large">保存</Button>
-      </div>
-    </Modal>
-    <Modal v-model="EditModal"
-           title="设置排序">
-      <Form ref="EditSort" :model="EditSort" :rules="ValidateRules" label-position="right" :label-width="100">
-        <FormItem label="名称：" prop="cer_name">
-          <Input v-model="EditSort.cer_name" :disabled="true"></Input>
-        </FormItem>
-        <FormItem label="排序：" prop="val">
-          <InputNumber v-model="EditSort.val"></InputNumber>
-        </FormItem>
-      </Form>
-      <div slot="footer">
-        <Button type="text" @click="EditCancel" size="large">取消</Button>
-        <Button type="primary" @click="EditOver" size="large">保存</Button>
       </div>
     </Modal>
   </div>
@@ -66,32 +86,35 @@
   import { getLocal } from '@/util/util'
 
   export default {
-    name: 'CertifyConfig',
+    name: 'UserConfig',
     data () {
       return {
-        title: '认证配置',
-        apiUrl: '/backend/Certification/getCertifiList',
+        title: '催收人员配置',
+        apiUrl: '/backend/Sysconfig/sysLevelList',
         auth_id: '',
         loading: true,
+        ModeType:{
+          edit: false,
+          status: 0,
+          person: 11,
+          time: 11,
+          tunit: 1
+        },
         TextArr:{
-          status: ['关闭','开启']
+          status: ['离职','在职'],
+          tunit: ['天','周','月']
         },
         //添加用户类型
         ModeModal:{
           modal: false,
-          data: {
-            cer_name: '',
-            cer_model: '',
-            status: 1,
-            sort: 1
-          }
-        },
-        //修改排序
-        EditModal: false,
-        EditSort: {
+          isEdit: false,
           id: '',
-          cer_name: '',
-          val: 0
+          data: {
+            level: '',
+            between_start: 0,
+            between_end: 100,
+            remark: ''
+          }
         },
         UserCol: [
           {
@@ -100,17 +123,14 @@
             align: 'center',
             key: 'id'
           },{
-            title: '名称',
-            key: 'cer_name'
+            title: 'name',
+            key: 'level'
           },{
-            title: '模型名称',
-            key: 'cer_model'
+            title: 'id',
+            key: 'between_start'
           },{
             title: '状态',
-            key: 'status'
-          },{
-            title: '排序',
-            key: 'sort'
+            key: 'between_end'
           },{
             title: '操作',
             key: 'operation',
@@ -122,17 +142,8 @@
           }
         ],
         ValidateRules:{
-          cer_name: [
-            {required: true, message: '认证名称不能为空！'}
-          ],
-          cer_model: [
-            {required: true, message: '模型名称不能为空！'}
-          ],
-          sort: [
-            {required: true, message: '排序不能为空！'}
-          ],
-          val: [
-            {required: true, message: '排序不能为空！'}
+          level: [
+            {required: true, message: '等级不能为空！'}
           ]
         },
         UserData: [],     //表格数据
@@ -143,6 +154,14 @@
     created(){
       this.auth_id = getLocal('auth_id');
       this.InitData(this.apiUrl);
+    },
+    computed:{
+      AccordPerson(){
+        return this.ModeType.status === 0?true:false;
+      },
+      TimeUnit(){
+        return this.TextArr.tunit[this.ModeType.tunit - 1];
+      }
     },
     methods: {
       //去除data数据里绑定的监视器
@@ -184,7 +203,6 @@
             if(d.status === 1){
               this.$Message.success(d.message);
               resolve(d.data);
-              this.InitData(this.apiUrl);
             }else{
               this.$Message.error(d.message);
             }
@@ -193,15 +211,32 @@
           })
         })
       },
-      //添加配置
+      //配置按钮操作
+      ModeBtn(type){
+        switch(type){
+          case 'fix':
+            this.ModeType.edit = true;
+            break;
+          case 'sub':
+            this.UploadData('',{}).then(()=>{
+              this.ModeType.edit = false;
+            });
+            break;
+          case 'cancel':
+            this.ModeType.edit = false;
+            break
+        }
+      },
+      //添加操作
       AddModeModal(){
         this.$refs['ModeModal'].resetFields();
         this.ModeModal.data = {
-          cer_name: '',
-          cer_model: '',
-          status: 1,
-          sort: 0
+          level: '',
+          between_start: 0,
+          between_end: 100,
+          remark: ''
         };
+        this.ModeModal.isEdit = false;
         this.ModeModal.modal = true;
       },
       ModalCancel(){
@@ -210,41 +245,34 @@
       AddOver(){
         this.$refs['ModeModal'].validate(valid=>{
           if(valid){
+            this.ModeModal.modal = false;
             let ninfo = this.RemoveObserve(this.ModeModal.data);
-            const url = '/backend/Certification/AddCertifi';
+            const isEdit = this.ModeModal.isEdit;
+            const url = isEdit?'/backend/Sysconfig/sysLevelUp':'/backend/Sysconfig/sysLevelAdd';
+            if(isEdit){
+              ninfo.id = this.ModeModal.id;
+            }
             this.UploadData(url,ninfo).then(()=>{
-              this.ModeModal.modal = false;
+              this.InitData(this.apiUrl);
             });
           }
         });
       },
-      //修改操作
-      EditOpt(row){
-        this.EditModal = true;
-        this.EditSort.id = row.id;
-        this.EditSort.cer_name = row.cer_name;
-        this.EditSort.val = row.sort;
+      //离职操作
+      QuitOpt(row){
+
       },
-      EditCancel(){
-        this.EditModal = false;
+      //主动分配操作
+      AssignUrge(row){
+
       },
-      EditOver(){
-        this.$refs['EditSort'].validate(valid=>{
-          if(valid){
-            let sinfo = this.RemoveObserve(this.EditSort);
-            this.UploadData('/backend/Certification/setCertifi',sinfo).then(()=>{
-              this.EditModal = false;
-            })
-          }
-        });
-      },
-      //删除认证配置
+      //删除用户类型
       Delopt(row){
         this.$Modal.confirm({
           title: '提示',
-          content: `<p class="confirm-text">删除此认证配置？</p>`,
+          content: `<p class="confirm-text">删除此用户类型？</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/Certification/delCertifi',{id: row.id}).then(()=>{
+            this.UploadData('/backend/Sysconfig/sysLevelDel',{id: row.id}).then(()=>{
               this.InitData(this.apiUrl);
             });
           }
@@ -289,5 +317,26 @@
   }
   .info-width{
     width: 200px;
+  }
+  .ipt-line{
+    padding-bottom: 10px;
+    width: 450px;
+    position: relative;
+    .after-info{
+      margin-left: 20px;
+      .unit,.value{
+        margin-left: 10px;
+      }
+    }
+    .sub-btn{
+      position: absolute;
+      bottom: 11px;
+      right: 0;
+    }
+  }
+  .line-control{
+    width: 70px;
+    margin-left: 10px;
+    display: inline-block;
   }
 </style>

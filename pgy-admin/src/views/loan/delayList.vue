@@ -36,15 +36,11 @@
             </FormItem>-->
             <FormItem label="订单状态：">
               <Select v-model="ScreenData.status" style="width:162px">
-                <Option value="0">待审核</Option>
-                <Option value="1">放款通过</Option>
-                <Option value="2">放款中</Option>
-                <Option value="3">还款中</Option>
-                <Option value="8">已还款</Option>
-                <Option value="9">拒绝</Option>
+                <Option :value="0">失败</Option>
+                <Option :value="1">成功</Option>
               </Select>
             </FormItem>
-            <FormItem label="时间：">
+            <FormItem label="请求时间：">
               <DatePicker type="datetimerange"
                           placeholder="选择日期和时间"
                           format="yyyy-MM-dd HH:mm:ss"
@@ -98,7 +94,6 @@
           name: '',
           phone: '',
           idcard: '',
-          //channel_id: '',
           status: '',
           start_time: '',
           end_time: '',
@@ -130,26 +125,22 @@
             title: '展期费用（元）',
             key: 'fee'
           },{
-            title: '订单总金额（元）',
-            width: '150',
+            title: '原借款金额（元）',
             align: 'center',
             key: 'amount'
           },{
-            title: '充值请求号',
-            align: 'center',
-            key: 'requestno'
+            title: '展期请求时间',
+            key: 'request_date'
           },{
-            title: '请求时间',
-            width: '100',
-            align: 'center',
-            key: 'create_at'
+            title: '展期开始时间',
+            key: 'start_date'
+          },{
+            title: '展期结束时间',
+            key: 'end_date'
           },{
             title: '展期天数',
-            key: 'day'
-          },/*{
-            title: '易宝流水号',
-            key: 'orderid'
-          },*/{
+            key: 'days'
+          },{
             title: '订单状态',
             key: 'status'
           }
@@ -202,28 +193,15 @@
         this.loading = true;
         //列表数据获取
         return new Promise((resolve)=>{
-          this.$post('Loan/delayList',params).then((d)=>{
+          this.$post('/backend/Loan/delayList',params).then((d)=>{
             let res = d.data.list;
             this.Page.count = d.data.count;
             this.RowUserData = res;
-            this.UserData = this.TransText(res,'error_msg','无');
+            this.UserData = res;
             that.loading = false;
             resolve();
           })
         })
-      },
-      /**
-       * 转换空字符串
-       * @param data 初始数据（object）
-       * @param key 转换的键值（string）
-       * @param val1 空对应的字符（string）
-       * @returns data(object);
-       */
-      TransText(data,key,val1){
-        data.forEach((val)=>{
-          val[key] = (val[key] === '')?val1:val[key];
-        });
-        return data;
       },
       //刷新列表
       RefreshList(){
@@ -252,7 +230,7 @@
       ExportData(){
         let sinfo = this.RemoveObserve(this.ScreenData);
         sinfo.expro = 1;
-        this.UploadData('Loan/delayList',sinfo).then((url)=>{
+        this.UploadData('/backend/Loan/delayList',sinfo).then((url)=>{
             window.location.href = url;
         });
       },

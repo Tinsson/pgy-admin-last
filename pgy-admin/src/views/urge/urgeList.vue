@@ -57,8 +57,8 @@
             数据列表
           </h3>
           <div class="btn-box">
-            <!--<Button type="warning" size="large" icon="chatbubble" @click="GroupSmsOpt">群发短信</Button>-->
-            <Button type="info" size="large" icon="chatbox" @click="GroupAppOpt">群发APP消息</Button>
+            <Button type="info" size="large" icon="chatbox" @click="GroupAppOpt">群发短信</Button>
+            <Button type="warning" size="large" icon="archive" @click="OpenReport">导出催收报告</Button>
             <Button type="primary" size="large" icon="archive" @click="ExportData">导出数据</Button>
           </div>
         </div>
@@ -82,6 +82,18 @@
       @on-ok="SubRemark">
       <h2 slot="header">备注信息</h2>
       <Input v-model="Remark.remark" type="textarea" :rows="4" placeholder="请输入备注信息"></Input>
+    </Modal>
+    <Modal v-model="Report.modal"
+           @on-ok="ExportReport">
+      <h2 slot="header">确认报告类型</h2>
+      <Form :model="Report" :label-width="120">
+        <FormItem label="报告类型：">
+          <Select v-model="Report.type" style="width: 200px">
+            <Option :value="1">借贷宝</Option>
+            <Option :value="2">外包催收</Option>
+          </Select>
+        </FormItem>
+      </Form>
     </Modal>
     <GroupSms :modalShow="Group.SmsModal"
               :InitData="SelectData"
@@ -195,9 +207,24 @@
             title: '操作',
             key: 'operation',
             align: 'center',
-            width: '330',
+            width: '200',
             render: (h, params)=>{
-              return h('div',this.RenderBtn(h, params, this.BtnData));
+              let rule = {};
+              rule.btns = [{
+                class: 'DelayOpt',
+                name: 'allow_delay',
+                type: 'default',
+                right: 1,
+                wbtn: '已展期'
+              },{
+                class: 'MarkOpt',
+                name: 'marking',
+                type: 'default',
+                right: 1,
+                wbtn: '取消标记'
+              }];
+              rule.size = 1;
+              return h('div',this.$renderBtn(h, params, this.BtnData, rule));
             }
           }
         ],
@@ -205,6 +232,11 @@
         RowUserData: [],  //获取的原始数据
         //群选打钩后操作
         SelectData: [],
+        //导出报告
+        Report: {
+          modal: false,
+          type: ''
+        },
         Group: {
           SmsModal: false,
           AppmsgModal: false
@@ -226,7 +258,7 @@
     },
     created(){
       this.auth_id = getLocal('auth_id');
-      this.InitData('Collection/CollectionList',{},1);
+      this.InitData('/backend/Collection/CollectionList',{},1);
     },
     methods: {
       //循环渲染按钮
@@ -325,7 +357,7 @@
         })
         this.ScreenData.check = num;
         sinfo.check = num;
-        this.InitData('Collection/collectionListInfo',sinfo);
+        this.InitData('/backend/Collection/collectionListInfo',sinfo);
       },
       //查询结果
       SimpleSearch(sign = 1){
@@ -337,7 +369,7 @@
           sinfo.start_time = '';
           sinfo.end_time = '';
         }
-        this.InitData('Collection/collectionListInfo',sinfo).then(()=>{
+        this.InitData('/backend/Collection/collectionListInfo',sinfo).then(()=>{
           if(sign){
             this.$Message.success('筛选成功！')
           }
@@ -348,7 +380,7 @@
         const that = this;
         this.loading = true;
         //获取按钮信息
-        this.$fetch('Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
+        this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
         });
         //列表数据获取
@@ -412,7 +444,7 @@
       },
       //提交备注
       SubRemark(){
-        this.UploadData('Collection/remark',this.Remark).then(()=>{
+        this.UploadData('/backend/Collection/remark',this.Remark).then(()=>{
           this.SimpleSearch(0);
         });
       },
@@ -423,7 +455,7 @@
           title: '提示',
           content: `<p class="confirm-text">${tips}</p>`,
           onOk: ()=>{
-            this.UploadData('Collection/allowDelay',{uid: row.id}).then(()=>{
+            this.UploadData('/backend/Collection/allowDelay',{uid: row.id}).then(()=>{
               this.SimpleSearch(0);
             });
           }
@@ -431,7 +463,7 @@
       },
       //标记功能
       MarkOpt(row){
-        this.UploadData('Collection/marking',{loan_id: row.loan_id}).then(()=>{
+        this.UploadData('/backend/Collection/marking',{loan_id: row.loan_id}).then(()=>{
           this.SimpleSearch(0);
         })
       },
@@ -472,16 +504,23 @@
       AppOpt(info){
         let sinfo = this.RemoveObserve(info);
         sinfo.regid = (sinfo.type.length > 0)?sinfo.regid.join(','):'';
-        this.UploadData('Push/pushs',sinfo).then(()=>{
+        this.UploadData('/backend/Push/pushs',sinfo).then(()=>{
           this.Group.AppmsgModal = false;
         });
         //this.Group.AppmsgModal = false;
+      },
+      OpenReport(){
+        this.Report.modal = true;
+      },
+      //导出报告
+      ExportReport(){
+        console.log(this.SelectData);
       },
       //导出数据
       ExportData(){
         let sinfo = this.RemoveObserve(this.ScreenData);
         sinfo.expro = 1;
-        this.UploadData('Collection/CollectionList',sinfo).then((url)=>{
+        this.UploadData('/backend/Collection/CollectionList',sinfo).then((url)=>{
             //console.log(url);
             window.location.href = url;
         });
@@ -492,7 +531,7 @@
           page: curpage,
           num: this.Page.size
         });
-        this.InitData('Collection/collectionListInfo',sinfo).then(()=>{
+        this.InitData('/backend/Collection/collectionListInfo',sinfo).then(()=>{
           this.Page.cur = curpage;
         })
       },
@@ -502,7 +541,7 @@
           page: 1,
           num: size
         });
-        this.InitData('Collection/collectionListInfo',sinfo).then(()=>{
+        this.InitData('/backend/Collection/collectionListInfo',sinfo).then(()=>{
           this.Page.cur = 1;
           this.Page.size = size;
         })

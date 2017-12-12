@@ -151,7 +151,7 @@
         this.CenterModal.modal = false;
       },
       SubmitOver(){
-        this.$post('Auth/adminUserUppwd',this.CenterModal.data).then((d)=>{
+        this.$post('/backend/Auth/adminUserUppwd',this.CenterModal.data).then((d)=>{
           if(d.status === 1){
             this.$Message.success(d.message);
             this.AvatorImg = d.data.img;

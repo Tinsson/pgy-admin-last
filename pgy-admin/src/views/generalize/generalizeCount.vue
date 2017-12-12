@@ -1,12 +1,7 @@
 <template>
-  <div id="repay-list">
+  <div id="generalize-detail">
     <h1 class="list-title">
-      <span class="tit-text">{{ title }}</span>
-      <Button class="tit-btn"
-              type="info"
-              icon="ios-reload"
-              size="large"
-              @click="RefreshList">刷新列表</Button>
+      <span class="tit-text">{{ title }}渠道推广数据统计</span>
     </h1>
     <div class="screen-area">
       <Card>
@@ -22,18 +17,6 @@
         </div>
         <div class="opt-box">
           <Form :model="ScreenData" inline :label-width="85">
-            <FormItem label="用户名：">
-              <Input v-model="ScreenData.name" style="width: 120px"></Input>
-            </FormItem>
-            <FormItem label="用户手机号：">
-              <Input v-model="ScreenData.phone" style="width: 120px"></Input>
-            </FormItem>
-            <FormItem label="身份证号：">
-              <Input v-model="ScreenData.idcard"></Input>
-            </FormItem>
-            <!--<FormItem label="易宝流水号：">
-              <Input v-model="ScreenData.channel_id"></Input>
-            </FormItem>-->
             <FormItem label="时间：">
               <DatePicker type="datetimerange"
                           placeholder="选择日期和时间"
@@ -42,6 +25,12 @@
                           :value="allTime"
                           @on-change="PickDate"
                           style="width: 280px"></DatePicker>
+            </FormItem>
+            <FormItem label="总人数：">
+              <span class="count-span">{{CountAll.person}}</span>人
+            </FormItem>
+            <FormItem label="总金额：">
+              <span class="count-span">{{CountAll.money}}</span>元
             </FormItem>
           </Form>
         </div>
@@ -55,12 +44,12 @@
             数据列表
           </h3>
           <div class="btn-box">
-            <Button type="primary" icon="archive" @click="ExportData">导出数据</Button>
+
           </div>
         </div>
         <Table :columns="UserCol"
                :data="UserData"
-               :loading="loading" ></Table>
+               :loading="loading"></Table>
         <div class="page-box">
           <Page :current="Page.cur"
                 :page-size="Page.size"
@@ -76,67 +65,52 @@
 
 <script>
   import { getLocal } from '@/util/util'
+  import Clipboard from 'clipboard';
+
   export default {
-    name: 'RepayList',
+    name: 'GeneralizeDetail',
     data () {
       return {
-        title: '还款列表',
+        title: '今日头条',
+        apiUrl: '/backend/PromoteInfo/detail',
         loading: true,
+        ClipBoard: {},
+        CountAll:{
+          person: 10,
+          money: 20
+        },
         allTime: [],
         //基础筛选数据
         ScreenData: {
-          name: '',
-          phone: '',
-          idcard: '',
+          src: '',
           start_time: '',
           end_time: '',
+          status: ''
         },
         UserCol: [
           {
-            type: 'selection',
-            width: 55,
-            align: 'center'
+            title: '日期',
+            key: 'time'
           },{
-            title: '序号',
-            width: '70',
-            align: 'center',
-            key: 'id'
+            title: '注册数',
+            key: 'register'
           },{
-            title: '用户姓名',
-            width: '100',
-            align: 'center',
-            key: 'name'
+            title: '浏览数',
+            key: 'browse'
           },{
-            title: '用户手机号',
-            width: '110',
-            align: 'center',
-            key: 'phone'
+            title: '转化人数',
+            key: 'zhnum'
           },{
-            title: '借款金额（元）',
+            title: '总金额',
             key: 'amount'
           },{
-            title: '平台费用（元）',
-            key: 'fee'
-          },{
-            title: '违约金（元）',
-            key: 'wy_amount'
-          },{
-            title: '还款总金额（元）',
-            width: '150',
-            align: 'center',
-            key: 'order_amount'
-          },{
-            title: '是否全额还款',
-            align: 'center',
-            key: 'is_quane'
-          },{
-            title: '剩余未还金额',
-            align: 'center',
-            key: 'weihuan'
+            title: '关注公众号数',
+            key: 'wxsub'
           }
         ],
         UserData: [],     //表格数据
-        RowUserData: [],  //获取的原始数据
+        SrcData: [],      //渠道数据
+        BtnData: [],      //按钮数据
         //初始分页信息
         Page: {
           count: 0,
@@ -146,7 +120,8 @@
       }
     },
     created(){
-      this.InitData();
+      const src = this.$route.query.src;
+      //this.InitData(this.apiUrl,{src});
     },
     methods: {
       //去除data数据里绑定的监视器
@@ -162,11 +137,27 @@
       },
       //选择时间
       PickDate(time){
-          this.allTime = time;
+        this.allTime = time;
+      },
+      //二次获取数据
+      SecondData(sinfo){
+        return new Promise(resolve=>{
+          this.$post('/backend/PromoteInfo/detail',sinfo).then(d=>{
+            this.UserCol = d.data.field;
+            this.UserData = d.data.list;
+            this.Page.count = d.data.count;
+            this.loading = false;
+            resolve();
+          })
+        });
       },
       //查询结果
-      SimpleSearch(){
+      SimpleSearch(sign = 1){
         let sinfo = this.RemoveObserve(this.ScreenData);
+        if(sinfo.status === ''){
+          this.$Message.error('当前为渠道列表，不具备筛选功能！');
+          return false;
+        }
         if(this.allTime[0] !== ""){
           sinfo.start_time = this.allTime[0];
           sinfo.end_time = this.allTime[1];
@@ -174,44 +165,31 @@
           sinfo.start_time = '';
           sinfo.end_time = '';
         }
-        this.InitData(sinfo).then(()=>{
-          this.$Message.success('筛选成功！')
+        this.SecondData(sinfo).then(()=>{
+          this.$Message.success('筛选成功！');
         });
       },
       //初始化数据
-      InitData(params = {}){
+      InitData(url,params = {}){
         const that = this;
         this.loading = true;
+        this.$fetch('/backend/PromoteInfo/topIndex',params).then(d=>{
+          this.CountData.forEach(val=>{
+            val.count = d.data[val.status];
+          })
+        });
         //列表数据获取
         return new Promise((resolve)=>{
-          this.$post('/backend/Loan/repaymentList',params).then((d)=>{
-            let res = d.data.list;
-            this.Page.count = d.data.count;
-            this.RowUserData = res;
-            this.UserData = this.TransText(res,'error_msg','无');
+          this.$post(url,params).then((d)=>{
+            let res = d.data;
+            this.Page.count = res.count;
+            this.UserCol = res.field;
+            this.UserData = res.list;
+            this.SrcData = res.list;
             that.loading = false;
             resolve();
           })
         })
-      },
-      /**
-       * 转换空字符串
-       * @param data 初始数据（object）
-       * @param key 转换的键值（string）
-       * @param val1 空对应的字符（string）
-       * @returns data(object);
-       */
-      TransText(data,key,val1){
-        data.forEach((val)=>{
-          val[key] = (val[key] === '')?val1:val[key];
-        });
-        return data;
-      },
-      //刷新列表
-      RefreshList(){
-        this.InitData().then(()=>{
-          this.$Message.success('刷新成功');
-        });
       },
       //提交信息操作
       UploadData(url,info){
@@ -220,7 +198,6 @@
             if(d.status === 1){
               this.$Message.success(d.message);
               resolve(d.data);
-              //this.InitData();
             }else{
               this.$Message.error(d.message);
             }
@@ -228,15 +205,6 @@
             this.$Message.error('服务器繁忙，请稍后再试！');
           })
         })
-
-      },
-      //导出数据
-      ExportData(){
-        let sinfo = this.RemoveObserve(this.ScreenData);
-        sinfo.expro = 1;
-        this.UploadData('/backend/Loan/repaymentList',sinfo).then((url)=>{
-            window.location.href = url;
-        });
       },
       //改变页数
       ChangePage(curpage){
@@ -244,7 +212,7 @@
           page: curpage,
           num: this.Page.size
         });
-        this.InitData(sinfo).then(()=>{
+        this.InitData('/backend/PromoteInfo/detail',sinfo).then(()=>{
           this.Page.cur = curpage;
         })
       },
@@ -254,7 +222,7 @@
           page: 1,
           num: size
         });
-        this.InitData(sinfo).then(()=>{
+        this.InitData('/backend/PromoteInfo/detail',sinfo).then(()=>{
           this.Page.cur = 1;
           this.Page.size = size;
         })
@@ -287,5 +255,10 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+  }
+  .count-span{
+    font-size: 18px;
+    padding: 0 5px;
+    color: #d7000f;
   }
 </style>

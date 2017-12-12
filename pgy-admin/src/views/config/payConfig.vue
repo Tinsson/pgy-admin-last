@@ -51,7 +51,7 @@
     data () {
       return {
         title: '支付配置',
-        apiUrl: 'PaymentSet/paymentList',
+        apiUrl: '/backend/PaymentSet/paymentList',
         auth_id: '',
         loading: true,
         TextArr:{},
@@ -108,7 +108,7 @@
     },
     created(){
       this.auth_id = getLocal('auth_id');
-      this.$fetch('Unified/UnifiedList').then(d=>{
+      this.$fetch('/backend/Unified/UnifiedList').then(d=>{
         this.NameArr = d.data;
       });
       this.InitData(this.apiUrl);
@@ -123,7 +123,7 @@
         const that = this;
         this.loading = true;
         //获取按钮信息
-        this.$fetch('Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
+        this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
         });
         //列表数据获取
@@ -179,7 +179,7 @@
           if(valid){
             this.ModeModal.modal = false;
             let ninfo = this.RemoveObserve(this.ModeModal.data);
-            const url = 'PaymentSet/paymentAdd';
+            const url = '/backend/PaymentSet/paymentAdd';
             this.UploadData(url,ninfo).then(()=>{
               this.InitData(this.apiUrl);
             });
@@ -190,7 +190,7 @@
       ChangeStatus(row){
         const disable = row.disable?0:1;
         const id = row.id;
-        this.UploadData('PaymentSet/paymentDsiable',{id,disable}).then(()=>{
+        this.UploadData('/backend/PaymentSet/paymentDsiable',{id,disable}).then(()=>{
           this.InitData(this.apiUrl);
         });
       },

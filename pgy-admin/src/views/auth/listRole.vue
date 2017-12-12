@@ -164,7 +164,7 @@
         const auth_id = this.$getLocal('auth_id');
         this.loading = true;
         //列表数据获取
-        this.$post('Auth/roleList').then((d)=>{
+        this.$post('/backend/Auth/roleList').then((d)=>{
           let info = d.data;
           that.RowRoleData = info;
           info.forEach((infoObj)=>{
@@ -175,11 +175,11 @@
           callback();
         });
         //权限数据获取
-        this.$post('Auth/authList').then((d)=>{
+        this.$post('/backend/Auth/authList').then((d)=>{
           that.AuthList = d.data;
         });
         //获取按钮信息
-        this.$fetch('Menuauth/listAuthGet',{auth_id}).then((d)=>{
+        this.$fetch('/backend/Menuauth/listAuthGet',{auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
         })
       },
@@ -223,7 +223,7 @@
       AddOver(){
         this.$refs['AddInfo'].validate((valid)=>{
           if(valid){
-            this.UploadData('Auth/roleAdd',this.AddInfo).then(()=>{
+            this.UploadData('/backend/Auth/roleAdd',this.AddInfo).then(()=>{
               this.AddModal = false;
             });
           }
@@ -255,7 +255,7 @@
               sort: ''
             };
             this.TransData(this.EditInfo, info);
-            this.UploadData('Auth/roleEdit', info).then(()=>{
+            this.UploadData('/backend/Auth/roleEdit', info).then(()=>{
               this.EditModal = false;
             });
           }
@@ -278,7 +278,7 @@
           role_id: this.AssignInfo.role_id,
           auth_id: this.AssignInfo.auth_id.join(',')
         };
-        this.UploadData('Auth/roleAuthAllotment',info);
+        this.UploadData('/backend/Auth/roleAuthAllotment',info);
       },
       //转换data数据
       TransData(obdata,normal){

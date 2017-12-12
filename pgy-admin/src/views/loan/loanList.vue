@@ -98,7 +98,6 @@
           name: '',
           phone: '',
           idcard: '',
-          //channel_id: '',
           status: '',
           start_time: '',
           end_time: '',
@@ -129,21 +128,21 @@
             align: 'center',
             key: 'phone'
           },{
-            title: '提现金额',
+            title: '借款金额',
             key: 'amount'
           },{
-            title: '提现请求号',
-            key: 'requestno'
-          },{
             title: '请求时间',
-            width: '150',
             align: 'center',
-            key: 'request_time'
-          },/*{
-            title: '易宝流水号',
+            key: 'request_date'
+          },{
+            title: '放款时间',
             align: 'center',
-            key: 'orderid'
-          },*/{
+            key: 'jk_date'
+          },{
+            title: '合同还款时间',
+            align: 'center',
+            key: 'hthk_date'
+          },{
             title: '订单状态',
             width: '100',
             align: 'center',
@@ -199,7 +198,7 @@
         this.loading = true;
         //列表数据获取
         return new Promise((resolve)=>{
-          this.$post('Loan/loanList',params).then((d)=>{
+          this.$post('/backend/Loan/loanList',params).then((d)=>{
             let res = d.data.list;
             this.Page.count = d.data.count;
             this.RowUserData = res;
@@ -249,7 +248,7 @@
       ExportData(){
         let sinfo = this.RemoveObserve(this.ScreenData);
         sinfo.expro = 1;
-        this.UploadData('Loan/loanList',sinfo).then((url)=>{
+        this.UploadData('/backend/Loan/loanList',sinfo).then((url)=>{
             window.location.href = url;
         });
       },

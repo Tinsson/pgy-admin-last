@@ -1,5 +1,5 @@
 <template>
-  <div id="certify-config">
+  <div id="review-config">
     <h1 class="list-title">
       <span class="tit-text">{{ title }}</span>
     </h1>
@@ -8,10 +8,10 @@
         <div class="card-tit" slot="title">
           <h3>
             <Icon type="clipboard"></Icon>
-            认证列表
+            配置列表
           </h3>
           <div class="btn-box">
-            <Button type="warning" size="large" icon="wrench" @click="AddModeModal">添加认证</Button>
+            <Button type="primary" size="large" icon="wrench" @click="AddModeModal">添加审核人员</Button>
           </div>
         </div>
         <Table :columns="UserCol"
@@ -21,42 +21,21 @@
     </div>
     <Modal
       v-model="ModeModal.modal"
-      title="添加认证">
+      title="设置审核人员">
       <Form ref="ModeModal" :model="ModeModal.data" :rules="ValidateRules" label-position="right" :label-width="100">
-        <FormItem label="状态：">
-          <RadioGroup v-model="ModeModal.data.status">
-            <Radio :label="1">开启</Radio>
-            <Radio :label="0">关闭</Radio>
-          </RadioGroup>
+        <FormItem label="姓名：" prop="name">
+          <Input v-model="ModeModal.data.name"></Input>
         </FormItem>
-        <FormItem label="名称：" prop="cer_name">
-          <Input v-model="ModeModal.data.cer_name"></Input>
-        </FormItem>
-        <FormItem label="模型名称：" prop="cer_model">
-          <Input v-model="ModeModal.data.cer_model"></Input>
-        </FormItem>
-        <FormItem label="排序：" prop="sort">
-          <InputNumber v-model="ModeModal.data.sort"></InputNumber>
+        <FormItem label="状态：" prop="status">
+          <Select v-model="ModeModal.data.status">
+            <Option :value="0">离职</Option>
+            <Option :value="1">在职</Option>
+          </Select>
         </FormItem>
       </Form>
       <div slot="footer">
         <Button type="text" @click="ModalCancel" size="large">取消</Button>
         <Button type="primary" @click="AddOver" size="large">保存</Button>
-      </div>
-    </Modal>
-    <Modal v-model="EditModal"
-           title="设置排序">
-      <Form ref="EditSort" :model="EditSort" :rules="ValidateRules" label-position="right" :label-width="100">
-        <FormItem label="名称：" prop="cer_name">
-          <Input v-model="EditSort.cer_name" :disabled="true"></Input>
-        </FormItem>
-        <FormItem label="排序：" prop="val">
-          <InputNumber v-model="EditSort.val"></InputNumber>
-        </FormItem>
-      </Form>
-      <div slot="footer">
-        <Button type="text" @click="EditCancel" size="large">取消</Button>
-        <Button type="primary" @click="EditOver" size="large">保存</Button>
       </div>
     </Modal>
   </div>
@@ -66,11 +45,11 @@
   import { getLocal } from '@/util/util'
 
   export default {
-    name: 'CertifyConfig',
+    name: 'ReviewConfig',
     data () {
       return {
-        title: '认证配置',
-        apiUrl: '/backend/Certification/getCertifiList',
+        title: '审核人员配置',
+        apiUrl: '/backend/ConfigCollectionVerify/verifyList',
         auth_id: '',
         loading: true,
         TextArr:{
@@ -79,19 +58,14 @@
         //添加用户类型
         ModeModal:{
           modal: false,
-          data: {
-            cer_name: '',
-            cer_model: '',
-            status: 1,
-            sort: 1
-          }
-        },
-        //修改排序
-        EditModal: false,
-        EditSort: {
+          isEdit: false,
           id: '',
-          cer_name: '',
-          val: 0
+          data: {
+            level: '',
+            between_start: 0,
+            between_end: 100,
+            remark: ''
+          }
         },
         UserCol: [
           {
@@ -100,39 +74,37 @@
             align: 'center',
             key: 'id'
           },{
-            title: '名称',
-            key: 'cer_name'
+            title: '姓名',
+            key: 'name'
           },{
-            title: '模型名称',
-            key: 'cer_model'
+            title: 'id',
+            key: 'user_id'
           },{
-            title: '状态',
-            key: 'status'
+            title: '在职状态',
+            key: 'work_status'
           },{
-            title: '排序',
-            key: 'sort'
+            title: '分配方式',
+            key: 'distribution'
           },{
             title: '操作',
             key: 'operation',
             align: 'center',
             width: '330',
             render: (h, params)=>{
+              //需要判断人员是否离职
               return h('div',this.$renderBtn(h, params, this.BtnData));
             }
           }
         ],
         ValidateRules:{
-          cer_name: [
-            {required: true, message: '认证名称不能为空！'}
+          level: [
+            {required: true, message: '等级不能为空！'}
           ],
-          cer_model: [
-            {required: true, message: '模型名称不能为空！'}
+          between_start: [
+            {required: true, message: '下限不能为空！'}
           ],
-          sort: [
-            {required: true, message: '排序不能为空！'}
-          ],
-          val: [
-            {required: true, message: '排序不能为空！'}
+          between_end: [
+            {required: true, message: '上限不能为空！'}
           ]
         },
         UserData: [],     //表格数据
@@ -151,7 +123,6 @@
       },
       //初始化数据
       InitData(url,params = {}){
-        const that = this;
         this.loading = true;
         //获取按钮信息
         this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
@@ -172,7 +143,7 @@
                 }
               })
             }
-            that.loading = false;
+            this.loading = false;
             resolve();
           })
         })
@@ -184,7 +155,6 @@
             if(d.status === 1){
               this.$Message.success(d.message);
               resolve(d.data);
-              this.InitData(this.apiUrl);
             }else{
               this.$Message.error(d.message);
             }
@@ -193,15 +163,14 @@
           })
         })
       },
-      //添加配置
+      //添加操作
       AddModeModal(){
         this.$refs['ModeModal'].resetFields();
         this.ModeModal.data = {
-          cer_name: '',
-          cer_model: '',
-          status: 1,
-          sort: 0
+          name: '',
+          status: 0
         };
+        this.ModeModal.isEdit = false;
         this.ModeModal.modal = true;
       },
       ModalCancel(){
@@ -210,41 +179,52 @@
       AddOver(){
         this.$refs['ModeModal'].validate(valid=>{
           if(valid){
+            this.ModeModal.modal = false;
             let ninfo = this.RemoveObserve(this.ModeModal.data);
-            const url = '/backend/Certification/AddCertifi';
+            const isEdit = this.ModeModal.isEdit;
+            const url = isEdit?'/backend/Sysconfig/sysLevelUp':'/backend/Sysconfig/sysLevelAdd';
+            if(isEdit){
+              ninfo.id = this.ModeModal.id;
+            }
             this.UploadData(url,ninfo).then(()=>{
-              this.ModeModal.modal = false;
+              this.InitData(this.apiUrl);
             });
           }
         });
       },
-      //修改操作
-      EditOpt(row){
-        this.EditModal = true;
-        this.EditSort.id = row.id;
-        this.EditSort.cer_name = row.cer_name;
-        this.EditSort.val = row.sort;
-      },
-      EditCancel(){
-        this.EditModal = false;
-      },
-      EditOver(){
-        this.$refs['EditSort'].validate(valid=>{
-          if(valid){
-            let sinfo = this.RemoveObserve(this.EditSort);
-            this.UploadData('/backend/Certification/setCertifi',sinfo).then(()=>{
-              this.EditModal = false;
+      //离职操作
+      QuitOpt(row){
+        this.$Modal.confirm({
+          title: 'Title',
+          content: '<p>如果设置离职，该人员下未转化的用户将进行平均分配</p>',
+          onOk: () => {
+            this.UploadData('',{id: row.id}).then(()=>{
+              this.InitData(this.apiUrl);
             })
-          }
+          },
+          okText: '是',
+          cancelText: '否'
         });
       },
-      //删除认证配置
+      //修改操作
+      EditOpt(row){
+        this.ModeModal.data = {
+          level: row.level,
+          between_start: row.between_start,
+          between_end: row.between_end,
+          remark: row.remark
+        };
+        this.ModeModal.isEdit = true;
+        this.ModeModal.id = row.id;
+        this.ModeModal.modal = true;
+      },
+      //删除用户类型
       Delopt(row){
         this.$Modal.confirm({
           title: '提示',
-          content: `<p class="confirm-text">删除此认证配置？</p>`,
+          content: `<p class="confirm-text">删除此用户类型？</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/Certification/delCertifi',{id: row.id}).then(()=>{
+            this.UploadData('/backend/Sysconfig/sysLevelDel',{id: row.id}).then(()=>{
               this.InitData(this.apiUrl);
             });
           }

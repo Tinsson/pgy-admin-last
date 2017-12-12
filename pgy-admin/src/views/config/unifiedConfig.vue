@@ -49,7 +49,7 @@
     data () {
       return {
         title: '统一配置',
-        apiUrl: 'Unified/UnifiedList',
+        apiUrl: '/backend/Unified/UnifiedList',
         auth_id: '',
         loading: true,
         TextArr:{},
@@ -119,7 +119,7 @@
         const that = this;
         this.loading = true;
         //获取按钮信息
-        this.$fetch('Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
+        this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
         });
         //列表数据获取
@@ -177,7 +177,7 @@
             this.ModeModal.modal = false;
             let ninfo = this.RemoveObserve(this.ModeModal.data);
             const isEdit = this.ModeModal.isEdit;
-            const url = isEdit?'Unified/UnifiedEdit':'Unified/UnifiedAdd';
+            const url = isEdit?'/backend/Unified/UnifiedEdit':'/backend/Unified/UnifiedAdd';
             if(isEdit){
               ninfo.id = this.ModeModal.id;
             }
@@ -204,7 +204,7 @@
           title: '提示',
           content: `<p class="confirm-text">删除此配置？</p>`,
           onOk: ()=>{
-            this.UploadData('Unified/UnifiedDel',{id: row.id}).then(()=>{
+            this.UploadData('/backend/Unified/UnifiedDel',{id: row.id}).then(()=>{
               this.InitData(this.apiUrl);
             });
           }

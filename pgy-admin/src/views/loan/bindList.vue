@@ -197,7 +197,7 @@
         this.loading = true;
         //列表数据获取
         return new Promise((resolve)=>{
-          this.$post('Loan/bindCardList',params).then((d)=>{
+          this.$post('/backend/Loan/bindCardList',params).then((d)=>{
             let res = d.data.list;
             this.Page.count = d.data.count;
             this.RowUserData = res;
@@ -247,7 +247,7 @@
       ExportData(){
         let sinfo = this.RemoveObserve(this.ScreenData);
         sinfo.expro = 1;
-        this.UploadData('Loan/bindCardList',sinfo).then((url)=>{
+        this.UploadData('/backend/Loan/bindCardList',sinfo).then((url)=>{
             window.location.href = url;
         });
       },

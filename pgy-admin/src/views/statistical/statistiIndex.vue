@@ -8,13 +8,13 @@
           <div class="card-content">
             <p class="info-txt">
               <span class="half">
-                <span class="label"></span>
-                <span class="value"></span>
+                <span class="label">总放款人数</span>
+                <span class="value">0</span>
               </span>
             </p>
           </div>
           <div class="card-footer">
-            <span>总绑卡数</span>
+            <span>人均放款金额</span>
             <span class="value">{{ CountData.BindCardNum }}</span>
           </div>
         </Card>
@@ -43,10 +43,10 @@
           <p class="card-number">¥{{ CountData.HuankuanAllAmount }}</p>
           <div class="card-content">
             <p class="info-txt">
-                <span class="half">
-                  <span class="label">还款总笔数</span>
-                  <span class="value">{{CountData.HuankuanBishu}}</span>
-                </span>
+              <span class="half">
+                <span class="label">还款总笔数</span>
+                <span class="value">{{CountData.HuankuanBishu}}</span>
+              </span>
             </p>
           </div>
           <div class="card-footer">
@@ -61,12 +61,15 @@
           <p class="card-number">¥{{ CountData.ZhanqiAllAmount }}</p>
           <div class="card-content">
             <p class="info-txt">
-
+              <span class="half">
+                <span class="label">展期总笔数</span>
+                <span class="value">{{CountData.HuankuanBishu}}</span>
+              </span>
             </p>
           </div>
           <div class="card-footer">
-            <span></span>
-            <span class="value"></span>
+            <span>展期费总金额</span>
+            <span class="value">¥{{2323}}</span>
           </div>
         </Card>
       </Col>

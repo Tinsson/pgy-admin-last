@@ -52,7 +52,7 @@
     data () {
       return {
         title: '积分配置',
-        apiUrl: 'Sysconfig/sysLevelList',
+        apiUrl: '/backend/Sysconfig/sysLevelList',
         auth_id: '',
         loading: true,
         TextArr:{
@@ -128,7 +128,7 @@
         const that = this;
         this.loading = true;
         //获取按钮信息
-        this.$fetch('Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
+        this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
         });
         //列表数据获取
@@ -187,7 +187,7 @@
             this.ModeModal.modal = false;
             let ninfo = this.RemoveObserve(this.ModeModal.data);
             const isEdit = this.ModeModal.isEdit;
-            const url = isEdit?'Sysconfig/sysLevelUp':'Sysconfig/sysLevelAdd';
+            const url = isEdit?'/backend/Sysconfig/sysLevelUp':'/backend/Sysconfig/sysLevelAdd';
             if(isEdit){
               ninfo.id = this.ModeModal.id;
             }
@@ -215,7 +215,7 @@
           title: '提示',
           content: `<p class="confirm-text">删除此用户类型？</p>`,
           onOk: ()=>{
-            this.UploadData('Sysconfig/sysLevelDel',{id: row.id}).then(()=>{
+            this.UploadData('/backend/Sysconfig/sysLevelDel',{id: row.id}).then(()=>{
               this.InitData(this.apiUrl);
             });
           }

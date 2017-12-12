@@ -11,9 +11,10 @@ const IsProd = process.env.NODE_ENV === 'production'?true:false;
 const IsDev = process.env.NODE_ENV === 'development'?true:false;
 
 if(IsDev){
-  axios.defaults.baseURL = 'http://www.pgyqb.com/backend';
+  axios.defaults.baseURL = 'http://www.pgyqb.com';
+  //axios.defaults.baseURL = 'http://apitest.pgyxwd.com';
 }else if(IsProd){
-  axios.defaults.baseURL = 'http://api.pgyxwd.com/backend';
+  axios.defaults.baseURL = 'http://api.pgyxwd.com';
 };
 
 // http request 拦截器

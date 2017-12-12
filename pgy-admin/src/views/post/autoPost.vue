@@ -225,11 +225,15 @@
             align: 'center',
             width: '330',
             render: (h, params)=>{
-              const rule = {
+              let rule = {};
+              rule.btns = [{
+                class: 'ChangeStatus',
                 name: 'disable',
+                type: 'warning',
                 right: '已启用',
                 wbtn: '禁用'
-              };
+              }];
+              rule.size = 2;
               return h('div',this.$renderBtn(h, params, this.BtnData, rule));
             }
           }

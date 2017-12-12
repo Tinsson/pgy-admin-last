@@ -177,7 +177,7 @@
     },
     created(){
       this.auth_id = getLocal('auth_id');
-      this.InitData('Collection/overdueList');
+      this.InitData('/backend/Collection/overdueList');
     },
     methods: {
       //循环渲染按钮
@@ -291,7 +291,7 @@
           sinfo.start_time = '';
           sinfo.end_time = '';
         }
-        this.InitData('Collection/collectionListInfo',sinfo).then(()=>{
+        this.InitData('/backend/Collection/collectionListInfo',sinfo).then(()=>{
           if(sign){
             this.$Message.success('筛选成功！')
           }
@@ -302,7 +302,7 @@
         const that = this;
         this.loading = true;
         //获取按钮信息
-        this.$fetch('Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
+        this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
         });
         //列表数据获取
@@ -328,7 +328,7 @@
       },
       //刷新列表
       RefreshList(){
-        this.InitData('Collection/CollectionList').then(()=>{
+        this.InitData('/backend/Collection/CollectionList').then(()=>{
           this.$Message.success('刷新成功');
         });
       },
@@ -348,7 +348,7 @@
       },
       //提交备注
       SubRemark(){
-        this.UploadData('Collection/remark',this.Remark).then(()=>{
+        this.UploadData('/backend/Collection/remark',this.Remark).then(()=>{
           this.SimpleSearch(0);
         });
       },
@@ -359,7 +359,7 @@
           title: '提示',
           content: `<p class="confirm-text">${tips}</p>`,
           onOk: ()=>{
-            this.UploadData('Collection/allowDelay',{uid: row.id}).then(()=>{
+            this.UploadData('/backend/Collection/allowDelay',{uid: row.id}).then(()=>{
               this.SimpleSearch(0);
             });
           }
@@ -367,7 +367,7 @@
       },
       //标记功能
       MarkOpt(row){
-        this.UploadData('Collection/marking',{loan_id: row.loan_id}).then(()=>{
+        this.UploadData('/backend/Collection/marking',{loan_id: row.loan_id}).then(()=>{
           this.SimpleSearch(0);
         })
       },
@@ -407,7 +407,7 @@
       AppOpt(info){
         let sinfo = this.RemoveObserve(info);
         sinfo.regid = (sinfo.type.length > 0)?sinfo.regid.join(','):'';
-        this.UploadData('Push/pushs',sinfo).then(()=>{
+        this.UploadData('/backend/Push/pushs',sinfo).then(()=>{
           this.Group.AppmsgModal = false;
         });
         //this.Group.AppmsgModal = false;
@@ -416,7 +416,7 @@
       ExportData(){
         let sinfo = this.RemoveObserve(this.ScreenData);
         sinfo.expro = 1;
-        this.UploadData('Collection/overdueList',sinfo).then((url)=>{
+        this.UploadData('/backend/Collection/overdueList',sinfo).then((url)=>{
           //window.location.href = url;
         });
       },
@@ -426,7 +426,7 @@
           page: curpage,
           num: this.Page.size
         });
-        this.InitData('Collection/overdueList',sinfo).then(()=>{
+        this.InitData('/backend/Collection/overdueList',sinfo).then(()=>{
           this.Page.cur = curpage;
         })
       },
@@ -436,7 +436,7 @@
           page: 1,
           num: size
         });
-        this.InitData('Collection/overdueList',sinfo).then(()=>{
+        this.InitData('/backend/Collection/overdueList',sinfo).then(()=>{
           this.Page.cur = 1;
           this.Page.size = size;
         })
