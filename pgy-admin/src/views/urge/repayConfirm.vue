@@ -199,13 +199,19 @@
         })
       },
       ConfirmRepay(id){
-        this.UploadData('/backend/Loan/payMentDone',{jid: id}).then(()=>{
-          let sinfo = Object.assign(this.ScreenData,{
-            page: this.Page.cur,
-            num: this.Page.size
-          });
-          this.InitData(this.apiUrl,sinfo);
-        })
+        this.$Modal.confirm({
+          title: '提示',
+          content: `<p class="confirm-text">确认对该用户的此数据进行还款操作吗？</p>`,
+          onOk: ()=>{
+            this.UploadData('/backend/Loan/payMentDone',{jid: id}).then(()=>{
+              let sinfo = Object.assign(this.ScreenData,{
+                page: this.Page.cur,
+                num: this.Page.size
+              });
+              this.InitData(this.apiUrl,sinfo);
+            })
+          }
+        });
       },
       //导出数据
       ExportData(){

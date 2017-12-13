@@ -28,7 +28,7 @@
             <FormItem label="用户手机号：">
               <Input v-model="ScreenData.phone" style="width: 120px"></Input>
             </FormItem>
-            <FormItem label="还款日：">
+            <FormItem label="申请时间：">
               <DatePicker type="datetimerange"
                           placeholder="选择日期和时间"
                           format="yyyy-MM-dd HH:mm:ss"
@@ -39,11 +39,9 @@
             </FormItem>
             <FormItem label="状态：">
               <Select v-model="ScreenData.status" style="width:162px">
-                <Option value="TO_VALIDATE">待短验确认</Option>
-                <Option value="PAY_FAIL">支付失败</Option>
-                <Option value="FAIL">系统异常</Option>
-                <Option value="PROCESSING">处理中</Option>
-                <Option value="TIME_OUT">超时失败</Option>
+                <Option :value="0">未处理</Option>
+                <Option :value="1">已放款</Option>
+                <Option :value="-1">已拒绝</Option>
               </Select>
             </FormItem>
           </Form>
@@ -58,7 +56,7 @@
             数据列表
           </h3>
           <div class="btn-box">
-            <Button type="primary" size="large" icon="archive" @click="ExportData">导出数据</Button>
+            <!--<Button type="primary" size="large" icon="archive" @click="ExportData">导出数据</Button>-->
           </div>
         </div>
         <Table :columns="UserCol"
@@ -96,8 +94,8 @@
     },
     data () {
       return {
-        title: '审核列表',
-        apiUrl: 'Workliu/workliuList',
+        title: '工作流列表',
+        apiUrl: '/backend/Workliu/workliuList',
         auth_id: '',
         loading: true,
         Remark: {
@@ -116,10 +114,6 @@
         },
         UserCol: [
           {
-            type: 'selection',
-            width: 55,
-            align: 'center'
-          },{
             title: '序号',
             width: '70',
             align: 'center',
@@ -142,14 +136,14 @@
             key: 'request_date'
           },{
             title: '状态',
-            key: 'order_status'
+            key: 'status'
           },{
             title: '操作',
             key: 'operation',
             align: 'center',
             width: '330',
             render: (h, params)=>{
-              return h('div',this.RenderBtn(h, params, this.BtnData));
+              return h('div',this.$renderBtn(h, params, this.BtnData));
             }
           }
         ],
@@ -181,27 +175,6 @@
       this.InitData(this.apiUrl);
     },
     methods: {
-      //循环渲染按钮
-      RenderBtn(h,params,bdata){
-        let res = [];
-        bdata.forEach((val)=>{
-          const btn = h('Button',{
-            props: {
-              type: val.color
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: ()=>{
-                this[val.class](params.row)
-              }
-            },
-          },val.name);
-          res.push(btn);
-        });
-        return res;
-      },
       //去除data数据里绑定的监视器
       RemoveObserve(rowdata){
         return JSON.parse(JSON.stringify(rowdata));
@@ -248,7 +221,7 @@
         const that = this;
         this.loading = true;
         //获取按钮信息
-        this.$fetch("Menuauth/listAuthGet",{auth_id: this.auth_id}).then((d)=>{
+        this.$fetch("/backend/Menuauth/listAuthGet",{auth_id: this.auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
         });
         //列表数据获取
@@ -308,7 +281,7 @@
           title: '提示',
           content: `<p class="confirm-text">${tips}</p>`,
           onOk: ()=>{
-            this.UploadData('Workliu/workliuLending',{reqid: row.id}).then(()=>{
+            this.UploadData('/backend/Workliu/workliuLending',{jid: row.id}).then(()=>{
               this.SimpleSearch(0);
             });
           }
@@ -320,7 +293,7 @@
           title: '提示',
           content: `<p class="confirm-text">确认拒绝此用户吗？</p>`,
           onOk: ()=>{
-            this.UploadData('Workliu/workliuReject',{reqid: row.id}).then(()=>{
+            this.UploadData('/backend/Workliu/workliuReject',{jid: row.id}).then(()=>{
               this.SimpleSearch(0);
             });
           }

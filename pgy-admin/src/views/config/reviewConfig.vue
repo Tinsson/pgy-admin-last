@@ -11,7 +11,6 @@
             配置列表
           </h3>
           <div class="btn-box">
-            <Button type="primary" size="large" icon="wrench" @click="AddModeModal">添加审核人员</Button>
           </div>
         </div>
         <Table :columns="UserCol"
@@ -19,25 +18,6 @@
                :loading="loading"></Table>
       </Card>
     </div>
-    <Modal
-      v-model="ModeModal.modal"
-      title="设置审核人员">
-      <Form ref="ModeModal" :model="ModeModal.data" :rules="ValidateRules" label-position="right" :label-width="100">
-        <FormItem label="姓名：" prop="name">
-          <Input v-model="ModeModal.data.name"></Input>
-        </FormItem>
-        <FormItem label="状态：" prop="status">
-          <Select v-model="ModeModal.data.status">
-            <Option :value="0">离职</Option>
-            <Option :value="1">在职</Option>
-          </Select>
-        </FormItem>
-      </Form>
-      <div slot="footer">
-        <Button type="text" @click="ModalCancel" size="large">取消</Button>
-        <Button type="primary" @click="AddOver" size="large">保存</Button>
-      </div>
-    </Modal>
   </div>
 </template>
 
@@ -49,7 +29,7 @@
     data () {
       return {
         title: '审核人员配置',
-        apiUrl: '/backend/ConfigCollectionVerify/verifyList',
+        apiUrl: '/backend/Configvc/verifyList',
         auth_id: '',
         loading: true,
         TextArr:{
@@ -72,19 +52,16 @@
             title: '序号',
             width: '70',
             align: 'center',
-            key: 'id'
+            key: 'uid'
           },{
             title: '姓名',
-            key: 'name'
-          },{
-            title: 'id',
-            key: 'user_id'
+            key: 'admin_name'
           },{
             title: '在职状态',
-            key: 'work_status'
+            key: 'is_status'
           },{
             title: '分配方式',
-            key: 'distribution'
+            key: 'assign_type'
           },{
             title: '操作',
             key: 'operation',
@@ -96,19 +73,7 @@
             }
           }
         ],
-        ValidateRules:{
-          level: [
-            {required: true, message: '等级不能为空！'}
-          ],
-          between_start: [
-            {required: true, message: '下限不能为空！'}
-          ],
-          between_end: [
-            {required: true, message: '上限不能为空！'}
-          ]
-        },
         UserData: [],     //表格数据
-        RowUserData: [],  //获取的原始数据
         BtnData: []
       }
     },
@@ -132,17 +97,12 @@
         return new Promise((resolve)=>{
           this.$post(url,params).then((d)=>{
             let res = d.data;
-            this.RowUserData = res;
-            this.UserData = res;
-            if(res.length > 0){
-              this.UserData.forEach(val=>{
-                for(let key in val){
-                  if(key in this.TextArr){
-                    val[key] = this.TextArr[key][val[key]];
-                  }
-                }
-              })
+            if(res.verify_list.length > 0){
+              res.verify_list.forEach(val=>{
+                val.assign_type = '平均分配';
+              });
             }
+            this.UserData = res.verify_list;
             this.loading = false;
             resolve();
           })
@@ -163,72 +123,19 @@
           })
         })
       },
-      //添加操作
-      AddModeModal(){
-        this.$refs['ModeModal'].resetFields();
-        this.ModeModal.data = {
-          name: '',
-          status: 0
-        };
-        this.ModeModal.isEdit = false;
-        this.ModeModal.modal = true;
-      },
-      ModalCancel(){
-        this.ModeModal.modal = false;
-      },
-      AddOver(){
-        this.$refs['ModeModal'].validate(valid=>{
-          if(valid){
-            this.ModeModal.modal = false;
-            let ninfo = this.RemoveObserve(this.ModeModal.data);
-            const isEdit = this.ModeModal.isEdit;
-            const url = isEdit?'/backend/Sysconfig/sysLevelUp':'/backend/Sysconfig/sysLevelAdd';
-            if(isEdit){
-              ninfo.id = this.ModeModal.id;
-            }
-            this.UploadData(url,ninfo).then(()=>{
-              this.InitData(this.apiUrl);
-            });
-          }
-        });
-      },
       //离职操作
       QuitOpt(row){
         this.$Modal.confirm({
-          title: 'Title',
+          title: '提示',
           content: '<p>如果设置离职，该人员下未转化的用户将进行平均分配</p>',
           onOk: () => {
-            this.UploadData('',{id: row.id}).then(()=>{
+            this.UploadData('/backend/Configvc/equalVerify',{admin_id: row.uid}).then(()=>{
               this.InitData(this.apiUrl);
             })
           },
           okText: '是',
           cancelText: '否'
         });
-      },
-      //修改操作
-      EditOpt(row){
-        this.ModeModal.data = {
-          level: row.level,
-          between_start: row.between_start,
-          between_end: row.between_end,
-          remark: row.remark
-        };
-        this.ModeModal.isEdit = true;
-        this.ModeModal.id = row.id;
-        this.ModeModal.modal = true;
-      },
-      //删除用户类型
-      Delopt(row){
-        this.$Modal.confirm({
-          title: '提示',
-          content: `<p class="confirm-text">删除此用户类型？</p>`,
-          onOk: ()=>{
-            this.UploadData('/backend/Sysconfig/sysLevelDel',{id: row.id}).then(()=>{
-              this.InitData(this.apiUrl);
-            });
-          }
-        })
       }
     }
   }

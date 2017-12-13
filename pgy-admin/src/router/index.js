@@ -40,6 +40,7 @@ import repayConfirm from '@/views/urge/repayConfirm'
 
 //工作流平台
 import workliuList from '@/views/workliu/workliuList'
+import reviewPanel from '@/views/workliu/reviewPanel'
 
 //推送管理
 import autoPost from '@/views/post/autoPost'
@@ -91,6 +92,7 @@ const componentList = {
   repayConfirm,
 
   workliuList,
+  reviewPanel,
 
   autoPost,
   templateEdit,

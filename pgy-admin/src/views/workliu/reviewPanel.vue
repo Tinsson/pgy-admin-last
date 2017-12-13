@@ -1,7 +1,7 @@
 <template>
-  <div id="generalize-detail">
+  <div id="review-panel">
     <h1 class="list-title">
-      <span class="tit-text">{{ title }}详情数据</span>
+      <span class="tit-text">{{ title }}</span>
     </h1>
     <Row class="card-box">
       <Col v-for="item in CountData" class="card-col" :span="6" :key="item.name">
@@ -28,25 +28,11 @@
         </div>
         <div class="opt-box">
           <Form :model="ScreenData" inline :label-width="85">
-            <!--<FormItem label="渠道：">
-              <Select v-model="ScreenData.src" style="width: 150px">
-                <Option v-for="item in SrcData" :value="item.id" :key="item.id">{{ item.title }}</Option>
-              </Select>
-            </FormItem>-->
-            <FormItem label="时间：">
-              <DatePicker type="datetimerange"
-                          placeholder="选择日期和时间"
-                          format="yyyy-MM-dd HH:mm:ss"
-                          placement="bottom-end"
-                          :value="allTime"
-                          @on-change="PickDate"
-                          style="width: 280px"></DatePicker>
+            <FormItem label="姓名：">
+              <Input v-model="ScreenData.name" style="width: 120px"></Input>
             </FormItem>
-            <FormItem label="总人数：">
-              <span class="count-span">{{CountAll.person}}</span>人
-            </FormItem>
-            <FormItem label="总金额：">
-              <span class="count-span">{{CountAll.money}}</span>元
+            <FormItem label="手机号：">
+              <Input v-model="ScreenData.phone" style="width: 120px"></Input>
             </FormItem>
           </Form>
         </div>
@@ -57,15 +43,17 @@
         <div class="card-tit" slot="title">
           <h3>
             <Icon type="clipboard"></Icon>
-            数据列表
+            用户列表
           </h3>
           <div class="btn-box">
-
+            <Button type="primary" icon="pin" @click="ShowHang">显示挂起</Button>
+            <Button type="warning" icon="checkmark" @click="SumPass">一键通过</Button>
           </div>
         </div>
         <Table :columns="UserCol"
                :data="UserData"
-               :loading="loading"></Table>
+               :loading="loading"
+               @on-selection-change="SelectTable"></Table>
         <div class="page-box">
           <Page :current="Page.cur"
                 :page-size="Page.size"
@@ -76,117 +64,136 @@
         </div>
       </Card>
     </div>
+    <AuditModal :modalShow="Audit.modal"
+                :InitId="Audit.id"
+                :UniqueId="Audit.id"
+                :AllId="Audit.allId"
+                @CloseModal="AuditCancel"></AuditModal>
   </div>
 </template>
 
 <script>
   import { getLocal } from '@/util/util'
-  import Clipboard from 'clipboard';
+  import AuditModal from '@/components/infoModal/AuditModal'
 
   export default {
-    name: 'GeneralizeDetail',
+    name: 'ReviewPanel',
+    components: {
+      AuditModal
+    },
     data () {
       return {
-        title: '',
-        apiUrl: '/backend/PromoteInfo/detail',
+        title: '审核面板',
+        apiUrl: '/backend/PromoteInfo/Index',
+        auth_id: '',
         loading: true,
-        ClipBoard: {},
-        CountAll:{
-          person: 10,
-          money: 20
-        },
         allTime: [],
         //统计数据
         CountData: [{
-          name: '今日注册',
-          icon: 'android-calendar',
+          name: '审核中',
+          icon: 'ios-list-outline',
           count: 0,
           cunit: '人',
           second: false,
           status: 'DAYREG',
           cur: true
         },{
-          name: '本月注册',
-          icon: 'calendar',
+          name: '今日通过（未放款）',
+          icon: 'android-calendar',
+          count: 0,
+          cunit: '人',
+          second: false,
+          status: 'DAYVIEW',
+          cur: false
+        },{
+          name: '已通过未放款',
+          icon: 'android-bookmark',
           count: 0,
           cunit: '人',
           second: false,
           status: 'MONTHREG',
           cur: false
         },{
-          name: '今日转化',
-          icon: 'android-calendar',
+          name: '不通过列表',
+          icon: 'android-delete',
           count: 0,
-          cunit: '笔',
-          second: true,
-          other: '0',
-          ounit: '元',
-          status: 'DAYZH',
-          cur: false
-        },{
-          name: '历史转化',
-          icon: 'android-time',
-          count: 0,
-          cunit: '笔',
-          second: true,
-          other: '0',
-          ounit: '万元',
-          status: 'HISTORYZH',
-          cur: false
-        },{
-          name: '注册并关注公众号数',
-          icon: 'pie-graph',
-          count: 0,
+          cunit: '人',
           second: false,
-          status: 'REGISTERED',
+          status: 'MONTHVIEW',
           cur: false
         }],
         //基础筛选数据
         ScreenData: {
-          src: '',
-          start_time: '',
-          end_time: '',
-          status: 'DAYREG'
+          status: 'DAYREG',
+          name: '',
+          phone: ''
         },
         UserCol: [
           {
-            title: '序号',
+            type: 'selection',
+            width: 55,
+            align: 'center'
+          },{
+            title: '客户ID',
+            width: '80',
+            align: 'center',
             key: 'id'
           },{
-            title: '注册时间',
-            key: 'time'
+            title: '姓名',
+            width: '100',
+            align: 'center',
+            key: 'name'
           },{
-            title: '电话',
+            title: '性别',
+            key: 'sex'
+          },{
+            title: '手机',
             key: 'phone'
           },{
-            title: 'ip',
-            key: 'ip'
+            title: '身份证',
+            key: 'idcard'
           },{
-            title: '终端',
-            key: 'zhrate'
+            title: '系统建议',
+            key: 'advise'
+          },{
+            title: '状态',
+            key: 'status'
+          },{
+            title: '授权状态',
+            key: 'auth_status'
+          },{
+            title: '操作',
+            key: 'operation',
+            align: 'center',
+            width: '220',
+            render: (h, params)=>{
+              return h('div',this.$renderBtn(h, params, this.BtnData));
+            }
           }
         ],
         UserData: [],     //表格数据
-        SrcData: [],      //渠道数据
         BtnData: [],      //按钮数据
+        //群选打钩后操作
+        SelectData: [],
         //初始分页信息
         Page: {
           count: 0,
           cur: 1,
           size: 20,
         },
-        //首页暂存区
-        IndexStash:{
-          Show: false,
-          Col: [],
-          Data: []
+        Audit:{
+          modal: false,
+          id: '',
+          allId: ''
         }
       }
     },
     created(){
-      const src = this.$route.query.src;
-      this.ScreenData.src = src;
-      this.InitData(this.apiUrl,{src});
+      this.auth_id = getLocal('auth_id');
+      this.InitData(this.apiUrl);
+    },
+    computed: {
+
     },
     methods: {
       //去除data数据里绑定的监视器
@@ -200,6 +207,16 @@
         }
         this.allTime = '';
       },
+      //多选打钩绑定数据
+      SelectTable(data){
+        let idarr = [];
+        if(data.length > 0){
+          data.forEach(val=>{
+            idarr.push(val.id);
+          })
+        }
+        this.SelectData = idarr;
+      },
       //选择时间
       PickDate(time){
         this.allTime = time;
@@ -207,7 +224,7 @@
       //二次获取数据
       SecondData(sinfo){
         return new Promise(resolve=>{
-          this.$post('/backend/PromoteInfo/detail',sinfo).then(d=>{
+          this.$post(this.apiUrl,sinfo).then(d=>{
             this.UserCol = d.data.field;
             this.UserData = d.data.list;
             this.Page.count = d.data.count;
@@ -219,7 +236,6 @@
       //统计列表
       CountList(status){
         this.loading = true;
-        this.ScreenData.status = status;
         let sinfo = this.RemoveObserve(this.ScreenData);
         this.CountData.forEach(val=>{
           if(val.status === status){
@@ -228,6 +244,8 @@
             val.cur = false;
           }
         });
+        this.ScreenData.status = status;
+        sinfo.status = status;
         this.SecondData(sinfo);
       },
       //查询结果
@@ -248,8 +266,7 @@
       InitData(url,params = {}){
         const that = this;
         this.loading = true;
-        this.$fetch('/backend/PromoteInfo/topIndex',params).then(d=>{
-          this.title = d.data.SRC;
+        this.$fetch('/backend/PromoteInfo/topIndex').then(d=>{
           this.CountData.forEach(val=>{
             if(val.second){
               val.count = d.data[val.status].count;
@@ -259,14 +276,16 @@
             }
           })
         });
+        //获取按钮信息
+        this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
+          this.BtnData = d.data.operation;
+        });
         //列表数据获取
         return new Promise((resolve)=>{
           this.$post(url,params).then((d)=>{
             let res = d.data;
-            this.Page.count = res.count;
-            this.UserCol = res.field;
-            this.UserData = res.list;
-            this.SrcData = res.list;
+            this.Page.count = d.data.count;
+            this.UserData = res;
             that.loading = false;
             resolve();
           })
@@ -286,6 +305,7 @@
             this.$Message.error('服务器繁忙，请稍后再试！');
           })
         })
+
       },
       //改变页数
       ChangePage(curpage){
@@ -293,7 +313,7 @@
           page: curpage,
           num: this.Page.size
         });
-        this.InitData('/backend/PromoteInfo/detail',sinfo).then(()=>{
+        this.InitData(this.apiUrl,sinfo).then(()=>{
           this.Page.cur = curpage;
         })
       },
@@ -303,10 +323,35 @@
           page: 1,
           num: size
         });
-        this.InitData('/backend/PromoteInfo/detail',sinfo).then(()=>{
+        this.InitData(this.apiUrl,sinfo).then(()=>{
           this.Page.cur = 1;
           this.Page.size = size;
         })
+      },
+      AuditPanel(row){
+        this.Audit.modal = true;
+        this.Audit.id = row.id;
+        let idArr = [];
+        this.UserData.forEach(val=>{
+          idArr.push(val.id);
+        });
+        this.Audit.allId = idArr;
+      },
+      AuditCancel(){
+        this.Audit.modal = false;
+      },
+      ShowHang(){
+
+      },
+      SumPass(){
+        if(this.SelectData.length > 0){
+          const id = this.SelectData.join(',');
+          this.UploadData('',{id: id}).then(()=>{
+            this.InitData(this.apiUrl);
+          })
+        }else{
+          this.$Message.error('请先勾选需要通过的用户！');
+        }
       }
     }
   }
@@ -344,9 +389,12 @@
     justify-content: space-around;
     flex-wrap: wrap;
     padding-bottom: 20px;
+    .card-col{
+      padding: 0 8px;
+    }
     .sim-card{
       position: relative;
-      width: 24%;
+      width: 100%;
       padding: 15px;
       color: #FFF;
       overflow: hidden;

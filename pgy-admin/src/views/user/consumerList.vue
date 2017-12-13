@@ -92,10 +92,11 @@
         </Card>
       </div>
       <Modal v-model="SeniorModal"
+             class="all-modal"
              :width="600"
              @on-ok="SeniorSearch">
         <h2 slot="header">高级筛选</h2>
-        <Form :model="SeniorData" label-position="right" class="auto-height" :label-width="90" inline>
+        <Form :model="SeniorData" label-position="right" :label-width="90" inline>
           <h3 class="senior-subtit">基础数据：</h3>
           <FormItem label="用户姓名：">
             <Input v-model="SeniorData.name"></Input>
@@ -204,10 +205,8 @@
           </FormItem>
           <FormItem label="来源渠道：">
             <Select v-model="SeniorData.qudao" placeholder="请选择来源渠道" style="width:162px">
-              <Option value="0">未知</Option>
-              <Option value="1">Android</Option>
-              <Option value="2">IOS</Option>
-              <Option value="3">Web平台</Option>
+              <Option :value="0">今日头条</Option>
+              <Option :value="1">借贷宝</Option>
             </Select>
           </FormItem>
         </Form>
@@ -709,11 +708,6 @@
         }
       }
     }
-  }
-  .auto-height{
-    overflow-y: auto;
-    overflow-x: hidden;
-    max-height: 530px;
   }
   .upload-btn{
     display: inline-block;

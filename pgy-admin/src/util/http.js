@@ -9,12 +9,16 @@ axios.defaults.timeout = 10000;
 
 const IsProd = process.env.NODE_ENV === 'production'?true:false;
 const IsDev = process.env.NODE_ENV === 'development'?true:false;
+const IsZZ = 1;
 
 if(IsDev){
-  axios.defaults.baseURL = 'http://www.pgyqb.com';
-  //axios.defaults.baseURL = 'http://apitest.pgyxwd.com';
+  if(IsZZ){
+    axios.defaults.baseURL = 'http://www.pgyqb.com';
+  }else{
+    axios.defaults.baseURL = 'http://apitest.pgyxwd.com';
+  }
 }else if(IsProd){
-  axios.defaults.baseURL = 'http://api.pgyxwd.com';
+  axios.defaults.baseURL = 'http://apitest.pgyxwd.com';
 };
 
 // http request 拦截器
@@ -26,6 +30,11 @@ axios.interceptors.request.use(
     config.headers.common['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
     //判断token是否存在
     if (token) {
+      if(IsZZ){
+
+      }else{
+        config.headers['TOKEN'] = token;
+      }
       if(IsProd){
         config.headers['TOKEN'] = token;
       }

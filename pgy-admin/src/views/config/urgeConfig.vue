@@ -13,27 +13,27 @@
         </div>
         <div class="mode-area">
           <div class="ipt-area">
-            <RadioGroup v-model="ModeType.status">
+            <RadioGroup v-model="ModeType.type">
               <p class="ipt-line">
-                <Radio :label="0">按人数</Radio>
+                <Radio :label="1" :disabled="!ModeType.edit">按人数</Radio>
                 <span class="after-info" v-show="AccordPerson">
                   每
-                  <Input v-show="ModeType.edit" class="line-control" v-model="ModeType.person"></Input>
-                  <span class="value" v-show="!ModeType.edit">{{ ModeType.person }}</span>
+                  <Input v-show="ModeType.edit" class="line-control" v-model="ModeType.number"></Input>
+                  <span class="value" v-show="!ModeType.edit">{{ ModeType.number }}</span>
                   <span class="unit">人</span>
                 </span>
               </p>
               <p class="ipt-line">
-                <Radio :label="1">按时间</Radio>
+                <Radio :label="2" :disabled="!ModeType.edit">按时间</Radio>
                 <span class="after-info" v-show="!AccordPerson">
                   每
-                  <Input class="line-control" v-show="ModeType.edit" v-model="ModeType.time"></Input>
-                  <Select class="line-control" v-show="ModeType.edit" v-model="ModeType.tunit">
-                    <Option :value="1">天</Option>
-                    <Option :value="2">周</Option>
-                    <Option :value="3">月</Option>
+                  <Input class="line-control" v-show="ModeType.edit" v-model="ModeType.number"></Input>
+                  <Select class="line-control" v-show="ModeType.edit" v-model="ModeType.per">
+                    <Option value="day">天</Option>
+                    <Option value="week">周</Option>
+                    <Option value="month">月</Option>
                   </Select>
-                  <span class="value" v-show="!ModeType.edit">{{ModeType.time}}</span>
+                  <span class="value" v-show="!ModeType.edit">{{ModeType.number}}</span>
                   <span class="unit" v-show="!ModeType.edit">{{ TimeUnit }}</span>
                 </span>
                 <span class="sub-btn">
@@ -55,7 +55,6 @@
             人员列表
           </h3>
           <div class="btn-box">
-            <Button type="warning" size="large" icon="wrench" @click="AddModeModal">添加类型</Button>
           </div>
         </div>
         <Table :columns="UserCol"
@@ -65,72 +64,64 @@
     </div>
     <Modal
       v-model="ModeModal.modal"
-      title="设置等级">
-      <Form ref="ModeModal" :model="ModeModal.data" :rules="ValidateRules" label-position="right" :label-width="100">
-        <FormItem label="等级：" prop="level">
-          <Input v-model="ModeModal.data.level"></Input>
-        </FormItem>
-        <FormItem label="备注：">
-          <Input v-model="ModeModal.data.remark"></Input>
-        </FormItem>
-      </Form>
+      title="主动分配">
+      <p class="assign-line">
+        <span>分 <span class="assign-name">{{ ModeModal.name }}</span> 的所有用户给</span>
+        <Select v-model="ModeModal.give_user" style="width: 120px">
+          <Option v-for="item in SelectData" :value="item.uid" :key="item.uid">{{item.name}}</Option>
+        </Select>
+      </p>
       <div slot="footer">
-        <Button type="text" @click="ModalCancel" size="large">取消</Button>
-        <Button type="primary" @click="AddOver" size="large">保存</Button>
+        <Button type="text" @click="AssignCancel" size="large">取消</Button>
+        <Button type="primary" @click="AssignSub" size="large">提交分配</Button>
       </div>
     </Modal>
   </div>
 </template>
 
 <script>
-  import { getLocal } from '@/util/util'
-
   export default {
     name: 'UserConfig',
     data () {
       return {
         title: '催收人员配置',
-        apiUrl: '/backend/Sysconfig/sysLevelList',
+        apiUrl: '/backend/Configvc/collectionList',
         auth_id: '',
         loading: true,
         ModeType:{
           edit: false,
-          status: 0,
-          person: 11,
-          time: 11,
-          tunit: 1
+          type: 1,
+          number: 11,
+          per: 'circle'
         },
         TextArr:{
           status: ['离职','在职'],
-          tunit: ['天','周','月']
+          tunit: {
+            day:'天',
+            week:'周',
+            month:'月',
+            circle: '人'
+          }
         },
-        //添加用户类型
+        //主动分配
         ModeModal:{
           modal: false,
-          isEdit: false,
-          id: '',
-          data: {
-            level: '',
-            between_start: 0,
-            between_end: 100,
-            remark: ''
-          }
+          uid: 0,
+          name: '',
+          give_user: ''
         },
         UserCol: [
           {
             title: '序号',
             width: '70',
             align: 'center',
-            key: 'id'
+            key: 'uid'
           },{
-            title: 'name',
-            key: 'level'
-          },{
-            title: 'id',
-            key: 'between_start'
+            title: '名称',
+            key: 'admin_name'
           },{
             title: '状态',
-            key: 'between_end'
+            key: 'is_status'
           },{
             title: '操作',
             key: 'operation',
@@ -147,20 +138,31 @@
           ]
         },
         UserData: [],     //表格数据
-        RowUserData: [],  //获取的原始数据
         BtnData: []
       }
     },
     created(){
-      this.auth_id = getLocal('auth_id');
+      this.auth_id = this.$getLocal('auth_id');
       this.InitData(this.apiUrl);
     },
     computed:{
       AccordPerson(){
-        return this.ModeType.status === 0?true:false;
+        return this.ModeType.type === 1?true:false;
       },
       TimeUnit(){
-        return this.TextArr.tunit[this.ModeType.tunit - 1];
+        return this.TextArr.tunit[this.ModeType.per];
+      },
+      SelectData(){
+        let data = [];
+        this.UserData.forEach(val=>{
+          if(val.uid !== this.ModeModal.uid){
+            data.push({
+              uid: val.uid,
+              name: val.admin_name
+            })
+          }
+        })
+        return data;
       }
     },
     methods: {
@@ -180,17 +182,14 @@
         return new Promise((resolve)=>{
           this.$post(url,params).then((d)=>{
             let res = d.data;
-            this.RowUserData = res;
-            this.UserData = res;
-            if(res.length > 0){
-              this.UserData.forEach(val=>{
-                for(let key in val){
-                  if(key in this.TextArr){
-                    val[key] = this.TextArr[key][val[key]];
-                  }
-                }
-              })
-            }
+            this.UserData = res.collection_list;
+            res.config_list.forEach(val=>{
+              if(val.is_used){
+                this.ModeType.type = val.type;
+                this.ModeType.number = val.number;
+                this.ModeType.per = val.per;
+              }
+            });
             that.loading = false;
             resolve();
           })
@@ -218,7 +217,14 @@
             this.ModeType.edit = true;
             break;
           case 'sub':
-            this.UploadData('',{}).then(()=>{
+            if(this.ModeType.type === 1){
+              this.ModeType.per = 'circle';
+            }
+            this.UploadData('/backend/Configvc/updateConfig',{
+              type: this.ModeType.type,
+              number: this.ModeType.number,
+              per: this.ModeType.per
+            }).then(()=>{
               this.ModeType.edit = false;
             });
             break;
@@ -227,55 +233,31 @@
             break
         }
       },
-      //添加操作
-      AddModeModal(){
-        this.$refs['ModeModal'].resetFields();
-        this.ModeModal.data = {
-          level: '',
-          between_start: 0,
-          between_end: 100,
-          remark: ''
-        };
-        this.ModeModal.isEdit = false;
-        this.ModeModal.modal = true;
-      },
-      ModalCancel(){
-        this.ModeModal.modal = false;
-      },
-      AddOver(){
-        this.$refs['ModeModal'].validate(valid=>{
-          if(valid){
-            this.ModeModal.modal = false;
-            let ninfo = this.RemoveObserve(this.ModeModal.data);
-            const isEdit = this.ModeModal.isEdit;
-            const url = isEdit?'/backend/Sysconfig/sysLevelUp':'/backend/Sysconfig/sysLevelAdd';
-            if(isEdit){
-              ninfo.id = this.ModeModal.id;
-            }
-            this.UploadData(url,ninfo).then(()=>{
+      //离职操作
+      QuitOpt(row){
+        this.$Modal.confirm({
+          title: '提示',
+          content: `<p class="confirm-text">确认该催收人员离职吗？</p>`,
+          onOk: ()=>{
+            this.UploadData('/backend/Configvc/equalCollection',{admin_id: row.uid}).then(()=>{
               this.InitData(this.apiUrl);
             });
           }
         });
       },
-      //离职操作
-      QuitOpt(row){
-
-      },
       //主动分配操作
       AssignUrge(row){
-
+        this.ModeModal.uid = row.uid;
+        this.ModeModal.name = row.admin_name;
+        this.ModeModal.modal = true;
       },
-      //删除用户类型
-      Delopt(row){
-        this.$Modal.confirm({
-          title: '提示',
-          content: `<p class="confirm-text">删除此用户类型？</p>`,
-          onOk: ()=>{
-            this.UploadData('/backend/Sysconfig/sysLevelDel',{id: row.id}).then(()=>{
-              this.InitData(this.apiUrl);
-            });
-          }
+      AssignCancel(){
+        this.ModeModal.modal = false;
+      },
+      AssignSub(){
+        this.UploadData('',{}).then(()=>{
+          this.InitData(this.apiUrl);
+          this.ModeModal.modal = false;
         })
       }
     }
@@ -338,5 +320,12 @@
     width: 70px;
     margin-left: 10px;
     display: inline-block;
+  }
+  .assign-line{
+    text-align: center;
+    .assign-name{
+      font-size: 16px;
+      color: #d73435;
+    }
   }
 </style>

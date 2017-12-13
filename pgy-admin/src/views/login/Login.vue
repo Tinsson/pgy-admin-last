@@ -55,7 +55,7 @@
               password: this.password
           },that = this;
           this.btnInfo = '登录中...'
-          this.$post('Login/login',data).then((d)=>{
+          this.$post('/backend/Login/login',data).then((d)=>{
               const info = d.data;
               if(d.status === 1) {
                   this.$store.commit('SET_USERNAME',info.username);
@@ -78,7 +78,7 @@
           })
       },
       setFirstView(){
-          this.$post('Menuauth/listLeftAuthGet').then((d)=>{
+          this.$post('/backend/Menuauth/listLeftAuthGet').then((d)=>{
               if(d.status === 1){
                   const firstview = d.data[0].data[0].http;
                   this.$store.commit('SET_FIRST_VIEW',firstview);
