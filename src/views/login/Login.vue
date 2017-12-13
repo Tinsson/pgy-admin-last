@@ -38,11 +38,23 @@
     name: 'Login',
     data () {
       return {
+        dingding: {
+          admin_dev: '',
+          admin_url: '',
+          admin_code: ''
+        },
         msg: 'login',
         username: '',
         password: '',
         remember: true,
         btnInfo: '登录'
+      }
+    },
+    created(){
+      const {admin_dev,admin_url} = this.$route.query;
+      if(admin_dev == 1){
+        this.dingding.admin_dev = 1;
+        this.dingding.admin_url = admin_url;
       }
     },
     methods:{
@@ -58,18 +70,22 @@
           this.$post('/backend/Login/login',data).then((d)=>{
               const info = d.data;
               if(d.status === 1) {
-                  this.$store.commit('SET_USERNAME',info.username);
-                  saveLocal('token', info.token);
-                  saveLocal('username', info.username);
-                  saveLocal('auth_id', '');
-                  saveLocal('avator', info.img);
-                  saveLocal('admin_id',info.id);
-                  let firstview = d.data.index.function;
-                  this.$store.commit('SET_FIRST_VIEW',firstview);
-                  this.$store.commit('SET_PATH', firstview);
-                  router.push({
-                    path: firstview
-                  })
+                  if(this.admin_dev === 1){
+                    this.dingTrans();
+                  }else{
+                    this.$store.commit('SET_USERNAME',info.username);
+                    saveLocal('token', info.token);
+                    saveLocal('username', info.username);
+                    saveLocal('auth_id', info.index.id);
+                    saveLocal('avator', info.img);
+                    saveLocal('admin_id',info.id);
+                    let firstview = d.data.index.function;
+                    this.$store.commit('SET_FIRST_VIEW',firstview);
+                    this.$store.commit('SET_PATH', firstview);
+                    router.push({
+                      path: firstview
+                    })
+                  }
                   //this.setFirstView();
               }else{
                   that.btnInfo = '登录'
@@ -100,8 +116,10 @@
           return false;
         }
       },
-      test(){
-        console.log(33333);
+      dingTrans(){
+        this.$post(this.dingding.admin_url).then(()=>{
+
+        })
       }
     }
   }

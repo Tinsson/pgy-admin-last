@@ -375,7 +375,6 @@
       //编辑操作
       EditOpt(row){
         this.EditModal = true;
-        console.log(row.levelNum);
         for(let key in this.EditInfo){
           if(key === 'title'){
               let title = row['title'];

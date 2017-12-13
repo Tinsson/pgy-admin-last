@@ -41,6 +41,7 @@ import repayConfirm from '@/views/urge/repayConfirm'
 //工作流平台
 import workliuList from '@/views/workliu/workliuList'
 import reviewPanel from '@/views/workliu/reviewPanel'
+import loanPanel from '@/views/workliu/loanPanel'
 
 //推送管理
 import autoPost from '@/views/post/autoPost'
@@ -93,6 +94,7 @@ const componentList = {
 
   workliuList,
   reviewPanel,
+  loanPanel,
 
   autoPost,
   templateEdit,
@@ -172,6 +174,9 @@ const router = new Router({
 //这个是请求页面路由的时候会验证token存不存在，不存在的话会到登录页
 router.beforeEach((to, from, next)=>{
   //推广链接
+  if(to.query.admin_dev === "1"){
+
+  }
   if(to.meta.IsOpen){
     next();
     return;
@@ -197,7 +202,9 @@ router.beforeEach((to, from, next)=>{
     });
 
     saveLocal('path', to.path);
-    saveLocal('auth_id', to.meta.id);
+    if(to.meta.id){
+      saveLocal('auth_id', to.meta.id);
+    }
     if(to.path === '/login'){
       next({path: getLocal('firstview')});
     }else{
