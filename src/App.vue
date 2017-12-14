@@ -32,6 +32,10 @@ export default {
     background-color: #ff6600!important;
     color: #fff!important;
   }
+  .ivu-table .table-hang-row td{
+    background-color: #69c0ff!important;
+    color: #fff!important;
+  }
   .ivu-table .super-admin td{
     background-color: #4ba2f8!important;
     color: #FFF!important;

@@ -245,8 +245,10 @@
               {{item.type + '时间'}}：{{item.create_at}}
             </p>
             <p class="info-box">
-              <span class="label">备注：</span>
-              <span v-show="!NavData.baseInfo.IsRemark" class="value">{{NavData.baseInfo.remark}}</span>
+              <p class="label">备注：</p>
+              <p class="remark-box">
+                <span v-show="!NavData.baseInfo.IsRemark" class="value">{{NavData.baseInfo.remark}}</span>
+              </p>
               <Input type="textarea"
                      class="value"
                      v-show="NavData.baseInfo.IsRemark"
@@ -257,6 +259,9 @@
               <Button :type="BlackBtn.type" size="large" @click="AddBlack">{{BlackBtn.name}}</Button>
               <Button type="info" size="large" v-show="!NavData.baseInfo.IsRemark" @click="AddRemark">添加备注</Button>
               <Button type="warning" size="large" v-show="NavData.baseInfo.IsRemark" @click="RemarkOver">保存备注</Button>
+            </div>
+            <div class="bot-btn">
+              <Button type="success" size="large" @click="RepayOpt">主动还款</Button>
             </div>
           </div>
           <div class="trade-record" v-show="NavData.tradeRecord.cur">
@@ -463,17 +468,28 @@
             :InitData="BigPic.img"
             :maxWidth="800"
             @CloseModal="CloseBigPic"></BigPic>
+    <DelayModal :modalShow="Delay.modal"
+                :initData="Delay.data"
+                @CloseModal="DelayCancel"
+                @SubModal="DelaySub"></DelayModal>
+    <RepayModal :modalShow="Repay.modal"
+                :initData="Repay.data"
+                @CloseModal="RepayCancel"></RepayModal>
   </div>
 </template>
 
 <script>
   import Area from '@/util/area.json'
   import BigPic from '@/components/infoModal/BigPic'
+  import DelayModal from '@/components/infoModal/DelayModal'
+  import RepayModal from '@/components/infoModal/RepayModal'
 
   export default {
     name: 'AuditModal',
     components:{
-      BigPic
+      BigPic,
+      DelayModal,
+      RepayModal
     },
     data () {
       return{
@@ -622,6 +638,24 @@
         BigPic: {
           modal: false,
           img: ''
+        },
+        //展期操作
+        Delay:{
+          modal: false,
+          data: {
+            id: '',
+            name: '',
+            amount: ''
+          }
+        },
+        //主动还款操作
+        Repay:{
+          modal: false,
+          data:{
+            id: '',
+            name: '',
+            amount: ''
+          }
         }
       }
     },
@@ -775,7 +809,7 @@
           title: '提示',
           content: `<p class="confirm-text">${tips}</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/User/wechatOK',{uid: this.ID}).then(()=>{
+            this.UploadData('/backend/Loanaudit/pass',{id: this.ID}).then(()=>{
               this.IsPass.status = !this.IsPass.status;
               this.IsPass.type = this.IsPass.status?'ghost':'success';
               this.IsPass.text = this.IsPass.status?'不通过':'通过';
@@ -789,7 +823,7 @@
           title: '提示',
           content: `<p class="confirm-text">${tips}</p>`,
           onOk: ()=>{
-            this.UploadData('',{uid: this.ID}).then(()=>{
+            this.UploadData('／backend/Loanaudit/hangUp',{id: this.ID}).then(()=>{
               this.IsHang.status = !this.IsHang.status;
               this.IsHang.type = this.IsHang.status?'ghost':'primary';
               this.IsHang.text = this.IsHang.status?'不挂起':'挂起';
@@ -844,17 +878,26 @@
       BindHidden(){
         const delay = this.EditData.info.allow_delay;
         const black = this.EditData.info.black;
-        this.DelayBtn.type = delay?'default':'primary';
-        this.DelayBtn.name = delay?'取消展期':'开通展期';
         this.BlackBtn.type = black?'default':'error';
         this.BlackBtn.name = black?'移除黑名单':'加入黑名单';
       },
       //开通展期
       OpenDelay(){
-        this.UploadData('/backend/User/allowDelay',{uid: this.ID}).then((d)=>{
-          this.EditData.info.allow_delay = d.val;
-          this.BindHidden();
-        });
+        const data = {
+          id: this.ID,
+          amount: this.AllInfo.loan.jk_all_amount,
+          name: this.AllInfo.jiben.info.name,
+          type: this.AllInfo.jiben.info.type
+        };
+        this.Delay.modal = true;
+        this.Delay.data = data;
+      },
+      DelayCancel(){
+        this.Delay.modal = false;
+      },
+      DelaySub(data){
+        console.log(data);
+        //this.UploadData('',data).then();
       },
       //加入黑名单
       AddBlack(){
@@ -875,15 +918,33 @@
           this.NavData.baseInfo.IsRemark = false;
         });
       },
+      //主动还款
+      RepayOpt(){
+        const data = {
+          id: this.ID,
+          amount: this.AllInfo.loan.jk_all_amount,
+          name: this.AllInfo.jiben.info.name
+        };
+        this.Repay.modal = true;
+        this.Repay.data = data;
+      },
+      RepayCancel(){
+        this.Repay.modal = false;
+      },
+      RepaySub(data){
+        console.log(data);
+      },
       StateText(arr){
-        arr.forEach(val=>{
-          if(val.pay_date === null){
-            val.pay_state = 0;
-            val.pay_date = '无';
-          }else{
-            val.pay_state = 1;
-          }
-        })
+        if(arr !== false && arr.length > 0){
+          arr.forEach(val=>{
+            if(val.pay_date === null){
+              val.pay_state = 0;
+              val.pay_date = '无';
+            }else{
+              val.pay_state = 1;
+            }
+          })
+        }
       },
       //淘宝报价
       ReportTaobao(){
@@ -1091,6 +1152,9 @@
   .base-info{
     position: relative;
     padding: 5px 15px;
+    .bot-btn{
+      padding-bottom: 10px;
+    }
   }
   .trade-record,.opt-record{
     padding: 5px 10px 15px;

@@ -46,8 +46,12 @@
             用户列表
           </h3>
           <div class="btn-box">
-            <Button type="primary" icon="pin" @click="ShowHang">推送消息</Button>
-            <Button type="warning" icon="checkmark" @click="SumPass">设置账号</Button>
+            <Button type="primary" icon="android-chat" @click="GroupAppOpt" style="margin-right: 12px;">推送本页</Button>
+            <span>资金账号：
+            <Select v-model="owner" @on-change="ChoseOwner" style="display: inline-block;width: 80px;">
+              <Option :value="1">李义</Option>
+              <Option :value="2">张晓成</Option>
+            </Select></span>
           </div>
         </div>
         <Table :columns="UserCol"
@@ -68,18 +72,25 @@
                 :InitId="Audit.id"
                 :UniqueId="Audit.id"
                 :AllId="Audit.allId"
-                @CloseModal="AuditCancel"></AuditModal>
+                @CloseModal="AuditCancel"/>
+    <PushApp :modalShow="Group.AppmsgModal"
+             :InitData="SelectData"
+             :Count="Page.count"
+             @CloseModal="CloseApp"
+             @UpOver="AppOpt"/>
   </div>
 </template>
 
 <script>
   import { getLocal } from '@/util/util'
   import AuditModal from '@/components/infoModal/AuditModal'
+  import PushApp from '@/components/groupModal/PushApp'
 
   export default {
     name: 'LoanPanel',
     components: {
-      AuditModal
+      AuditModal,
+      PushApp
     },
     data () {
       return {
@@ -88,6 +99,7 @@
         auth_id: '',
         loading: true,
         allTime: [],
+        owner: 1,
         //统计数据
         CountData: [{
           name: '潜在客户',
@@ -107,7 +119,7 @@
           cur: false
         },{
           name: '昨日放款',
-          icon: 'android-bookmark',
+          icon: 'android-calendar',
           count: 0,
           cunit: '人',
           second: false,
@@ -123,7 +135,7 @@
           cur: false
         },{
           name: '待放款列表',
-          icon: 'ios-list',
+          icon: 'android-bookmark',
           count: 0,
           cunit: '人',
           second: false,
@@ -180,6 +192,9 @@
         BtnData: [],      //按钮数据
         //群选打钩后操作
         SelectData: [],
+        Group: {
+          AppmsgModal: false
+        },
         //初始分页信息
         Page: {
           count: 0,
@@ -312,6 +327,10 @@
         })
 
       },
+      //选择资金账号
+      ChoseOwner(value){
+        this.UploadData('',{});
+      },
       //改变页数
       ChangePage(curpage){
         let sinfo = Object.assign(this.ScreenData,{
@@ -333,6 +352,20 @@
           this.Page.size = size;
         })
       },
+      GroupAppOpt(){
+        this.Group.AppmsgModal = true;
+      },
+      CloseApp(){
+        this.Group.AppmsgModal = false;
+      },
+      AppOpt(info){
+        let sinfo = this.RemoveObserve(info);
+        sinfo.regid = (sinfo.type.length > 0)?sinfo.regid.join(','):'';
+        console.log(sinfo);
+        this.UploadData('/backend/Push/pushs',sinfo).then(()=>{
+          this.Group.AppmsgModal = false;
+        });
+      },
       AuditPanel(row){
         this.Audit.modal = true;
         this.Audit.id = row.id;
@@ -347,16 +380,6 @@
       },
       ShowHang(){
 
-      },
-      SumPass(){
-        if(this.SelectData.length > 0){
-          const id = this.SelectData.join(',');
-          this.UploadData('',{id: id}).then(()=>{
-            this.InitData(this.apiUrl);
-          })
-        }else{
-          this.$Message.error('请先勾选需要通过的用户！');
-        }
       }
     }
   }

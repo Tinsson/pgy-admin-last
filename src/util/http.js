@@ -9,7 +9,7 @@ axios.defaults.timeout = 10000;
 
 const IsProd = process.env.NODE_ENV === 'production'?true:false;
 const IsDev = process.env.NODE_ENV === 'development'?true:false;
-const IsZZ = 1;
+const IsZZ = 0;
 
 if(IsDev){
   if(IsZZ){

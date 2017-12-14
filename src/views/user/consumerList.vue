@@ -73,7 +73,7 @@
               数据列表
             </h3>
             <div class="btn-box">
-              <Button type="info" size="large" icon="chatbox" @click="GroupAppOpt">群发APP消息</Button>
+              <Button type="info" size="large" icon="chatbox" @click="GroupAppOpt">群发消息</Button>
               <Button type="primary" size="large" icon="archive" @click="ExportData">导出数据</Button>
             </div>
           </div>
@@ -606,7 +606,7 @@
         let sinfo = this.RemoveObserve(info);
         sinfo.regid = (sinfo.type.length > 0)?sinfo.regid.join(','):'';
         console.log(sinfo);
-        this.UploadData('Push/pushs',sinfo).then(()=>{
+        this.UploadData('/backend/Push/pushs',sinfo).then(()=>{
           this.Group.AppmsgModal = false;
         });
       },
@@ -614,7 +614,7 @@
       ExportData(){
         let sinfo = this.RemoveObserve(this.SeniorData);
         sinfo.expro = 1;
-        this.$post('User/getUserList',sinfo).then((d)=>{
+        this.$post('/backend/User/getUserList',sinfo).then((d)=>{
           window.location.href = d.data;
         });
       },

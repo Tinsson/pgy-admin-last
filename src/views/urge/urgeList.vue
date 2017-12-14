@@ -110,6 +110,10 @@
                 :UniqueId="Audit.unique"
                 :AllId="Audit.allId"
                 @CloseModal="AuditCancel"></AuditModal>
+    <DelayModal :modalShow="Delay.modal"
+                :initData="Delay.data"
+                @CloseModal="DelayCancel"
+                @SubModal="DelaySub"></DelayModal>
   </div>
 </template>
 
@@ -118,13 +122,15 @@
   import GroupSms from '@/components/groupModal/GroupSms'
   import PushApp from '@/components/groupModal/PushApp'
   import AuditModal from '@/components/infoModal/AuditModal'
+  import DelayModal from '@/components/infoModal/DelayModal'
 
   export default {
     name: 'UrgeList',
     components:{
       GroupSms,
       PushApp,
-      AuditModal
+      AuditModal,
+      DelayModal
     },
     data () {
       return {
@@ -211,12 +217,6 @@
             render: (h, params)=>{
               let rule = {};
               rule.btns = [{
-                class: 'DelayOpt',
-                name: 'allow_delay',
-                type: 'default',
-                right: 1,
-                wbtn: '已展期'
-              },{
                 class: 'MarkOpt',
                 name: 'marking',
                 type: 'default',
@@ -253,6 +253,15 @@
           id: '',
           unique: '',
           allId: ''
+        },
+        //展期操作
+        Delay:{
+          modal: false,
+          data: {
+            id: '',
+            name: '',
+            amount: ''
+          }
         }
       }
     },
@@ -261,65 +270,6 @@
       this.InitData('/backend/Collection/CollectionList',{},1);
     },
     methods: {
-      //循环渲染按钮
-      RenderBtn(h,params,bdata){
-        let res = [];
-        bdata.forEach((val)=>{
-          let btn = '';
-          if(val.class === 'DelayOpt'){
-            let name = params.row.allow_delay?'已展期':'展期';
-            let color = params.row.allow_delay?'default':val.color;
-            btn = h('Button',{
-              props: {
-                type: color
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: ()=>{
-                  this[val.class](params.row)
-                }
-              },
-            },name);
-          }else if(val.class === 'MarkOpt'){
-            let name = params.row.marking?'取消标记':'标记';
-            let color = params.row.marking?'default': val.color;
-            btn = h('Button',{
-              props: {
-                type: color
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: ()=>{
-                  this[val.class](params.row)
-                }
-              },
-            },name);
-          }else{
-            btn = h('Button',{
-              props: {
-                type: val.color
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: ()=>{
-                  this[val.class](params.row)
-                }
-              },
-            },val.name);
-          }
-          if(this.CountData[3].cur && val.class === 'DelayOpt'){
-          }else{
-            res.push(btn);
-          }
-        });
-        return res;
-      },
       //去除data数据里绑定的监视器
       RemoveObserve(rowdata){
         return JSON.parse(JSON.stringify(rowdata));
@@ -450,16 +400,15 @@
       },
       //展期功能
       DelayOpt(row){
-        let tips = row.allow_delay?'是否关闭展期？':'是否开通展期？';
-        this.$Modal.confirm({
-          title: '提示',
-          content: `<p class="confirm-text">${tips}</p>`,
-          onOk: ()=>{
-            this.UploadData('/backend/Collection/allowDelay',{uid: row.id}).then(()=>{
-              this.SimpleSearch(0);
-            });
-          }
-        })
+        this.Delay.modal = true;
+        this.Delay.data = row;
+      },
+      DelayCancel(){
+        this.Delay.modal = false;
+      },
+      DelaySub(data){
+        console.log(data);
+        //this.UploadData('',data).then();
       },
       //标记功能
       MarkOpt(row){
@@ -482,7 +431,6 @@
             this.$Message.error('服务器繁忙，请稍后再试！');
           })
         })
-
       },
       //群发短信
       GroupSmsOpt(){

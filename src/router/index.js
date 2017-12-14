@@ -56,6 +56,7 @@ import payConfig from '@/views/config/payConfig'
 import commissionFormula from '@/views/config/commissionFormula'
 import reviewConfig from '@/views/config/reviewConfig'
 import urgeConfig from '@/views/config/urgeConfig'
+import dingList from '@/views/config/dingList'
 
 //推广管理
 import generalizeConfig from '@/views/generalize/generalizeConfig'
@@ -107,6 +108,7 @@ const componentList = {
   commissionFormula,
   reviewConfig,
   urgeConfig,
+  dingList,
 
   generalizeConfig,
   generalizeList,

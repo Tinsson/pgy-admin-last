@@ -52,6 +52,7 @@
         </div>
         <Table :columns="UserCol"
                :data="UserData"
+               :row-class-name="HangStatus"
                :loading="loading"
                @on-selection-change="SelectTable"></Table>
         <div class="page-box">
@@ -84,7 +85,7 @@
     data () {
       return {
         title: '审核面板',
-        apiUrl: '/backend/PromoteInfo/Index',
+        apiUrl: '/backend/Loanaudit/getlistOnServerside',
         auth_id: '',
         loading: true,
         allTime: [],
@@ -190,7 +191,7 @@
     },
     created(){
       this.auth_id = getLocal('auth_id');
-      this.InitData(this.apiUrl);
+      this.InitData(this.apiUrl,{type: 1});
     },
     computed: {
 
@@ -340,13 +341,20 @@
       AuditCancel(){
         this.Audit.modal = false;
       },
+      HangStatus(row){
+        if(row.hang){
+          return 'table-hang-row';
+        }else{
+          return '';
+        }
+      },
       ShowHang(){
 
       },
       SumPass(){
         if(this.SelectData.length > 0){
           const id = this.SelectData.join(',');
-          this.UploadData('',{id: id}).then(()=>{
+          this.UploadData('/backend/Loanaudit/passMore',{ids: id}).then(()=>{
             this.InitData(this.apiUrl);
           })
         }else{
