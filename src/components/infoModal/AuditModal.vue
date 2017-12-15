@@ -24,10 +24,6 @@
                 <p class="title">同盾</p>
               </li>
               <li class="res-box">
-                <p class="simple" :class="'type'+AllInfo.jiben.info.cajl.status">{{AllInfo.jiben.info.cajl.info}}</p>
-                <p class="title">花呗额度</p>
-              </li>
-              <li class="res-box">
                 <p class="simple" :class="'type'+AllInfo.jiben.info.yunyings.status">{{AllInfo.jiben.info.yunyings.info}}</p>
                 <p class="title">运营商</p>
               </li>
@@ -110,17 +106,10 @@
                 </Row>
               </li>
               <li class="single-line">
-                <p class="label">芝麻分</p>
-                <p class="value">
-                  <span v-show="!IsEdit">{{EditData.info.zmop}}</span>
-                  <Input v-show="IsEdit" v-model="EditData.info.zmop" style="width: 250px"></Input>
-                </p>
-              </li>
-              <li class="single-line">
                 <p class="label">学历</p>
                 <p class="value">
                   <span v-show="!IsEdit">{{TextArr.edu[EditData.info.education - 1]}}</span>
-                  <Select v-show="IsEdit" v-model="EditData.info.education" style="width:250px">
+                  <Select v-show="IsEdit" v-model="EditData.info.education" :style="{width: IptWidth}">
                     <Option :value="1">初中</Option>
                     <Option :value="2">高中</Option>
                     <Option :value="3">大专</Option>
@@ -150,10 +139,35 @@
               <li class="single-line">
                 <Row>
                   <Col span="8">
+                  <p class="label">运营商</p>
+                  <p class="value">
+                    <span v-show="!IsEdit">{{EditData.info.zmop}}</span>
+                  </p>
+                  </Col>
+                  <Col span="8">
+                  <p class="label">网龄</p>
+                  <p class="value">
+                    <span v-show="!IsEdit">{{EditData.info.type}}</span>
+                    <Input v-show="IsEdit" v-model="EditData.info.zmop" style="width: 250px"></Input>
+                  </p>
+                  </Col>
+                  <Col span="8">
+                  <p class="label">芝麻分</p>
+                  <p class="value">
+                    <span v-show="!IsEdit">{{EditData.info.zmop}}</span>
+                    <Input v-show="IsEdit" v-model="EditData.info.zmop" :style="{width: IptWidth}"></Input>
+                  </p>
+                  </Col>
+                </Row>
+              </li>
+
+              <li class="single-line">
+                <Row>
+                  <Col span="8">
                     <p class="label">审核员</p>
                     <p class="value">
                       <span v-show="!IsEdit">{{EditData.info.auditorId}}</span>
-                      <Select v-show="IsEdit" v-model="EditData.info.auditorId" style="width:250px">
+                      <Select v-show="IsEdit" v-model="EditData.info.auditorId" :style="{width: IptWidth}">
                         <Option v-for="item in EditData.auditor" :value="item.id" :key="item.id">{{item.admin_name}}</Option>
                       </Select>
                     </p>
@@ -162,7 +176,7 @@
                     <p class="label">催收员</p>
                     <p class="value">
                       <span v-show="!IsEdit">{{EditData.info.collectorId}}</span>
-                      <Select v-show="IsEdit" v-model="EditData.info.collectorId" style="width:250px">
+                      <Select v-show="IsEdit" v-model="EditData.info.collectorId" :style="{width: IptWidth}">
                         <Option v-for="item in EditData.auditor" :value="item.id" :key="item.id">{{item.admin_name}}</Option>
                       </Select>
                     </p>
@@ -174,7 +188,7 @@
                 <p class="label">户籍地址</p>
                 <p class="value">
                   <span v-show="!IsEdit">{{EditData.info.address}}</span>
-                  <Input v-show="IsEdit" v-model="EditData.info.address" style="width: 250px"></Input>
+                  <Input v-show="IsEdit" v-model="EditData.info.address" :style="{width: IptWidth}"></Input>
                 </p>
               </li>
               <li class="single-line">
@@ -876,7 +890,6 @@
         });
       },
       BindHidden(){
-        const delay = this.EditData.info.allow_delay;
         const black = this.EditData.info.black;
         this.BlackBtn.type = black?'default':'error';
         this.BlackBtn.name = black?'移除黑名单':'加入黑名单';
@@ -1020,14 +1033,14 @@
     .avator{
       width: 60px;
       height: 60px;
-      margin: 10px 16px;
+      margin: 10px 35px;
       img{
         width: 100%;
         border-radius: 50%;
       }
     }
     .third-party{
-      width: 620px;
+      width: 560px;
       #towardsLeft;
       justify-content: space-between;
       .res-box{

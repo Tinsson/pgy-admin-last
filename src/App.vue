@@ -62,4 +62,9 @@ export default {
     position: absolute!important;
     top: 32px!important;
   }
+  /*钉钉模版对话框*/
+  .ding-modal .ivu-modal-footer{
+    border: none;
+    padding: 0 10px;
+  }
 </style>

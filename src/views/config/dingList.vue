@@ -20,13 +20,18 @@
     </div>
     <Modal
       v-model="DingDetail.modal"
+      class="ding-modal"
       title="模板详情">
-      <div slot="footer">
-        <p class="title">封检讨的放款审核</p>
-        <p class="content">
-
-        </p>
+      <p class="ding-title">{{ DingDetail.title }}</p>
+      <div class="ding-content">
+        <p class="line" v-for="item in DingDetail.content" :key="item">{{item}}</p>
       </div>
+      <Row class="ding-btn">
+        <Col class="btn-box" v-for="item in DingDetail.btns" :key="item" :span="12">
+          <Button type="info" long size="large">{{item}}</Button>
+        </Col>
+      </Row>
+      <div class="ding-footer" slot="footer"></div>
     </Modal>
   </div>
 </template>
@@ -39,18 +44,16 @@
     data () {
       return {
         title: '钉钉推送模版',
-        apiUrl: '/backend/template/list',
+        apiUrl: '/backend/Dingdingtp/templateList',
         auth_id: '',
         loading: true,
         //添加用户类型
         DingDetail:{
-          modal: true,
-          isEdit: false,
+          modal: false,
           id: '',
-          data: {
-            level: '',
-            remark: ''
-          }
+          title: '',
+          content: [],
+          btns: []
         },
         UserCol: [
           {
@@ -59,14 +62,8 @@
             align: 'center',
             key: 'id'
           },{
-            title: '等级',
-            key: 'level'
-          },{
-            title: '分数下限',
-            key: 'between_start'
-          },{
-            title: '分数上限',
-            key: 'between_end'
+            title: '模板类型',
+            key: 'template_name'
           },{
             title: '备注',
             key: 'remark'
@@ -81,7 +78,6 @@
           }
         ],
         UserData: [],     //表格数据
-        RowUserData: [],  //获取的原始数据
         BtnData: []
       }
     },
@@ -106,8 +102,7 @@
         return new Promise((resolve)=>{
           this.$post(url,params).then((d)=>{
             let res = d.data;
-            this.RowUserData = res;
-            this.UserData = res;
+            this.UserData = res.template_list;
             that.loading = false;
             resolve();
           })
@@ -130,7 +125,13 @@
       },
       //查看详情
       DetailsOpt(row){
-
+        this.$post('/backend/Dingdingtp/templateDetail',{id: row.id}).then(d=>{
+          const res = d.data.template_detail;
+          this.DingDetail.title = res.title;
+          this.DingDetail.content = res.content;
+          this.DingDetail.btns = res.check_button;
+          this.DingDetail.modal = true;
+        })
       }
     }
   }
@@ -171,5 +172,25 @@
   }
   .info-width{
     width: 200px;
+  }
+  .ding-title{
+    font-size: 18px;
+    text-align: center;
+  }
+  .ding-content{
+    font-size: 14px;
+    padding: 15px 35px;
+    .line{
+      line-height: 25px;
+    }
+  }
+  .ding-btn{
+    padding-top: 10px;
+  }
+  .btn-box{
+    padding: 0 10px;
+  }
+  .ding-footer{
+
   }
 </style>
