@@ -1,7 +1,7 @@
 <template>
   <div id="statistical-index">
     <Row :gutter="20">
-      <Col span="6">
+      <Col class="card-col" span="6">
         <Card>
           <h2 class="card-title">总注册数</h2>
           <p class="card-number">{{ CountData.TotalRegis }}</p>
@@ -19,7 +19,7 @@
           </div>
         </Card>
       </Col>
-      <Col span="6">
+      <Col class="card-col" span="6">
         <Card>
           <h2 class="card-title">借款总金额</h2>
           <p class="card-number">¥{{ CountData.LoanAmount }}</p>
@@ -37,7 +37,7 @@
           </div>
         </Card>
       </Col>
-      <Col span="6">
+      <Col class="card-col" span="6">
         <Card>
           <h2 class="card-title">还款总金额</h2>
           <p class="card-number">¥{{ CountData.HuankuanAllAmount }}</p>
@@ -55,7 +55,7 @@
           </div>
         </Card>
       </Col>
-      <Col span="6">
+      <Col class="card-col" span="6">
         <Card>
           <h2 class="card-title">展期总金额</h2>
           <p class="card-number">¥{{ CountData.ZhanqiAllAmount }}</p>
@@ -73,19 +73,65 @@
           </div>
         </Card>
       </Col>
+      <Col class="card-col" span="6">
+        <Card>
+          <h2 class="card-title">逾期总金额</h2>
+          <p class="card-number">¥{{ CountData.ZhanqiAllAmount }}</p>
+          <div class="card-content">
+            <p class="info-txt">
+                <span class="half">
+                  <span class="label">逾期总笔数</span>
+                  <span class="value">{{CountData.HuankuanBishu}}</span>
+                </span>
+            </p>
+          </div>
+          <div class="card-footer">
+            <span>平均每笔逾期金额</span>
+            <span class="value">¥{{2323}}</span>
+          </div>
+        </Card>
+      </Col>
+      <Col class="card-col" span="6">
+      <Card>
+        <h2 class="card-title">总逾期率</h2>
+        <p class="card-number">¥{{ CountData.ZhanqiAllAmount }}</p>
+        <div class="card-content">
+          <p class="info-txt">
+              <span class="half">
+                <span class="label">笔数逾期率</span>
+                <span class="value">{{CountData.HuankuanBishu}}</span>
+              </span>
+          </p>
+        </div>
+        <div class="card-footer">
+          <span>金额逾期率</span>
+          <span class="value">¥{{2323}}</span>
+        </div>
+      </Card>
+      </Col>
     </Row>
     <Row :gutter="14" class="pie-box">
       <Col span="13">
         <Card>
-          <p ref="PieTitle" class="chart-tit" slot="title">身份证识别及活体识别</p>
+          <p ref="PieTitle" class="chart-tit" slot="title">注册与放款人数比例</p>
           <div id="pieChart1" class="chart-out" :style="{width: PieWidth+'px',height: PieWidth+'px'}"></div>
           <div id="pieChart2" class="chart-out" :style="{width: PieWidth+'px',height: PieWidth+'px'}"></div>
         </Card>
       </Col>
       <Col span="11">
         <Card>
-          <p ref="BarTitle" class="chart-tit" slot="title">第三方认证</p>
-          <div id="BarChart" :style="{width: BarWidth+'px',height: PieWidth+'px'}"></div>
+          <p ref="BarTitle" class="chart-tit" slot="title">今日数据</p>
+          <Row :gutter="10">
+            <Col v-for="item in TodayCount" :key="item" class="count-info" :span="12">
+              <div class="record">
+                <span class="icon-box"><Icon :type="item.icon"></Icon></span>
+                <div class="info-box">
+                  <p class="num">{{item.value}}</p>
+                  <p class="tips">{{item.tips}}</p>
+                </div>
+              </div>
+            </Col>
+          </Row>
         </Card>
       </Col>
     </Row>
@@ -103,6 +149,19 @@
         apiUrl: 'Statistical/statiIndex',
         auth_id: '',
         loading: true,
+        TodayCount:[{
+          icon: 'clock',
+          tips: '今日注册',
+          value: '100'
+        },{
+          icon: 'calendar',
+          tips: '今日放款人数',
+          value: '50'
+        },{
+          icon: 'clock',
+          tips: '今日放款金额',
+          value: '200'
+        }],
         CountData: {
           TotalRegis: 0,
           LoanAmount: 0,
@@ -184,49 +243,6 @@
               }
             }
           ]
-        },
-        BarWidth: '',
-        BarOption:{
-          title : {
-            text: '第三方认证情况一览表',
-            subtext: '',
-            x:'center'
-          },
-          color: ['#3398DB'],
-          tooltip : {
-            trigger: 'axis',
-            axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-              type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-            }
-          },
-          grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-          },
-          xAxis : [
-            {
-              type : 'category',
-              data : ['运营商认证', '反欺诈认证', '芝麻认证', '淘宝认证', '微信认证'],
-              axisTick: {
-                alignWithLabel: true
-              }
-            }
-          ],
-          yAxis : [
-            {
-              type : 'value'
-            }
-          ],
-          series : [
-            {
-              name:'认证数',
-              type:'bar',
-              barWidth: '60%',
-              data:[0, 0, 0, 0,0]
-            }
-          ]
         }
       }
     },
@@ -235,7 +251,6 @@
     },
     mounted(){
       this.PieWidth = (this.$refs['PieTitle'].offsetWidth / 2) - 10;
-      this.BarWidth = (this.$refs['BarTitle'].offsetWidth);
       this.InitData(this.apiUrl);
     },
     computed: {
@@ -260,11 +275,6 @@
             this.PieOption1.series[0].data[1].value = res.TotalRegis - res.IdcardNum;
             this.PieOption2.series[0].data[0].value = res.LivingNum;
             this.PieOption2.series[0].data[1].value = res.TotalRegis - res.LivingNum;
-            this.BarOption.series[0].data[0] = res.YunyingsAuditNum;
-            this.BarOption.series[0].data[1] = res.FraudNum;
-            this.BarOption.series[0].data[2] = res.ZmopNum;
-            this.BarOption.series[0].data[3] = res.TaobaoNum;
-            this.BarOption.series[0].data[4] = res.WechatNum;
             this.DrawChart();
             this.CountData = res;
             this.loading = false;
@@ -275,17 +285,17 @@
       DrawChart(){
         let PieChart1 = this.$echarts.init(document.getElementById('pieChart1'));
         let PieChart2 = this.$echarts.init(document.getElementById('pieChart2'));
-        let BarChart = this.$echarts.init(document.getElementById('BarChart'));
         PieChart1.setOption(this.PieOption1);
         PieChart2.setOption(this.PieOption2);
-        BarChart.setOption(this.BarOption);
       }
     }
   }
 </script>
 
-
 <style lang="less" scoped>
+  .card-col{
+    padding-bottom: 10px;
+  }
   .card-title{
     color: rgba(0, 0, 0, 0.45);
     font-weight: normal;
@@ -339,5 +349,29 @@
   }
   .chart-out{
     display: inline-block;
+  }
+  .count-info{
+    padding: 0 10px;
+    .record{
+      padding-top: 10px;
+      border-bottom: 2px solid #e3e3e3;
+      .icon-box{
+        width: 60px;
+        margin-bottom: -2px;
+        display: inline-block;
+        height: 60px;
+        text-align: center;
+        font-size: 40px;
+        color: #259bf1;
+        border-bottom: 2px solid #259bf1;
+      }
+      .info-box{
+        display: inline-block;
+        padding-left: 20px;
+        .num{
+          font-size: 20px;
+        }
+      }
+    }
   }
 </style>

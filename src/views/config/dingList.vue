@@ -11,6 +11,7 @@
             配置列表
           </h3>
           <div class="btn-box">
+            <Button type="warning" @click="AddTemp">添加模板</Button>
           </div>
         </div>
         <Table :columns="UserCol"
@@ -27,7 +28,7 @@
         <p class="line" v-for="item in DingDetail.content" :key="item">{{item}}</p>
       </div>
       <Row class="ding-btn">
-        <Col class="btn-box" v-for="item in DingDetail.btns" :key="item" :span="12">
+        <Col class="btn-box" v-for="item in DingDetail.btns" :key="item" :span="BtnSpan">
           <Button type="info" long size="large">{{item}}</Button>
         </Col>
       </Row>
@@ -85,6 +86,11 @@
       this.auth_id = getLocal('auth_id');
       this.InitData(this.apiUrl);
     },
+    computed:{
+      BtnSpan(){
+        return 24 / this.DingDetail.btns.length;
+      }
+    },
     methods: {
       //去除data数据里绑定的监视器
       RemoveObserve(rowdata){
@@ -132,6 +138,10 @@
           this.DingDetail.btns = res.check_button;
           this.DingDetail.modal = true;
         })
+      },
+      //添加
+      AddTemp(){
+
       }
     }
   }

@@ -24,6 +24,10 @@
                 <p class="title">同盾</p>
               </li>
               <li class="res-box">
+                <p class="simple" :class="'type'+AllInfo.jiben.info.huabei.status">{{AllInfo.jiben.info.huabei.info}}</p>
+                <p class="title">花呗额度</p>
+              </li>
+              <li class="res-box">
                 <p class="simple" :class="'type'+AllInfo.jiben.info.yunyings.status">{{AllInfo.jiben.info.yunyings.info}}</p>
                 <p class="title">运营商</p>
               </li>
@@ -106,19 +110,38 @@
                 </Row>
               </li>
               <li class="single-line">
-                <p class="label">学历</p>
-                <p class="value">
-                  <span v-show="!IsEdit">{{TextArr.edu[EditData.info.education - 1]}}</span>
-                  <Select v-show="IsEdit" v-model="EditData.info.education" :style="{width: IptWidth}">
-                    <Option :value="1">初中</Option>
-                    <Option :value="2">高中</Option>
-                    <Option :value="3">大专</Option>
-                    <Option :value="4">本科</Option>
-                    <Option :value="5">硕士</Option>
-                    <Option :value="6">博士</Option>
-                    <Option :value="7">博士后</Option>
-                  </Select>
-                </p>
+                <Row>
+                  <Col :span="8">
+                    <p class="label">学历</p>
+                    <p class="value">
+                      <span v-show="!IsEdit">{{TextArr.edu[EditData.info.education - 1]}}</span>
+                      <Select v-show="IsEdit" v-model="EditData.info.education" :style="{width: IptWidth}">
+                        <Option :value="1">初中</Option>
+                        <Option :value="2">高中</Option>
+                        <Option :value="3">大专</Option>
+                        <Option :value="4">本科</Option>
+                        <Option :value="5">硕士</Option>
+                        <Option :value="6">博士</Option>
+                        <Option :value="7">博士后</Option>
+                      </Select>
+                    </p>
+                  </Col>
+                  <Col :span="16">
+                    <p class="label">联系人</p>
+                    <p class="value long">
+                      <Row v-for="item in EditData.lianxiren" :key="item">
+                        <Col class="lxr-line" :span="12">
+                          姓名：<span v-show="!IsEdit">{{item.name}}</span>
+                          <Input v-show="IsEdit" v-model="item.name" :style="{width: IptWidth}"/>
+                        </Col>
+                        <Col class="lxr-line" :span="12">
+                          手机号：<span v-show="!IsEdit">{{item.phone}}</span>
+                          <Input v-show="IsEdit" v-model="item.phone" :style="{width: IptWidth}"/>
+                        </Col>
+                      </Row>
+                    </p>
+                  </Col>
+                </Row>
               </li>
               <div v-for="(item, index) in EditData.info.lianxiren">
                 <li class="sigle-line">
@@ -141,26 +164,37 @@
                   <Col span="8">
                   <p class="label">运营商</p>
                   <p class="value">
-                    <span v-show="!IsEdit">{{EditData.info.zmop}}</span>
+                    <span>实名</span>
                   </p>
                   </Col>
                   <Col span="8">
                   <p class="label">网龄</p>
                   <p class="value">
-                    <span v-show="!IsEdit">{{EditData.info.type}}</span>
-                    <Input v-show="IsEdit" v-model="EditData.info.zmop" style="width: 250px"></Input>
+                    {{500}}天
                   </p>
                   </Col>
                   <Col span="8">
                   <p class="label">芝麻分</p>
                   <p class="value">
-                    <span v-show="!IsEdit">{{EditData.info.zmop}}</span>
-                    <Input v-show="IsEdit" v-model="EditData.info.zmop" :style="{width: IptWidth}"></Input>
+                    <span>{{EditData.info.zmop}}</span>
                   </p>
                   </Col>
                 </Row>
               </li>
-
+              <li class="single-line">
+                <p class="label">最近常用联系号码</p>
+                <div class="value long">
+                  <Row>
+                    <Col v-for="(value, key) in AllInfo.moxie.yys" :key="key" :span="8"><p class="line">{{key}}-<span class="num">{{value}}</span>次</p></Col>
+                  </Row>
+                </div>
+              </li>
+              <li class="single-line">
+                <p class="label">淘宝地址</p>
+                <div class="value long">
+                  <p class="line" v-for="item in AllInfo.moxie.tb" :key="item">{{`${item.address} ${item.name} ${item.phone}`}}</p>
+                </div>
+              </li>
               <li class="single-line">
                 <Row>
                   <Col span="8">
@@ -449,7 +483,25 @@
                 <Button v-show="Urge.status" type="warning" @click="UrgeAddOver" size="large">保存</Button>
               </TabPane>
               <TabPane label="操作日志">
-
+                <Card>
+                  <ul>
+                    <li class="opt-log">
+                      <p class="line">审核 XXX 通过</p>
+                      <p class="line">操作员：XXX</p>
+                      <p class="line">操作时间：2017-11-17 12:30:30</p>
+                    </li>
+                    <li class="opt-log">
+                      <p class="line">审核 XXX 通过</p>
+                      <p class="line">操作员：XXX</p>
+                      <p class="line">操作时间：2017-11-17 12:30:30</p>
+                    </li>
+                    <li class="opt-log">
+                      <p class="line">审核 XXX 通过</p>
+                      <p class="line">操作员：XXX</p>
+                      <p class="line">操作时间：2017-11-17 12:30:30</p>
+                    </li>
+                  </ul>
+                </Card>
               </TabPane>
             </Tabs>
           </div>
@@ -528,7 +580,8 @@
               cajl: {},
               yunyings: {},
               taobao: {},
-              zhimafen: {}
+              zhimafen: {},
+              huabei: {}
             },
             renz: ''
           },
@@ -545,6 +598,10 @@
             },
             hk_all_yhamount: '',
             hk_all_wyamount: ''
+          },
+          moxie:{
+            tb: [],
+            yys: {}
           }
         },
         EditData: {
@@ -569,7 +626,7 @@
           },
           lianxiren: [],
           auditor: [],
-          collector:[]
+          collector: []
         },
         ChoseCompany: [],
         DetailsCompany: '',
@@ -789,6 +846,9 @@
             this.IsPass.status = (info.data.jiben.info.auth_wechat > 0)?true:false;
             this.IsPass.type = this.IsPass.status?'ghost':'success';
             this.IsPass.text = this.IsPass.status?'不通过':'通过';
+            this.IsHang.status = false;
+            this.IsHang.type = this.IsHang.status?'ghost': 'primary';
+            this.IsHang.text = this.IsHang.status?'取消挂起': '挂起';
             this.StateText(this.AllInfo.loan.jk_list);
             this.StateText(this.AllInfo.loan.hk_list);
             this.Authorize.Data = this.AllInfo.operation.user.authorize;
@@ -818,12 +878,13 @@
       },
       //通过审核
       PassOpt(){
-        const tips = this.IsPass.status?'确认要取消通过该用户的审核吗？':'确认通过该用户的审核吗？';
+        const tips = this.IsPass.status?'确认不通过该用户的审核吗？':'确认通过该用户的审核吗？';
+        const vaule = this.IsPass.status?3:2;
         this.$Modal.confirm({
           title: '提示',
           content: `<p class="confirm-text">${tips}</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/Loanaudit/pass',{id: this.ID}).then(()=>{
+            this.UploadData('/backend/User/auditUser',{uid: this.ID, status}).then(()=>{
               this.IsPass.status = !this.IsPass.status;
               this.IsPass.type = this.IsPass.status?'ghost':'success';
               this.IsPass.text = this.IsPass.status?'不通过':'通过';
@@ -837,7 +898,7 @@
           title: '提示',
           content: `<p class="confirm-text">${tips}</p>`,
           onOk: ()=>{
-            this.UploadData('／backend/Loanaudit/hangUp',{id: this.ID}).then(()=>{
+            this.UploadData('／backend/User/setGuaQi',{uid: this.ID}).then(()=>{
               this.IsHang.status = !this.IsHang.status;
               this.IsHang.type = this.IsHang.status?'ghost':'primary';
               this.IsHang.text = this.IsHang.status?'不挂起':'挂起';
@@ -1033,14 +1094,14 @@
     .avator{
       width: 60px;
       height: 60px;
-      margin: 10px 35px;
+      margin: 10px 15px;
       img{
         width: 100%;
         border-radius: 50%;
       }
     }
     .third-party{
-      width: 560px;
+      width: 620px;
       #towardsLeft;
       justify-content: space-between;
       .res-box{
@@ -1103,6 +1164,13 @@
         font-size: 12px;
         min-height: 45px;
         line-height: 45px;
+        .line{
+          line-height: 25px;
+        }
+        .num{
+          font-size: 16px;
+          color: #f74c17;
+        }
         &.long{
           padding: 5px 0;
         }
@@ -1242,6 +1310,19 @@
           }
         }
       }
+    }
+  }
+  .lxr-line{
+    line-height: 40px;
+  }
+  .opt-log{
+    padding: 12px 0;
+    border-bottom: 1px solid #e3e3e3;
+    &:nth-last-child(1){
+      border: none;
+    }
+    .line{
+      line-height: 25px;
     }
   }
 </style>

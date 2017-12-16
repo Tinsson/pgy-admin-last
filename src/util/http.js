@@ -13,6 +13,7 @@ const IsZZ = 0;
 
 if(IsDev){
   if(IsZZ){
+    //axios.defaults.baseURL = 'http://apitest.jkxxkj.com';
     axios.defaults.baseURL = 'http://www.pgyqb.com';
   }else{
     axios.defaults.baseURL = 'http://apitest.pgyxwd.com';
@@ -31,7 +32,7 @@ axios.interceptors.request.use(
     //判断token是否存在
     if (token) {
       if(IsZZ){
-
+        //config.headers['TOKEN'] = 'SJK3zSvzciwY6MF3jjCIXTduwg3+vcQqhLQrX6L1KdtAPz8=aCRRGiE1oboQYgRSI+zBsEce9XLWbk4qRGjc6949';
       }else{
         config.headers['TOKEN'] = token;
       }

@@ -1,4 +1,4 @@
-import { post } from '@/util/http'
+import { post,fetch } from '@/util/http'
 import { getLocal } from '@/util/util'
 import axios from 'axios'
 
@@ -12,7 +12,7 @@ export default {
     return new Promise((resolve)=>{
       //const token = getLocal('token');
       //axios.defaults.headers.common['TOKEN'] = token
-      post('/backend/Menuauth/listLeftAuthGet').then((d)=>{
+      fetch('/backend/Menuauth/listLeftAuthGet').then((d)=>{
         let info = d.data;
         let view = [];
         info.forEach((val,index)=>{
