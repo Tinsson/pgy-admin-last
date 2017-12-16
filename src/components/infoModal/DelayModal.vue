@@ -1,16 +1,10 @@
 <template>
   <Modal
     v-model="State"
-    :title="`展期操作（${initData.name}）`"
+    :title="`发起展期申请（${initData.name}）`"
     :styles="{top: '30px',zIndex: '10'}"
     @on-cancel="CloseBtn">
     <Form :model="DelayInfo" :label-width="120">
-      <FormItem label="@：">
-        <Select class="unit-width" v-model="DelayInfo.at">
-          <Option :value="1">李义</Option>
-          <Option :value="2">张晓成</Option>
-        </Select>
-      </FormItem>
       <FormItem label="展期金额：">
         <Input class="unit-width" v-model="DelayInfo.amount"/>
       </FormItem>
@@ -25,7 +19,7 @@
                     style="width: 280px"></DatePicker>
       </FormItem>
       <FormItem label="展期天数：">
-        <Input class="unit-width" v-model="DelayInfo.day"/>
+        <Input class="unit-width" v-model="DelayInfo.days"/>
       </FormItem>
       <FormItem label="展期至：">
         <DatePicker type="date"
@@ -55,12 +49,12 @@
       return{
         State: this.modalShow,
         DelayInfo:{
-          id: this.initData.id,
-          at: 1,
+          uid: this.initData.id,
+          //at: 1,
           amount: this.initData.amount,
           start_date: '',
           end_date: '',
-          day: '',
+          days: '',
           fee: ''
         }
       }
@@ -74,7 +68,7 @@
         this.State = val;
       },
       initData(val){
-        this.DelayInfo.id = val.id;
+        this.DelayInfo.uid = val.id;
         this.DelayInfo.amount = val.amount;
         let days = 0;
         switch(val.type){
@@ -90,11 +84,14 @@
           default:
             days = 0;
         }
-        this.DelayInfo.day = days;
+        this.DelayInfo.days = days;
         //获取时间
-        const now = new Date(),
+        /*const now = new Date(),
               end = new Date(now.getTime() + 1000 * 60 * 60 * 24 * days);
-        this.DelayInfo.start_date = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+        this.DelayInfo.start_date = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;*/
+        const start = new Date(val.hk_date),
+              end = new Date(start.getTime() + 1000 * 60 * 60 * 24 * days);
+        this.DelayInfo.start_date = `${start.getFullYear()}-${start.getMonth()+1}-${start.getDate()}`;
         this.DelayInfo.end_date = `${end.getFullYear()}-${end.getMonth()+1}-${end.getDate(0)}`;
         this.DelayInfo.fee = this.CalcFee(val.type, days, val.amount);
       }

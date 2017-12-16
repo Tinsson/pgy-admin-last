@@ -309,7 +309,7 @@
               <Button type="warning" size="large" v-show="NavData.baseInfo.IsRemark" @click="RemarkOver">保存备注</Button>
             </div>
             <div class="bot-btn">
-              <Button type="success" size="large" @click="RepayOpt">主动还款</Button>
+              <Button type="success" size="large" @click="RepayOpt">发起还款</Button>
             </div>
           </div>
           <div class="trade-record" v-show="NavData.tradeRecord.cur">
@@ -662,7 +662,7 @@
         },
         DelayBtn: {
           type: 'primary',
-          name: '开通展期'
+          name: '发起展期'
         },
         BlackBtn: {
           type: 'error',
@@ -898,7 +898,7 @@
           title: '提示',
           content: `<p class="confirm-text">${tips}</p>`,
           onOk: ()=>{
-            this.UploadData('／backend/User/setGuaQi',{uid: this.ID}).then(()=>{
+            this.UploadData('/backend/User/setGuaQi',{uid: this.ID}).then(()=>{
               this.IsHang.status = !this.IsHang.status;
               this.IsHang.type = this.IsHang.status?'ghost':'primary';
               this.IsHang.text = this.IsHang.status?'不挂起':'挂起';
@@ -959,7 +959,7 @@
       OpenDelay(){
         const data = {
           id: this.ID,
-          amount: this.AllInfo.loan.jk_all_amount,
+          amount: this.AllInfo.loan.jk_this_amount,
           name: this.AllInfo.jiben.info.name,
           type: this.AllInfo.jiben.info.type
         };
@@ -971,7 +971,6 @@
       },
       DelaySub(data){
         console.log(data);
-        //this.UploadData('',data).then();
       },
       //加入黑名单
       AddBlack(){

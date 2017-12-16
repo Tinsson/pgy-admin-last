@@ -135,6 +135,7 @@
     data () {
       return {
         title: '催收列表',
+        apiUrl: '/backend/Collection/collectionListInfo',
         auth_id: '',
         loading: true,
         Remark: {
@@ -200,6 +201,9 @@
           },{
             title: '金额',
             key: 'amount'
+          },{
+            title: '还款日期',
+            key: 'hk_date'
           },{
             title: '逾期天数',
             key: 'overdue_day'
@@ -307,7 +311,7 @@
         })
         this.ScreenData.check = num;
         sinfo.check = num;
-        this.InitData('/backend/Collection/collectionListInfo',sinfo);
+        this.InitData(this.apiUrl,sinfo);
       },
       //查询结果
       SimpleSearch(sign = 1){
@@ -319,7 +323,7 @@
           sinfo.start_time = '';
           sinfo.end_time = '';
         }
-        this.InitData('/backend/Collection/collectionListInfo',sinfo).then(()=>{
+        this.InitData(this.apiUrl,sinfo).then(()=>{
           if(sign){
             this.$Message.success('筛选成功！')
           }
@@ -407,8 +411,10 @@
         this.Delay.modal = false;
       },
       DelaySub(data){
-        console.log(data);
-        //this.UploadData('',data).then();
+        this.UploadData('/backend/Loan/payDelayRequest',data).then(()=>{
+          this.Delay.modal = false;
+          this.InitData(this.apiUrl, this.GetCurrentScreen());
+        })
       },
       //标记功能
       MarkOpt(row){
@@ -473,13 +479,20 @@
             window.location.href = url;
         });
       },
+      //获取当页筛选条件
+      GetCurrentScreen(){
+        return Object.assign(this.ScreenData,{
+          page: this.page.cur,
+          num: this.Page.size
+        });
+      },
       //改变页数
       ChangePage(curpage){
         let sinfo = Object.assign(this.ScreenData,{
           page: curpage,
           num: this.Page.size
         });
-        this.InitData('/backend/Collection/collectionListInfo',sinfo).then(()=>{
+        this.InitData(this.apiUrl,sinfo).then(()=>{
           this.Page.cur = curpage;
         })
       },
@@ -489,7 +502,7 @@
           page: 1,
           num: size
         });
-        this.InitData('/backend/Collection/collectionListInfo',sinfo).then(()=>{
+        this.InitData(this.apiUrl,sinfo).then(()=>{
           this.Page.cur = 1;
           this.Page.size = size;
         })
