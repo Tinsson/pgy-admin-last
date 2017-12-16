@@ -5,27 +5,20 @@
     :styles="{top: '30px',zIndex: '10'}"
     @on-cancel="CloseBtn">
     <Form :model="RepayInfo" :label-width="120">
-      <FormItem label="@：">
-        <Select class="unit-width" v-model="RepayInfo.at">
-          <Option :value="1">李义</Option>
-          <Option :value="2">张晓成</Option>
+      <FormItem label="还款类型：">
+        <Select v-model="RepayInfo.type" style="width:280px">
+          <Option :value="1">主动还款</Option>
+          <Option :value="2">催收还款</Option>
         </Select>
       </FormItem>
-      <FormItem label="销账金额：">
+      <FormItem label="借款金额：">
         <Input class="unit-width" v-model="RepayInfo.amount"/>
       </FormItem>
-      <FormItem label="实际还款时间：">
-        <DatePicker type="date"
-                    placeholder="选择日期"
-                    class="unit-width"
-                    format="yyyy-MM-dd"
-                    placement="bottom-end"
-                    :value="RepayInfo.date"
-                    @on-change="ChoseDate"
-                    style="width: 280px"></DatePicker>
+      <FormItem label="费率：">
+        <Input class="unit-width" v-model="RepayInfo.fee"/>
       </FormItem>
-      <FormItem label="实际还款金额：">
-        <span>{{ RepayInfo.actual }}</span>
+      <FormItem label="违约金：">
+        <Input class="unit-width" v-model="RepayInfo.wy_amount"/>
       </FormItem>
     </Form>
     <div slot="footer">
@@ -42,11 +35,12 @@
       return{
         State: false,
         RepayInfo:{
-          id: '',
-          at: 1,
+          uid: '',
+          jid: '',
+          type: '',
           amount: '',
-          date: new Date(),
-          actual: ''
+          wy_amount: '',
+          fee: ''
         }
       }
     },
@@ -59,13 +53,12 @@
         this.State = val;
       },
       initData(val){
-        this.RepayInfo.id = val.id;
-        this.RepayInfo.amount = val.amount;
+        this.RepayInfo = Object.assign(this.RepayInfo, val);
       }
     },
     methods: {
       CloseBtn(){
-        this.$emit('CloseModal',this.modalState);
+        this.$emit('CloseModal');
       },
       Submit(){
         this.$emit('SubModal',this.RepayInfo);

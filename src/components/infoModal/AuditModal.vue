@@ -129,7 +129,7 @@
                   <Col :span="16">
                     <p class="label">联系人</p>
                     <p class="value long">
-                      <Row v-for="item in EditData.lianxiren" :key="item">
+                      <Row v-for="item in EditData.lianxiren" :key="item.name">
                         <Col class="lxr-line" :span="12">
                           姓名：<span v-show="!IsEdit">{{item.name}}</span>
                           <Input v-show="IsEdit" v-model="item.name" :style="{width: IptWidth}"/>
@@ -143,22 +143,6 @@
                   </Col>
                 </Row>
               </li>
-              <div v-for="(item, index) in EditData.info.lianxiren">
-                <li class="sigle-line">
-                  <p class="label">{{`联系人${index}`}}</p>
-                  <p class="value">
-                    <span v-show="!IsEdit">{{item.name}}</span>
-                    <Input v-show="IsEdit" v-model="item.name" style="width: 250px"></Input>
-                  </p>
-                </li>
-                <li class="sigle-line">
-                  <p class="label">{{`联系人${index}手机号`}}</p>
-                  <p class="value">
-                    <span v-show="!IsEdit">{{item.phone}}</span>
-                    <Input v-show="IsEdit" v-model="item.phone" style="width: 250px"></Input>
-                  </p>
-                </li>
-              </div>
               <li class="single-line">
                 <Row>
                   <Col span="8">
@@ -170,7 +154,7 @@
                   <Col span="8">
                   <p class="label">网龄</p>
                   <p class="value">
-                    {{500}}天
+                    {{AllInfo.moxie.interday}}天
                   </p>
                   </Col>
                   <Col span="8">
@@ -192,7 +176,7 @@
               <li class="single-line">
                 <p class="label">淘宝地址</p>
                 <div class="value long">
-                  <p class="line" v-for="item in AllInfo.moxie.tb" :key="item">{{`${item.address} ${item.name} ${item.phone}`}}</p>
+                  <p class="line" v-for="item in AllInfo.moxie.tb" :key="item.address">{{`${item.address} ${item.name} ${item.phone}`}}</p>
                 </div>
               </li>
               <li class="single-line">
@@ -295,12 +279,12 @@
             <p class="info-box">
               <p class="label">备注：</p>
               <p class="remark-box">
-                <span v-show="!NavData.baseInfo.IsRemark" class="value">{{NavData.baseInfo.remark}}</span>
+                <span class="value">{{NavData.baseInfo.remark}}</span>
               </p>
               <Input type="textarea"
-                     class="value"
+                     class="value textarea"
                      v-show="NavData.baseInfo.IsRemark"
-                     v-model="NavData.baseInfo.remark"></Input>
+                     v-model="NavData.baseInfo.remark_ipt"></Input>
             </p>
             <div class="bot-btn">
               <Button :type="DelayBtn.type" size="large" @click="OpenDelay">{{DelayBtn.name}}</Button>
@@ -354,17 +338,12 @@
                       <span class="msg-area">违约金：{{ item.wy_amount }}</span>
                     </div>
                     <div class="text-line">
-                      借款日期：{{ item.jk_date }}
+                      <span class="msg-area">借款日期：{{ item.jk_date }}</span>
+                      <span class="msg-area">出资人：{{ item.capital_account }}</span>
                     </div>
                     <div class="text-line">
                       合同还款日：{{ item.hthk_date }}
                     </div>
-                    <div class="text-line">
-                      借款银行：{{ item.bankcode }}
-                    </div>
-                    <p class="text-line">
-                      银行卡号：{{ item.cardno }}
-                    </p>
                   </div>
                 </Card>
               </TabPane>
@@ -446,7 +425,7 @@
                     </div>
                     <div class="text-line">合同还款日：{{ item.hthk_date }}</div>
                     <div class="text-line">借款日期：{{ item.jk_date }}</div>
-                    <div class="text-line">还款方式：全额还款</div>
+                    <div class="text-line">还款方式：{{ item.type }}</div>
                   </div>
                 </Card>
               </TabPane>
@@ -485,20 +464,10 @@
               <TabPane label="操作日志">
                 <Card>
                   <ul>
-                    <li class="opt-log">
-                      <p class="line">审核 XXX 通过</p>
-                      <p class="line">操作员：XXX</p>
-                      <p class="line">操作时间：2017-11-17 12:30:30</p>
-                    </li>
-                    <li class="opt-log">
-                      <p class="line">审核 XXX 通过</p>
-                      <p class="line">操作员：XXX</p>
-                      <p class="line">操作时间：2017-11-17 12:30:30</p>
-                    </li>
-                    <li class="opt-log">
-                      <p class="line">审核 XXX 通过</p>
-                      <p class="line">操作员：XXX</p>
-                      <p class="line">操作时间：2017-11-17 12:30:30</p>
+                    <li class="opt-log" v-for="item in AllInfo.operation.log.system">
+                      <p class="line">{{item.content}}</p>
+                      <p class="line">操作员：{{item.nickname}}</p>
+                      <p class="line">操作时间：{{item.addtime}}</p>
                     </li>
                   </ul>
                 </Card>
@@ -540,7 +509,8 @@
                 @SubModal="DelaySub"></DelayModal>
     <RepayModal :modalShow="Repay.modal"
                 :initData="Repay.data"
-                @CloseModal="RepayCancel"></RepayModal>
+                @CloseModal="RepayCancel"
+                @SubModal="RepaySub"></RepayModal>
   </div>
 </template>
 
@@ -602,6 +572,11 @@
           moxie:{
             tb: [],
             yys: {}
+          },
+          operation:{
+            log:{
+              system:[]
+            }
           }
         },
         EditData: {
@@ -651,7 +626,8 @@
           baseInfo: {
             cur: true,
             IsRemark: false,
-            remark: ''
+            remark: '',
+            remark_ipt: ''
           },
           tradeRecord:{
             cur: false
@@ -957,20 +933,31 @@
       },
       //开通展期
       OpenDelay(){
-        const data = {
-          id: this.ID,
-          amount: this.AllInfo.loan.jk_this_amount,
-          name: this.AllInfo.jiben.info.name,
-          type: this.AllInfo.jiben.info.type
-        };
-        this.Delay.modal = true;
-        this.Delay.data = data;
+        const jk_list = this.AllInfo.loan.jk_list;
+        if(jk_list.length > 0){
+          const jk_data = jk_list[jk_list.length - 1];
+          const data = {
+            id: this.ID,
+            amount: jk_data.amount,
+            hk_date: jk_data.hk_date,
+            name: this.AllInfo.jiben.info.name,
+            type: this.AllInfo.jiben.info.type
+          };
+          this.Delay.modal = true;
+          this.Delay.data = data;
+        }else{
+          this.$Message.error('当前无借款！');
+        }
       },
       DelayCancel(){
         this.Delay.modal = false;
       },
       DelaySub(data){
-        console.log(data);
+        this.UploadData('/backend/Loan/payDelayRequest',data).then(()=>{
+          this.InitData(this.InitId).then(()=>{
+            this.Delay.modal = false;
+          });
+        });
       },
       //加入黑名单
       AddBlack(){
@@ -985,7 +972,7 @@
       RemarkOver(){
         const data = {
           uid: this.ID,
-          remark: this.NavData.baseInfo.remark
+          remark: this.NavData.baseInfo.remark_ipt
         };
         this.UploadData('/backend/User/remark',data).then(()=>{
           this.NavData.baseInfo.IsRemark = false;
@@ -993,19 +980,31 @@
       },
       //主动还款
       RepayOpt(){
-        const data = {
-          id: this.ID,
-          amount: this.AllInfo.loan.jk_all_amount,
-          name: this.AllInfo.jiben.info.name
-        };
-        this.Repay.modal = true;
-        this.Repay.data = data;
+        const jk_list = this.AllInfo.loan.jk_list;
+        if(jk_list.length > 0){
+          const jk_data = jk_list[jk_list.length - 1];
+          const data = {
+            uid: this.ID,
+            jid: jk_data.id,
+            amount: jk_data.amount,
+            wy_amount: jk_data.wy_amount,
+            name: this.AllInfo.jiben.info.name
+          };
+          this.Repay.modal = true;
+          this.Repay.data = data;
+        }else{
+          this.$Message.error('当前无借款！');
+        }
       },
       RepayCancel(){
         this.Repay.modal = false;
       },
       RepaySub(data){
-        console.log(data);
+        this.UploadData('/backend/Loan/payMentDone',data).then(()=>{
+          this.InitData(this.InitId).then(()=>{
+            this.Repay.modal = false;
+          });
+        });
       },
       StateText(arr){
         if(arr !== false && arr.length > 0){
@@ -1213,6 +1212,9 @@
     font-size: 14px;
     line-height: 25px;
     #towardsLeft;
+    .remark-box{
+      padding-bottom: 10px;
+    }
     span{
       display: inline-block;
     }
@@ -1225,6 +1227,9 @@
     .value{
       width: 280px;
     }
+  }
+  .textarea{
+    padding-bottom: 10px;
   }
   .limit-input{
     padding-left: 10px;

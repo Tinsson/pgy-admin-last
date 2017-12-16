@@ -28,8 +28,8 @@
         <p class="line" v-for="item in DingDetail.content" :key="item">{{item}}</p>
       </div>
       <Row class="ding-btn">
-        <Col class="btn-box" v-for="item in DingDetail.btns" :key="item" :span="BtnSpan">
-          <Button type="info" long size="large">{{item}}</Button>
+        <Col class="btn-box" v-for="item in DingDetail.btns" :key="item.title" :span="BtnSpan">
+          <Button type="info" long size="large">{{item.title}}</Button>
         </Col>
       </Row>
       <div class="ding-footer" slot="footer"></div>
