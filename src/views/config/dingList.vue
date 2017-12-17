@@ -36,7 +36,9 @@
     </Modal>
     <DingModal :modalShow="ModalData.show"
                :isEdit="ModalData.edit"
-               :initData="ModalData.data" @CloseModal="ModalCancel"></DingModal>
+               :initData="ModalData.data"
+               @CloseModal="ModalCancel"
+               @SubModal="DingSubmit"></DingModal>
   </div>
 </template>
 
@@ -151,13 +153,20 @@
           this.DingDetail.modal = true;
         })
       },
-      //添加
+      //编辑模板
+      EditOpt(row){
+        console.log(row);
+      },
+      //添加模板
       AddTemp(){
         this.ModalData.edit = false;
         this.ModalData.show = true;
       },
       ModalCancel(){
         this.ModalData.show = false;
+      },
+      DingSubmit(){
+
       }
     }
   }

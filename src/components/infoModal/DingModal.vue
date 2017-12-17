@@ -174,7 +174,7 @@
         this.$emit('CloseModal');
       },
       Submit(){
-        this.$emit('SubModal',this.DelayInfo);
+        this.$emit('SubModal',this.SubData);
       },
       AddTag(tag){
         if(this.FocusKey){
@@ -214,7 +214,15 @@
       },
       BtnAdd(){
         if(this.Button.edit){
-
+          let button = this.SubData.button[this.Button.key];
+          button.name = this.Button.name;
+          button.url = this.Button.url;
+        }else{
+          const data = {
+            name: this.Button.name,
+            url: this.Button.url
+          };
+          this.SubData.button.push(data);
         }
       },
       RemoveBtn(index){
