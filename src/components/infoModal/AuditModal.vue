@@ -154,7 +154,7 @@
                   <Col span="8">
                   <p class="label">网龄</p>
                   <p class="value">
-                    {{AllInfo.moxie.interday}}天
+                    {{AllInfo.moxie.interday}}
                   </p>
                   </Col>
                   <Col span="8">
@@ -210,7 +210,7 @@
                 </p>
               </li>
               <li class="single-line">
-                <p class="label">居住地址</p>
+                <p class="label">公司地址</p>
                 <p class="value">
                   <span v-show="!IsEdit">{{ AddressText(ChoseCompany) }}</span>
                   <Cascader :data="AllAreaData"
@@ -220,14 +220,14 @@
                 </p>
               </li>
               <li class="single-line">
-                <p class="label">居住详细地址</p>
+                <p class="label">公司详细地址</p>
                 <p class="value">
                   <span v-show="!IsEdit">{{ DetailsCompany }}</span>
                   <Input v-show="IsEdit" v-model="DetailsCompany" style="width: 300px"></Input>
                 </p>
               </li>
-              <li class="single-line">
-                <p class="label">公司地址</p>
+              <!--<li class="single-line">
+                <p class="label">居住地址</p>
                 <p class="value">
                   <span v-show="!IsEdit">{{ AddressText(ChoseLive) }}</span>
                   <Cascader :data="AllAreaData"
@@ -237,12 +237,12 @@
                 </p>
               </li>
               <li class="single-line">
-                <p class="label">公司详细地址</p>
+                <p class="label">居住详细地址</p>
                 <p class="value">
                   <span v-show="!IsEdit">{{ DetailsLive }}</span>
                   <Input v-show="IsEdit" v-model="DetailsLive" style="width: 300px"></Input>
                 </p>
-              </li>
+              </li>-->
               <li class="single-line">
                 <p class="label">身份证正反面</p>
                 <p class="idcard-box">
@@ -271,7 +271,10 @@
             </p>
             <p class="info-box">
               <span class="half">用户ID：{{ID}}</span>
-              <span class="half">借款用途：个人消费</span>
+              <span class="half">借款用途：{{AllInfo.jiben.info.money_use_to}}</span>
+            </p>
+            <p class="info-box">
+              审核状态：{{ReviewStatus}}
             </p>
             <p v-for="item in AllInfo.jiben.renz" class="info-box">
               {{item.type + '时间'}}：{{item.create_at}}
@@ -481,7 +484,9 @@
           <Button type="info" v-show="!IsEdit" @click="EditInfo">修改</Button>
           <Button type="primary" style="margin-left: 0" v-show="IsEdit" @click="SubOpt">保存</Button>
           <Button type="warning" v-show="IsEdit" @click="EditCancel">取消</Button>
-          <Button :type="IsPass.type" @click="PassOpt">{{ IsPass.text }}</Button>
+          <!--<Button :type="IsPass.type" @click="PassOpt">{{ IsPass.text }}</Button>-->
+          <Button type="success" @click="PassOpt(2)">通过</Button>
+          <Button type="error" @click="PassOpt(3)">不通过</Button>
           <Button :type="IsHang.type" @click="HangOpt">{{ IsHang.text }}</Button>
           <Button type="warning" v-show="IsPass.status" @click="GiveLimit">授予额度</Button>
           <span v-show="IsPass.status" class="limit-input">
@@ -754,6 +759,21 @@
       },
       TotalPage(){
         return this.IdArr.length;
+      },
+      ReviewStatus(){
+        switch(this.AllInfo.jiben.info.status){
+          case 1:
+            return '未审核';
+            break;
+          case 2:
+            return '已通过';
+            break;
+          case 3:
+            return '未通过';
+            break;
+          default:
+            return '未知';
+        }
       }
     },
     methods: {
@@ -817,12 +837,15 @@
             this.EditData.info.uid = this.ID;
             this.Limit.value = edit.data.info.credit_limit
             this.NavData.baseInfo.remark = edit.data.info.remark;
+            this.ChoseCompany = this.StdArea(edit.data.info.address_company);
+            this.ChoseLive = this.StdArea(edit.data.info.address_live);
+            this.DetailsCompany = edit.data.info.address_company[edit.data.info.address_company.length - 1];
 
             this.AllInfo = info.data;
-            this.IsPass.status = (info.data.jiben.info.auth_wechat > 0)?true:false;
+            this.IsPass.status = (info.data.jiben.info.status === 2)?true:false;
             this.IsPass.type = this.IsPass.status?'ghost':'success';
             this.IsPass.text = this.IsPass.status?'不通过':'通过';
-            this.IsHang.status = false;
+            this.IsHang.status = (info.data.jiben.info.is_hangup === 1)?true:false;
             this.IsHang.type = this.IsHang.status?'ghost': 'primary';
             this.IsHang.text = this.IsHang.status?'取消挂起': '挂起';
             this.StateText(this.AllInfo.loan.jk_list);
@@ -853,17 +876,15 @@
         this.IsEdit = false;
       },
       //通过审核
-      PassOpt(){
-        const tips = this.IsPass.status?'确认不通过该用户的审核吗？':'确认通过该用户的审核吗？';
-        const vaule = this.IsPass.status?3:2;
+      PassOpt(status){
+        const tips = (status === 3)?'确认不通过该用户的审核吗？':'确认通过该用户的审核吗？';
         this.$Modal.confirm({
           title: '提示',
           content: `<p class="confirm-text">${tips}</p>`,
           onOk: ()=>{
             this.UploadData('/backend/User/auditUser',{uid: this.ID, status}).then(()=>{
-              this.IsPass.status = !this.IsPass.status;
-              this.IsPass.type = this.IsPass.status?'ghost':'success';
-              this.IsPass.text = this.IsPass.status?'不通过':'通过';
+              this.loading = true;
+              this.InitData(this.InitId);
             });
           }
         })
@@ -915,8 +936,8 @@
       },
       //传输所用的地址
       AddressBack(){
-        this.EditData.address_company = [...this.BackArea(this.ChoseCompany), this.DetailsCompany];
-        this.EditData.address_live = [...this.BackArea(this.ChoseLive), this.DetailsLive];
+        this.EditData.info.address_company = [...this.BackArea(this.ChoseCompany), this.DetailsCompany];
+        this.EditData.info.address_live = [...this.BackArea(this.ChoseLive), this.DetailsLive];
       },
       AddressText(arr){
         return arr.join(',');
@@ -954,9 +975,8 @@
       },
       DelaySub(data){
         this.UploadData('/backend/Loan/payDelayRequest',data).then(()=>{
-          this.InitData(this.InitId).then(()=>{
-            this.Delay.modal = false;
-          });
+          this.Delay.modal = false;
+          this.InitData(this.InitId);
         });
       },
       //加入黑名单
@@ -1001,9 +1021,8 @@
       },
       RepaySub(data){
         this.UploadData('/backend/Loan/payMentDone',data).then(()=>{
-          this.InitData(this.InitId).then(()=>{
-            this.Repay.modal = false;
-          });
+          this.Repay.modal = false;
+          this.InitData(this.InitId);
         });
       },
       StateText(arr){

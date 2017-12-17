@@ -34,27 +34,39 @@
       </Row>
       <div class="ding-footer" slot="footer"></div>
     </Modal>
+    <DingModal :modalShow="ModalData.show"
+               :isEdit="ModalData.edit"
+               :initData="ModalData.data" @CloseModal="ModalCancel"></DingModal>
   </div>
 </template>
 
 <script>
-  import { getLocal } from '@/util/util'
+  import DingModal from '@/components/infoModal/DingModal'
 
   export default {
     name: 'DingList',
+    components: {
+      DingModal
+    },
     data () {
       return {
         title: '钉钉推送模版',
         apiUrl: '/backend/Dingdingtp/templateList',
         auth_id: '',
         loading: true,
-        //添加用户类型
+        //模板详情
         DingDetail:{
           modal: false,
           id: '',
           title: '',
           content: [],
           btns: []
+        },
+        //模板添加编辑模型
+        ModalData:{
+          edit: false,
+          show: false,
+          data: {}
         },
         UserCol: [
           {
@@ -83,7 +95,7 @@
       }
     },
     created(){
-      this.auth_id = getLocal('auth_id');
+      this.auth_id = this.$getLocal('auth_id');
       this.InitData(this.apiUrl);
     },
     computed:{
@@ -141,7 +153,11 @@
       },
       //添加
       AddTemp(){
-
+        this.ModalData.edit = false;
+        this.ModalData.show = true;
+      },
+      ModalCancel(){
+        this.ModalData.show = false;
       }
     }
   }
