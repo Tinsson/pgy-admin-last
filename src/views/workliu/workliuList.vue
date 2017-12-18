@@ -130,18 +130,67 @@
             key: 'phone'
           },{
             title: '订单金额',
-            key: 'amount'
+            key: 'amount',
+            render: (h,params)=>{
+              let text = (params.row.zqid > 0)?params.row.zq_amount:params.row.jk_amount;
+              return h('span', text);
+            }
           },{
             title: '申请时间',
-            key: 'request_date'
+            key: 'req_date',
+            render: (h,params)=>{
+              let text = (params.row.zqid > 0)?params.row.zq_request_date:params.row.jk_request_date;
+              return h('span', text);
+            }
           },{
             title: '状态',
-            key: 'status'
+            key: 'status',
+            render: (h, params)=>{
+              let text = '';
+              switch(params.row.status){
+                case 0:
+                  text = '未处理';
+                  break;
+                case 1:
+                  text = '审核通过';
+                  break;
+                case 2:
+                  text = '服务费已确认';
+                  break;
+                case 8:
+                  text = '展期通过';
+                  break;
+                case -1:
+                  text = '已拒绝';
+                  break;
+                default:
+                  text = '未知'
+              }
+              return h('span',text);
+            }
+          },{
+            title: '类型',
+            key: 'type',
+            render: (h,params)=>{
+              let text = '';
+              switch(params.row.type){
+                case 0:
+                  text = '展期';
+                  break;
+                case 1:
+                  text = '首借';
+                  break;
+                case 2:
+                  text = '续借';
+                  break;
+              }
+              return h('span',text);
+            }
           },{
             title: '操作',
             key: 'operation',
             align: 'center',
-            width: '350',
+            width: '250',
             render: (h, params)=>{
               return h('div',this.RenderBtn(h, params, this.BtnData));
             }
@@ -178,7 +227,7 @@
       RenderBtn(h,params,bdata){
         let arr = [];
         bdata.forEach((val)=> {
-          const btn = h('Button', {
+          let btn = h('Button', {
             props: {
               type: val.color
             },
@@ -191,7 +240,37 @@
               }
             },
           }, val.name);
-          arr.push(btn);
+          if((val.name === '审核通过' || val.name === '拒绝') && params.row.status === 0){
+            arr.push(btn);
+          }else if(val.name === '确认服务费' && params.row.status === 1){
+            arr.push(btn);
+          }else if(val.name === '通过' && params.row.status === 2){
+            let tips = '借款通过';
+            switch(params.row.type){
+              case 0:
+                tips = '展期通过';
+                break;
+              case 1:
+                tips = '首借通过';
+                break;
+              case 2:
+                tips = '续借通过';
+                break;
+            }
+            arr.push(h('Button', {
+              props: {
+                type: val.color
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this[val.class](params.row)
+                }
+              },
+            }, tips));
+          }
         });
         return arr;
       },
@@ -296,7 +375,15 @@
       },
       //审核通过
       AddOpt(row){
-
+        this.$Modal.confirm({
+          title: '提示',
+          content: `<p class="confirm-text">确认通过该用户的审核？</p>`,
+          onOk: ()=>{
+            this.UploadData('/backend/Loan/jkAuditOk',{jid: row.id,status: 1}).then(()=>{
+              this.SimpleSearch(0);
+            });
+          }
+        })
       },
       //确认服务费
       DetailsOpt(row){
@@ -329,7 +416,7 @@
           title: '提示',
           content: `<p class="confirm-text">确认拒绝此用户吗？</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/Workliu/workliuReject',{jid: row.id}).then(()=>{
+            this.UploadData('/backend/Loan/jkAuditOk',{jid: row.id,status: -1}).then(()=>{
               this.SimpleSearch(0);
             });
           }

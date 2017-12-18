@@ -95,7 +95,7 @@
     data () {
       return {
         title: '放款面板',
-        apiUrl: '/backend/Loanmake/fkConfigList',
+        apiUrl: '/backend/Loanmake/getlistOnServerside',
         auth_id: '',
         loading: true,
         allTime: [],
@@ -299,11 +299,31 @@
           this.$post(url,params).then((d)=>{
             let res = d.data;
             this.Page.count = d.data.count;
-            this.UserData = res;
+            this.UserData = res.fk_list;
+            this.UserCol = this.GetField(res.field);
             that.loading = false;
             resolve();
           })
         })
+      },
+      //统一标签
+      GetField(filed){
+        let res = filed;
+        res.push({
+          title: '操作',
+          key: 'operation',
+          align: 'center',
+          width: '220',
+          render: (h, params)=>{
+            return h('div',this.$renderBtn(h, params, this.BtnData));
+          }
+        });
+        res.unshift({
+          type: 'selection',
+          width: 55,
+          align: 'center'
+        });
+        return res;
       },
       //提交信息操作
       UploadData(url,info){

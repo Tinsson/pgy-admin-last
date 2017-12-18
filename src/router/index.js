@@ -8,6 +8,7 @@ import store from '@/store'
 import AdminFrame from '@/components/AdminFrame'
 import NoContent from '@/components/NoContent'
 import NotFind from '@/components/NotFind'
+import OperateRes from '@/components/phoneView/OperateRes'
 
 //登录模块
 import Login from '@/views/login/Login'
@@ -145,6 +146,13 @@ const routes = [
     path: '/registered',
     name: '注册完后引导页',
     component: Registered,
+    meta: {
+      IsOpen: true
+    }
+  },{
+    path: '/checkover',
+    name: '钉钉按钮结果',
+    component: OperateRes,
     meta: {
       IsOpen: true
     }
