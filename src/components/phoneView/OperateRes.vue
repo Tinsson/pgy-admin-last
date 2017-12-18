@@ -39,7 +39,8 @@
             console.log(d);
           })
         }else{
-          router.push({path: '/login',query: { admin_url: url }});
+          const params = this.$route.query;
+          router.push({path: '/login',query: params});
         }
       }
     }

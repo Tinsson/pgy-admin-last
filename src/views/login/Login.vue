@@ -111,8 +111,8 @@
         }
       },
       dingTrans(){
-        const url = this.$route.query.admin_url;
-        router.push({path: '/checkover',query: { admin_url: url }});
+        const params = this.$route.query;
+        router.push({path: '/checkover',query: params});
       }
     }
   }
