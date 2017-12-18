@@ -109,7 +109,7 @@
       return {
         title: '黑名单列表',
         BlackType: ['第三方认定黑名单','手动设定黑名单'],
-        apiUrl: 'Postloan/blackList',
+        apiUrl: '/backend/Postloan/blackList',
         auth_id: '',
         loading: true,
         Remark: {
@@ -259,7 +259,7 @@
         const that = this;
         this.loading = true;
         //获取按钮信息
-        this.$fetch("Menuauth/listAuthGet",{auth_id: this.auth_id}).then((d)=>{
+        this.$fetch("/backend/Menuauth/listAuthGet",{auth_id: this.auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
         });
         //列表数据获取
@@ -329,7 +329,7 @@
       EditOver(){
         this.$refs['EditInfo'].validate(valid=>{
           if(valid){
-            this.UploadData('Postloan/blackUp',this.EditInfo).then(()=>{
+            this.UploadData('/backend/Postloan/blackUp',this.EditInfo).then(()=>{
               this.SimpleSearch(0);
             });
           }

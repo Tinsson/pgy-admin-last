@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import { post,fetch } from '@/util/http'
 import { getLocal, saveLocal } from '@/util/util'
 import store from '@/store'
 
@@ -176,14 +177,21 @@ const router = new Router({
 //这个是请求页面路由的时候会验证token存不存在，不存在的话会到登录页
 router.beforeEach((to, from, next)=>{
   //推广链接
-  if(to.query.admin_dev === "1"){
-
-  }
   if(to.meta.IsOpen){
     next();
     return;
   }
   const token = getLocal('token');
+  if(to.query.admin_url){
+    if(token){
+      fetch(to.query.admin_url).then(()=>{
+
+      });
+    }else{
+      next({path: '/login'});
+      return;
+    }
+  }
   if(token){
     store.dispatch('setView').then(()=>{
       let permission = JSON.stringify(store.getters.permission);

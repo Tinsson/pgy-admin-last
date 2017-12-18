@@ -134,7 +134,7 @@
     data () {
       return {
         title: '自动推送',
-        apiUrl: 'Autopush/autoPushList',
+        apiUrl: '/backend/Autopush/autoPushList',
         auth_id: '',
         loading: true,
         TextArr:{
@@ -332,7 +332,7 @@
         const that = this;
         this.loading = true;
         //获取按钮信息
-        this.$fetch('Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
+        this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
         });
         //列表数据获取
@@ -357,7 +357,7 @@
       },
       //刷新列表
       RefreshList(){
-        this.InitData('Collection/CollectionList').then(()=>{
+        this.InitData('/backend/Collection/CollectionList').then(()=>{
           this.$Message.success('刷新成功');
         });
       },
@@ -405,7 +405,7 @@
           if(valid){
             let ninfo = this.RemoveObserve(this.RulesModal.data);
             const isEdit = this.RulesModal.isEdit;
-            const url = isEdit?'Autopush/autoPushUp':'Autopush/autoPushAdd';
+            const url = isEdit?'/backend/Autopush/autoPushUp':'/backend/Autopush/autoPushAdd';
             if(isEdit){
               ninfo.id = this.RulesModal.id;
             }
@@ -418,13 +418,13 @@
       },
       //开启规则
       ChangeStatus(row){
-        this.UploadData('Autopush/autoPushDisable',{id: row.id}).then(()=>{
+        this.UploadData('/backend/Autopush/autoPushDisable',{id: row.id}).then(()=>{
           this.SimpleSearch(0);
         });
       },
       //修改规则
       EditOpt(row){
-        this.$post('Autopush/autoPushReqUp',{id: row.id}).then(d=>{
+        this.$post('backend/Autopush/autoPushReqUp',{id: row.id}).then(d=>{
 
           this.RulesModal.data = {
             sms_type: d.data.sms_type,
@@ -450,7 +450,7 @@
           title: '提示',
           content: `<p class="confirm-text">删除此规则</p>`,
           onOk: ()=>{
-            this.UploadData('Autopush/autoPushDel',{id: row.id}).then(()=>{
+            this.UploadData('/backend/Autopush/autoPushDel',{id: row.id}).then(()=>{
               this.SimpleSearch(0);
             });
           }

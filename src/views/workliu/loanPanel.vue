@@ -95,7 +95,7 @@
     data () {
       return {
         title: '放款面板',
-        apiUrl: '/backend/PromoteInfo/Index',
+        apiUrl: '/backend/Loanmake/fkConfigList',
         auth_id: '',
         loading: true,
         allTime: [],

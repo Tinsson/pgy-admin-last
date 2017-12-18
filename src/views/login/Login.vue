@@ -39,9 +39,7 @@
     data () {
       return {
         dingding: {
-          admin_dev: '',
-          admin_url: '',
-          admin_code: ''
+          admin_url: ''
         },
         msg: 'login',
         username: '',
@@ -51,11 +49,7 @@
       }
     },
     created(){
-      const {admin_dev,admin_url} = this.$route.query;
-      if(admin_dev == 1){
-        this.dingding.admin_dev = 1;
-        this.dingding.admin_url = admin_url;
-      }
+
     },
     methods:{
       signIn(){
@@ -66,11 +60,11 @@
               username: this.username,
               password: this.password
           },that = this;
-          this.btnInfo = '登录中...'
+          this.btnInfo = '登录中...';
           this.$post('/backend/Login/login',data).then((d)=>{
               const info = d.data;
               if(d.status === 1) {
-                  if(this.admin_dev === 1){
+                  if(this.$route.query.admin_url){
                     this.dingTrans();
                   }else{
                     this.$store.commit('SET_USERNAME',info.username);
@@ -117,8 +111,10 @@
         }
       },
       dingTrans(){
-        this.$post(this.dingding.admin_url).then(()=>{
+        this.$fetch(this.$route.query.admin_url).then((d)=>{
+          if(d.status === 1){
 
+          }
         })
       }
     }
@@ -167,6 +163,12 @@
 
         }
       }
+    }
+  }
+  @media screen and (max-width: 350px){
+    .center-area{
+      width: 300px!important;
+      margin-left: -150px!important;
     }
   }
 </style>

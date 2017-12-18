@@ -202,6 +202,8 @@
       },
       initData(val){
         this.SubData.title_en = val.title_en;
+        this.SubData.template_name = val.template_name;
+        this.SubData.remark = val.remark;
         this.SubData.check_button = val.check_button;
         this.SubData.send_url = val.send_url;
         this.SubData.title = val.title;
@@ -277,9 +279,13 @@
         }
       },
       AddCus(){
+        if(this.CusInfo === ""){
+          return false;
+        }
         if(this.FocusKey){
           this.SubData[this.FocusKey].push(this.CusInfo);
           this.ShowData[this.FocusKey].push(this.CusInfo);
+          this.CusInfo = '';
         }else{
           this.AlertErr();
         }

@@ -25,7 +25,9 @@
       title="模板详情">
       <p class="ding-title">{{ DingDetail.title }}</p>
       <div class="ding-content">
-        <p class="line" v-for="item in DingDetail.content" :key="item">{{item}}</p>
+        <p class="line">
+          <span v-for="item in DingDetail.content" :key="item">{{item}}</span>
+        </p>
       </div>
       <Row class="ding-btn">
         <Col class="btn-box" v-for="item in DingDetail.btns" :key="item.title" :span="BtnSpan">
@@ -153,8 +155,8 @@
       DetailsOpt(row){
         this.$post('/backend/Dingdingtp/templateDetail',{id: row.id}).then(d=>{
           const res = d.data.template_detail;
-          this.DingDetail.title = res.title;
-          this.DingDetail.content = res.content;
+          this.DingDetail.title = res.title.join('');
+          this.DingDetail.content = res.content.join('');
           this.DingDetail.btns = res.check_button;
           this.DingDetail.modal = true;
         })

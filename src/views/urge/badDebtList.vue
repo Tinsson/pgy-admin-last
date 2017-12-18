@@ -185,40 +185,7 @@
         let res = [];
         bdata.forEach((val)=>{
           let btn = '';
-          if(val.class === 'DetailsOpt'){
-            let innerbtn = h('Button',{
-              props: {
-                type: val.color
-              },
-              style: {
-                marginRight: '5px'
-              }
-            },val.name);
-            btn = h('router-link',{
-              props: {
-                to: '/consumerDetails?id=' + params.row.id
-              },
-              attrs: {
-                target: '_blank'
-              }
-            },[innerbtn]);
-          }else if(val.class === 'DelayOpt'){
-            let name = params.row.allow_delay?'已展期':'展期';
-            let color = params.row.allow_delay?'default':val.color;
-            btn = h('Button',{
-              props: {
-                type: color
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: ()=>{
-                  this[val.class](params.row)
-                }
-              },
-            },name);
-          }else if(val.class === 'MarkOpt'){
+          if(val.class === 'MarkOpt'){
             let name = params.row.marking?'取消标记':'标记';
             let color = params.row.marking?'default': val.color;
             btn = h('Button',{

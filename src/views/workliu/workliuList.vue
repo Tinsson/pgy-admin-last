@@ -141,9 +141,9 @@
             title: '操作',
             key: 'operation',
             align: 'center',
-            width: '330',
+            width: '350',
             render: (h, params)=>{
-              return h('div',this.$renderBtn(h, params, this.BtnData));
+              return h('div',this.RenderBtn(h, params, this.BtnData));
             }
           }
         ],
@@ -175,6 +175,26 @@
       this.InitData(this.apiUrl);
     },
     methods: {
+      RenderBtn(h,params,bdata){
+        let arr = [];
+        bdata.forEach((val)=> {
+          const btn = h('Button', {
+            props: {
+              type: val.color
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this[val.class](params.row)
+              }
+            },
+          }, val.name);
+          arr.push(btn);
+        });
+        return arr;
+      },
       //去除data数据里绑定的监视器
       RemoveObserve(rowdata){
         return JSON.parse(JSON.stringify(rowdata));
@@ -273,6 +293,22 @@
       //移除操作
       Delopt(row){
 
+      },
+      //审核通过
+      AddOpt(row){
+
+      },
+      //确认服务费
+      DetailsOpt(row){
+        this.$Modal.confirm({
+          title: '提示',
+          content: `<p class="confirm-text">确认当前展期服务费</p>`,
+          onOk: ()=>{
+            this.UploadData('/backend/Loan/waiterOk',{jid: row.id}).then(()=>{
+              this.SimpleSearch(0);
+            });
+          }
+        })
       },
       //放款操作
       LoanOpt(row){

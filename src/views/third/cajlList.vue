@@ -77,7 +77,7 @@
     data () {
       return {
         title: '诚安聚力',
-        apiUrl: 'Cajl/CajlList',
+        apiUrl: '/backend/Cajl/CajlList',
         auth_id: '',
         loading: true,
         //基础筛选数据
@@ -179,7 +179,7 @@
         const that = this;
         this.loading = true;
         //获取按钮信息
-        this.$fetch("Menuauth/listAuthGet",{auth_id: this.auth_id}).then((d)=>{
+        this.$fetch("/backend/Menuauth/listAuthGet",{auth_id: this.auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
         });
         //列表数据获取
@@ -216,7 +216,7 @@
         })
       },
       DetailsOpt(row){
-        this.$post('Cajl/CajlShow',{id: row.id}).then(d=>{
+        this.$post('/backend/Cajl/CajlShow',{id: row.id}).then(d=>{
           this.Details.data = d.data.data;
           this.Details.modal = true;
         });

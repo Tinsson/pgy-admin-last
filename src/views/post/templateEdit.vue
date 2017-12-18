@@ -52,7 +52,7 @@
     data () {
       return {
         title: '模板编辑',
-        apiUrl: 'Autopush/modelList',
+        apiUrl: '/backend/Autopush/modelList',
         auth_id: '',
         loading: true,
         TextArr:{
@@ -139,7 +139,7 @@
         const that = this;
         this.loading = true;
         //获取按钮信息
-        this.$fetch('Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
+        this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
         });
         //列表数据获取
@@ -197,7 +197,7 @@
             this.ModeModal.modal = false;
             let ninfo = this.RemoveObserve(this.ModeModal.data);
             const isEdit = this.ModeModal.isEdit;
-            const url = isEdit?'Autopush/modelUp':'Autopush/modelAdd';
+            const url = isEdit?'/backend/Autopush/modelUp':'/backend/Autopush/modelAdd';
             if(isEdit){
               ninfo.id = this.ModeModal.id;
             }
@@ -230,7 +230,7 @@
           title: '提示',
           content: `<p class="confirm-text">删除此模板？</p>`,
           onOk: ()=>{
-            this.UploadData('Autopush/modelDel',{id: row.id}).then(()=>{
+            this.UploadData('/backend/Autopush/modelDel',{id: row.id}).then(()=>{
               this.InitData(this.apiUrl);
             });
           }

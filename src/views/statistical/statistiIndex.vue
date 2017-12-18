@@ -146,7 +146,7 @@
     data () {
       return {
         title: '统计首页',
-        apiUrl: 'Statistical/statiIndex',
+        apiUrl: '/backend/Statistical/statiIndex',
         auth_id: '',
         loading: true,
         TodayCount:[{

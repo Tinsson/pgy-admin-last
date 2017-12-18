@@ -134,7 +134,7 @@
     data () {
       return {
         title: '交易信息',
-        apiUrl: 'Statistical/statiTrading',
+        apiUrl: '/backend/Statistical/statiTrading',
         loading: true,
         CountData: {
           AveHuankuanAmountD: "523.42",
