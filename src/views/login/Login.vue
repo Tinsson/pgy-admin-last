@@ -111,11 +111,8 @@
         }
       },
       dingTrans(){
-        this.$fetch(this.$route.query.admin_url).then((d)=>{
-          if(d.status === 1){
-
-          }
-        })
+        const url = this.$route.query.admin_url;
+        router.push({path: '/checkover',query: { admin_url: url }});
       }
     }
   }

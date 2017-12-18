@@ -12,18 +12,35 @@
 </template>
 
 <script>
+  import axios from 'axios'
+  import router from '@/router'
+
   export default {
     name: 'OperateRes',
     data () {
       return{
-        state: true,
+        state: false,
         success: true
       }
     },
     created(){
       const url = this.$route.query.admin_url;
+      const token = this.$getLocal('token');
       if(url){
-        console.log(url);
+        if(token){
+          let params = this.$route.query;
+          let obj = {};
+          Object.keys(params).forEach(val=>{
+            if(val !== 'admin_url'){
+              obj[val] = params[val];
+            }
+          });
+          this.$post(url,obj).then(d=>{
+            console.log(d);
+          })
+        }else{
+          router.push({path: '/login',query: { admin_url: url }});
+        }
       }
     }
   }

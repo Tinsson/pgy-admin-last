@@ -154,3 +154,13 @@ export function transText(data,key,val1,val2){
   });
   return data;
 }
+
+/**
+ * base64解码
+ * @param data 初始数据（object）
+ * @param key 转换的键值（string）
+ * @returns data(object);
+ */
+export function deBase64(){
+
+}

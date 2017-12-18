@@ -82,8 +82,11 @@
             align: 'center',
             key: 'id'
           },{
-            title: '模板类型',
+            title: '模板名',
             key: 'template_name'
+          },{
+            title: '英文名',
+            key: 'title_en'
           },{
             title: '发送地址',
             key: 'send_url'
@@ -175,6 +178,16 @@
       AddTemp(){
         this.ModalData.edit.status = false;
         this.ModalData.show = true;
+        this.ModalData.data = {
+          type: 'actionCard',
+          template_name: '',
+          send_url: '',
+          title_en: '',
+          remark: '',
+          title: [],
+          content: [],
+          check_button: []
+        };
       },
       ModalCancel(){
         this.ModalData.show = false;
