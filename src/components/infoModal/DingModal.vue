@@ -123,7 +123,7 @@
           value: '{zqcaozuoyuan}'
         },{
           name: '--换行--',
-          value: '/r'
+          value: '- '
         }],
         CusInfo: '',
         FocusKey: '',
