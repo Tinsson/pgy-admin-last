@@ -37,13 +37,13 @@
                           @on-change="PickDate"
                           style="width: 280px"></DatePicker>
             </FormItem>
-            <FormItem label="状态：">
+            <!--<FormItem label="状态：">
               <Select v-model="ScreenData.status" style="width:162px">
                 <Option :value="0">未处理</Option>
                 <Option :value="1">已放款</Option>
                 <Option :value="-1">已拒绝</Option>
               </Select>
-            </FormItem>
+            </FormItem>-->
           </Form>
         </div>
       </Card>
@@ -110,7 +110,7 @@
           phone: '',
           start_time: '',
           end_time: '',
-          status: ''
+          //status: ''
         },
         UserCol: [
           {
@@ -243,18 +243,16 @@
           if((val.name === '审核通过' || val.name === '拒绝') && params.row.status === 0){
             arr.push(btn);
           }else if(val.name === '确认服务费' && params.row.status === 1){
-            arr.push(btn);
-          }else if(val.name === '通过' && params.row.status === 2){
-            let tips = '借款通过';
+            let tips = '';
             switch(params.row.type){
               case 0:
-                tips = '展期通过';
+                tips = '确认展期服务费';
                 break;
               case 1:
-                tips = '首借通过';
+                tips = '确认首借服务费';
                 break;
               case 2:
-                tips = '续借通过';
+                tips = '确认续借服务费';
                 break;
             }
             arr.push(h('Button', {
@@ -270,6 +268,36 @@
                 }
               },
             }, tips));
+          }else if((val.name === '放款' || val.name === '拒绝') && params.row.status === 2){
+            let tips = '借款通过';
+            switch(params.row.type){
+              case 0:
+                tips = '展期通过';
+                break;
+              case 1:
+                tips = '首借通过';
+                break;
+              case 2:
+                tips = '续借通过';
+                break;
+            }
+            if(val.name === '拒绝'){
+              arr.push(btn);
+            }else{
+              arr.push(h('Button', {
+                props: {
+                  type: val.color
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  click: () => {
+                    this[val.class](params.row)
+                  }
+                },
+              }, tips));
+            }
           }
         });
         return arr;
@@ -387,11 +415,12 @@
       },
       //确认服务费
       DetailsOpt(row){
+        let url = row.type === 0?'/backend/Loan/zqWaiterOk':'/backend/Loan/jkWaiterOk';
         this.$Modal.confirm({
           title: '提示',
-          content: `<p class="confirm-text">确认当前展期服务费</p>`,
+          content: `<p class="confirm-text">确认当前服务费</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/Loan/waiterOk',{jid: row.id}).then(()=>{
+            this.UploadData(url,{jid: row.id}).then(()=>{
               this.SimpleSearch(0);
             });
           }
@@ -399,12 +428,13 @@
       },
       //放款操作
       LoanOpt(row){
-        let tips = '确认放款吗？';
+        let url = row.type === 0?'/backend/Loan/payDelayOk':'/backend/Loan/payLoanOk';
+        let tips = row.type === 0?'确认通过该展期吗？':'确认通过该借款吗？';
         this.$Modal.confirm({
           title: '提示',
           content: `<p class="confirm-text">${tips}</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/Workliu/workliuLending',{jid: row.id}).then(()=>{
+            this.UploadData(url,{jid: row.id,status: 1}).then(()=>{
               this.SimpleSearch(0);
             });
           }
@@ -412,12 +442,20 @@
       },
       //拒绝操作
       RejectOpt(row){
+        let url = row.type === 0?'/backend/Loan/zqAuditOk':'/backend/Loan/jkAuditOk';
+        let tips = row.type === 0?'确认拒绝该展期吗？':'确认拒绝该借款吗？';
         this.$Modal.confirm({
           title: '提示',
-          content: `<p class="confirm-text">确认拒绝此用户吗？</p>`,
+          content: `<p class="confirm-text">${tips}</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/Loan/jkAuditOk',{jid: row.id,status: -1}).then(()=>{
-              this.SimpleSearch(0);
+            this.UploadData(url,{jid: row.id,status: -1}).then(()=>{
+              let num = '';
+              this.UserData.forEach((val,index)=>{
+                if(val.id === row.id){
+                  num = index;
+                }
+              });
+              this.UserData = [...this.UserData.slice(0, num),...this.UserData.slice(num+1,this.UserData.length)];
             });
           }
         })

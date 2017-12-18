@@ -4,7 +4,7 @@ import router from '../router'
 import { getLocal } from './util'
 
 // axios 配置
-axios.defaults.timeout = 10000;
+axios.defaults.timeout = 30000;
 /*线上的走api.xrjinrong.com，公司开发走www.zzdd.com(172.18.0.91)*/
 
 const IsProd = process.env.NODE_ENV === 'production'?true:false;

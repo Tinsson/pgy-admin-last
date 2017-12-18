@@ -193,7 +193,7 @@ router.beforeEach((to, from, next)=>{
   if(to.query.admin_url){
     if(token){
       fetch(to.query.admin_url).then(()=>{
-
+        next({path: '/checkout'});
       });
     }else{
       next({path: '/login'});
