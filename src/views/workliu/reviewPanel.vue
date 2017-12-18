@@ -96,7 +96,7 @@
           count: 0,
           cunit: '人',
           second: false,
-          status: 'DAYREG',
+          status: 'check_waiting',
           cur: true
         },{
           name: '今日通过（未放款）',
@@ -104,7 +104,7 @@
           count: 0,
           cunit: '人',
           second: false,
-          status: 'DAYVIEW',
+          status: 'check_pass_today',
           cur: false
         },{
           name: '已通过未放款',
@@ -112,7 +112,7 @@
           count: 0,
           cunit: '人',
           second: false,
-          status: 'MONTHREG',
+          status: 'check_pass',
           cur: false
         },{
           name: '不通过列表',
@@ -120,12 +120,12 @@
           count: 0,
           cunit: '人',
           second: false,
-          status: 'MONTHVIEW',
+          status: 'check_deny',
           cur: false
         }],
         //基础筛选数据
         ScreenData: {
-          status: 'DAYREG',
+          type: 'check_waiting',
           name: '',
           phone: ''
         },
@@ -191,7 +191,7 @@
     },
     created(){
       this.auth_id = getLocal('auth_id');
-      this.InitData(this.apiUrl,{type: 1});
+      this.InitData(this.apiUrl,{type: 'check_waiting'});
     },
     computed: {
 
@@ -237,6 +237,7 @@
       //统计列表
       CountList(status){
         this.loading = true;
+        this.ScreenData.type = status;
         let sinfo = this.RemoveObserve(this.ScreenData);
         this.CountData.forEach(val=>{
           if(val.status === status){
@@ -245,8 +246,6 @@
             val.cur = false;
           }
         });
-        this.ScreenData.status = status;
-        sinfo.status = status;
         this.SecondData(sinfo);
       },
       //查询结果
@@ -267,14 +266,9 @@
       InitData(url,params = {}){
         const that = this;
         this.loading = true;
-        this.$fetch('/backend/PromoteInfo/topIndex').then(d=>{
+        this.$fetch('/backend/Loanaudit/getBlockStatics').then(d=>{
           this.CountData.forEach(val=>{
-            if(val.second){
-              val.count = d.data[val.status].count;
-              val.other = d.data[val.status].allamount;
-            }else{
-              val.count = d.data[val.status];
-            }
+            val.count = d.data[val.status];
           })
         });
         //获取按钮信息

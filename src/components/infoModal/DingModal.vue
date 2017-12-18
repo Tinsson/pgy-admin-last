@@ -2,7 +2,7 @@
   <div>
     <Modal
       v-model="State"
-      title="设置钉钉模板（点击提交后修改才能生效）"
+      :title="`${mTitle}钉钉模板（点击提交后修改才能生效）`"
       :width="1000"
       class="ding-modal"
       @on-cancel="CloseBtn">
@@ -25,6 +25,24 @@
           </div>
         </div>
         <div class="preview-box">
+          <div class="opt-info">
+            <h2 class="title">模板说明信息（直接输入信息）</h2>
+            <Form :label-width="80" inline>
+              <FormItem label="模板名称">
+                <Input v-model="SubData.template_name" class="ipt-info"/>
+              </FormItem>
+              <FormItem label="发送地址">
+                <Input v-model="SubData.send_url" class="ipt-info"/>
+              </FormItem>
+              <FormItem label="取值">
+                <Input v-model="SubData.title_en" class="ipt-info"/>
+              </FormItem>
+              <FormItem label="备注">
+                <Input v-model="SubData.remark" class="ipt-info"/>
+              </FormItem>
+            </Form>
+          </div>
+          <h2 class="title">模板内容（左侧操作输入信息）</h2>
           <Form :label-width="80" inline>
             <FormItem label="标题：">
               <Input type="textarea" class="ipt-info" :value="getTitle" @on-focus="Focus('title')" readonly/>
@@ -36,7 +54,7 @@
             </FormItem>
           </Form>
           <p class="tag-box">
-            <Tag v-for="(item,index) in SubData.button" :key="item.url" type="dot" closable color="blue" @on-close="RemoveBtn(index)"><span @click="EditBtn(item, index)">{{item.name}}</span></Tag>
+            <Tag v-for="(item,index) in SubData.check_button" :key="item.url" type="dot" closable color="blue" @on-close="RemoveBtn(index)"><span @click="EditBtn(item, index)">{{item.title}}</span></Tag>
             <Button icon="ios-plus-empty" type="dashed" size="large" @click="AddBtn">添加按钮</Button>
           </p>
         </div>
@@ -70,6 +88,7 @@
     data () {
       return{
         State: this.modalShow,
+        mTitle: '添加',
         FixArr:[{
           name: '{管理员名}',
           value: '{admin_name}'
@@ -132,12 +151,14 @@
           content: []
         },
         SubData:{
+          type: 'actionCard',
+          template_name: '',
+          send_url: '',
+          title_en: '',
+          remark: '',
           title: [],
           content: [],
-          button: [{
-            name: '审核通过',
-            url: 'www.tinsson.com'
-          }]
+          check_button: []
         },
         Button:{
           state: false,
@@ -151,14 +172,67 @@
     },
     props: {
       modalShow: Boolean,
-      isEdit: Boolean,
+      isEdit: Object,
       initData: Object
     },
     watch:{
       modalShow(val){
         this.State = val;
       },
+      isEdit(val){
+        if(val.status){
+          this.mTitle = '编辑';
+        }else{
+          this.mTitle = '添加';
+          this.SubData = {
+            type: 'actionCard',
+            template_name: '',
+            send_url: '',
+            title_en: '',
+            remark: '',
+            title: [],
+            content: [],
+            check_button: []
+          };
+          this.ShowData = {
+            title: [],
+            content: []
+          };
+        }
+      },
       initData(val){
+        this.SubData.title_en = val.title_en;
+        this.SubData.check_button = val.check_button;
+        this.SubData.send_url = val.send_url;
+        this.SubData.title = val.title;
+        this.SubData.content = val.content;
+
+        let title = [],
+            content = [];
+        this.SubData.title.forEach(val=>{
+          if(/^{\w+}$/.test(val)){
+            this.FixArr.forEach(vval=>{
+              if(vval.value === val){
+                title.push(vval.name);
+              }
+            })
+          }else{
+            title.push(val);
+          }
+        })
+        this.SubData.content.forEach(val=>{
+          if(/^{\w+}$/.test(val)){
+            this.FixArr.forEach(vval=>{
+              if(vval.value === val){
+                content.push(vval.name);
+              }
+            })
+          }else{
+            content.push(val);
+          }
+        })
+        this.ShowData.title = title;
+        this.ShowData.content = content;
       }
     },
     computed:{
@@ -169,13 +243,31 @@
         return this.ShowData.content.join('');
       }
     },
+    created(){
+      this.$fetch('/backend/Dingdingtp/keywordList').then(d=>{
+        let arr = [];
+        Object.keys(d.data.keyword_list).forEach(key=>{
+          const data = {
+            name: `{${d.data.keyword_list[key]}}`,
+            value: `{${key}}`
+          };
+          arr.push(data);
+        })
+        arr.push({
+          name: '--换行--',
+          value: '- '
+        });
+        this.FixArr = arr;
+      })
+    },
     methods: {
       CloseBtn(){
         this.$emit('CloseModal');
       },
       Submit(){
-        this.$emit('SubModal',this.SubData);
+        this.$emit('SubModal',this.SubData,this.isEdit);
       },
+
       AddTag(tag){
         if(this.FocusKey){
           this.SubData[this.FocusKey].push(tag.value);
@@ -214,15 +306,15 @@
       },
       BtnAdd(){
         if(this.Button.edit){
-          let button = this.SubData.button[this.Button.key];
-          button.name = this.Button.name;
+          let button = this.SubData.check_button[this.Button.key];
+          button.title = this.Button.name;
           button.url = this.Button.url;
         }else{
           const data = {
-            name: this.Button.name,
+            title: this.Button.name,
             url: this.Button.url
           };
-          this.SubData.button.push(data);
+          this.SubData.check_button.push(data);
         }
       },
       RemoveBtn(index){
@@ -230,14 +322,15 @@
           title: '提示',
           content: `<p class="confirm-text">确认删除此按钮吗？</p>`,
           onOk: ()=>{
-            this.SubData.button = this.SubData.button.splice(index,0);
+            let btn = this.SubData.check_button;
+            this.SubData.check_button = [...btn.slice(0,index), ...btn.slice(index+1,btn.length)];
           }
         })
       },
       EditBtn(item, index){
         this.Button.state = true;
         this.Button.edit = true;
-        this.Button.name = item.name;
+        this.Button.name = item.title;
         this.Button.url = item.url;
         this.Button.key = index;
         this.Button.title = '修改按钮内容';
@@ -290,6 +383,12 @@
       }
       .tag-box{
         margin-left: 30px;
+      }
+      .opt-info{
+        border-bottom: 1px solid #e3e3e3;
+      }
+      .title{
+        padding: 10px 0;
       }
     }
   }

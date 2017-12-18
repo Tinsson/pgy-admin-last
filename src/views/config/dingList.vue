@@ -66,7 +66,10 @@
         },
         //模板添加编辑模型
         ModalData:{
-          edit: false,
+          edit: {
+            status: false,
+            id: ''
+          },
           show: false,
           data: {}
         },
@@ -79,6 +82,9 @@
           },{
             title: '模板类型',
             key: 'template_name'
+          },{
+            title: '发送地址',
+            key: 'send_url'
           },{
             title: '备注',
             key: 'remark'
@@ -155,18 +161,43 @@
       },
       //编辑模板
       EditOpt(row){
-        console.log(row);
+        this.$post('/backend/Dingdingtp/templateDetail',{id: row.id}).then(d=>{
+          this.ModalData.data = d.data.template_detail;
+          console.log(d.data.template_detail);
+          this.ModalData.edit.status = true;
+          this.ModalData.edit.id = row.id;
+          this.ModalData.show = true;
+        })
       },
       //添加模板
       AddTemp(){
-        this.ModalData.edit = false;
+        this.ModalData.edit.status = false;
         this.ModalData.show = true;
       },
       ModalCancel(){
         this.ModalData.show = false;
       },
-      DingSubmit(){
-
+      DingSubmit(data, is_edit){
+        let info = data;
+        const url = is_edit.status?'/backend/Dingdingtp/templateEdit':'/backend/Dingdingtp/templateAdd';
+        if(is_edit.status){
+          info.id = is_edit.id;
+        }
+        this.UploadData(url,{template_data: JSON.stringify(info)}).then((d)=>{
+          this.InitData(this.apiUrl);
+          this.ModalCancel();
+        })
+      },
+      Delopt(row){
+        this.$Modal.confirm({
+          title: '提示',
+          content: `<p class="confirm-text">删除此消息模板？</p>`,
+          onOk: ()=>{
+            this.UploadData('/backend/Dingdingtp/templateDelete',{id: row.id}).then(()=>{
+              this.InitData(this.apiUrl);
+            });
+          }
+        })
       }
     }
   }
