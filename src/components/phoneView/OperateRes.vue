@@ -19,6 +19,12 @@
         state: true,
         success: true
       }
+    },
+    created(){
+      const url = this.$route.query.admin_url;
+      if(url){
+        console.log(url);
+      }
     }
   }
 </script>

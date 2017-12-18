@@ -9,7 +9,7 @@ axios.defaults.timeout = 30000;
 
 const IsProd = process.env.NODE_ENV === 'production'?true:false;
 const IsDev = process.env.NODE_ENV === 'development'?true:false;
-const IsZZ = 1;
+const IsZZ = 0;
 
 if(IsDev){
   if(IsZZ){
@@ -32,7 +32,7 @@ axios.interceptors.request.use(
     //判断token是否存在
     if (token) {
       if(IsZZ){
-        //config.headers['TOKEN'] = 'SJK3zSvzciwY6MF3jjCIXTduwg3+vcQqhLQrX6L1KdtAPz8=aCRRGiE1oboQYgRSI+zBsEce9XLWbk4qRGjc6949';
+
       }else{
         config.headers['TOKEN'] = token;
       }

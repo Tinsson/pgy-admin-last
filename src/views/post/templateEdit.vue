@@ -30,7 +30,10 @@
           </RadioGroup>
         </FormItem>
         <FormItem label="名称：" prop="title">
-          <Input v-model="ModeModal.data.title"></Input>
+          <Input v-model="ModeModal.data.title"/>
+        </FormItem>
+        <FormItem label="英文名：" prop="title_en">
+          <Input v-model="ModeModal.data.title_en"/>
         </FormItem>
         <FormItem label="内容：" prop="content">
           <Input v-model="ModeModal.data.content" type="textarea" :autosize="{minRows: 3,maxRows: 5}"></Input>
@@ -66,6 +69,7 @@
           data: {
             status: 1,
             title: '',
+            title_en: '',
             content: ''
           }
         },
@@ -82,6 +86,9 @@
             title: '状态',
             key: 'status'
           },{
+            title: '英文名',
+            key: 'title_en'
+          },{
             title: '操作',
             key: 'operation',
             align: 'center',
@@ -97,6 +104,9 @@
           ],
           content: [
             {required: true, message: '内容不能为空！'}
+          ],
+          title_en: [
+            {required: true, message: '英文名不能为空！'}
           ]
         },
         UserData: [],     //表格数据
@@ -183,6 +193,7 @@
         this.ModeModal.data = {
           status: 1,
           title: '',
+          title_en: '',
           content: ''
         };
         this.ModeModal.isEdit = false;
@@ -217,6 +228,7 @@
         })
         this.ModeModal.data = {
           title: row.title,
+          title_en: row.title_en,
           content: row.content,
           status: status_num
         };

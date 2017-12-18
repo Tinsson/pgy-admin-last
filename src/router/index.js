@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import { post,fetch } from '@/util/http'
 import { getLocal, saveLocal } from '@/util/util'
 import store from '@/store'
+import axios from 'axios'
 
 //通用模块
 import AdminFrame from '@/components/AdminFrame'
@@ -190,16 +190,6 @@ router.beforeEach((to, from, next)=>{
     return;
   }
   const token = getLocal('token');
-  if(to.query.admin_url){
-    if(token){
-      fetch(to.query.admin_url).then(()=>{
-        next({path: '/checkout'});
-      });
-    }else{
-      next({path: '/login'});
-      return;
-    }
-  }
   if(token){
     store.dispatch('setView').then(()=>{
       let permission = JSON.stringify(store.getters.permission);
