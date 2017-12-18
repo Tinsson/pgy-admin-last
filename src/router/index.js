@@ -191,6 +191,10 @@ router.beforeEach((to, from, next)=>{
   }
   const token = getLocal('token');
   if(token){
+    if(to.query.admin_url){
+      next();
+      return;
+    }
     store.dispatch('setView').then(()=>{
       let permission = JSON.stringify(store.getters.permission);
       let perdep = JSON.parse(permission);
