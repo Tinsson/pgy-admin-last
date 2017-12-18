@@ -36,7 +36,10 @@
             }
           });
           this.$post(url,obj).then(d=>{
-            console.log(d);
+            if(d.status === 1){
+              this.state = true;
+              this.success = true;
+            }
           })
         }else{
           const params = this.$route.query;
