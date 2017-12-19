@@ -19,7 +19,7 @@
                :loading="loading"></Table>
       </Card>
     </div>
-    <Modal
+    <!--<Modal
       v-model="ModeModal.modal"
       title="添加模板">
       <Form ref="ModeModal" :model="ModeModal.data" :rules="ValidateRules" label-position="right" :label-width="80">
@@ -43,15 +43,24 @@
         <Button type="text" @click="ModalCancel" size="large">取消</Button>
         <Button type="primary" @click="AddOver" size="large">保存</Button>
       </div>
-    </Modal>
+    </Modal>-->
+    <MsgModal :modalShow="ModeModal.modal"
+              :isEdit="ModeModal.isEdit"
+              :initData="ModeModal.data"
+              @CloseModal="ModalCancel"
+              @SubModal="AddOver"></MsgModal>
   </div>
 </template>
 
 <script>
   import { getLocal } from '@/util/util'
+  import MsgModal from '@/components/infoModal/MsgModal'
 
   export default {
     name: 'TemplateEdit',
+    components:{
+      MsgModal
+    },
     data () {
       return {
         title: '模板编辑',
@@ -64,13 +73,16 @@
         //添加规则
         ModeModal:{
           modal: false,
-          isEdit: false,
-          id: '',
+          isEdit: {
+            status: false,
+            id: ''
+          },
           data: {
             status: 1,
-            title: '',
+            name: '',
             title_en: '',
-            content: ''
+            title: [],
+            content: []
           }
         },
         UserCol: [
@@ -189,21 +201,23 @@
       },
       //添加模板
       AddModeModal(){
-        this.$refs['ModeModal'].resetFields();
         this.ModeModal.data = {
           status: 1,
-          title: '',
+          name: '',
           title_en: '',
-          content: ''
+          title: [],
+          content: []
         };
-        this.ModeModal.isEdit = false;
+        this.ModeModal.isEdit.status = false;
         this.ModeModal.modal = true;
       },
       ModalCancel(){
         this.ModeModal.modal = false;
       },
       AddOver(){
-        this.$refs['ModeModal'].validate(valid=>{
+
+
+        /*this.$refs['ModeModal'].validate(valid=>{
           if(valid){
             this.ModeModal.modal = false;
             let ninfo = this.RemoveObserve(this.ModeModal.data);
@@ -216,7 +230,9 @@
               this.InitData(this.apiUrl);
             });
           }
-        });
+        });*/
+
+
       },
       //修改模板
       EditOpt(row){
@@ -232,7 +248,7 @@
           content: row.content,
           status: status_num
         };
-        this.ModeModal.isEdit = true;
+        this.ModeModal.isEdit.status = true;
         this.ModeModal.id = row.id;
         this.ModeModal.modal = true;
       },
