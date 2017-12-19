@@ -29,7 +29,7 @@
               </li>
               <li class="res-box">
                 <p class="simple" :class="'type'+AllInfo.jiben.info.yunyings.status">{{AllInfo.jiben.info.yunyings.info}}</p>
-                <p class="title">运营商</p>
+                <p class="title active" @click="ReportCarrier">运营商</p>
               </li>
               <li class="res-box">
                 <p class="simple" :class="'type'+AllInfo.jiben.info.taobao.status">{{AllInfo.jiben.info.taobao.info}}</p>
@@ -37,7 +37,7 @@
               </li>
               <li class="res-box">
                 <p class="simple" :class="'type'+AllInfo.jiben.info.zhimafen.status">{{AllInfo.jiben.info.zhimafen.info}}</p>
-                <p class="title active">芝麻分</p>
+                <p class="title">芝麻分</p>
               </li>
             </ul>
           </div>
@@ -1091,6 +1091,17 @@
         const { href } = this.$router.resolve({
           path: '/taobaoReport',
           name: '淘宝报表',
+          query:{
+            uid: this.ID
+          }
+        });
+        window.open(href, '_blank');
+      },
+      //运营商报表
+      ReportCarrier(){
+        const { href } = this.$router.resolve({
+          path: '/carrierReport',
+          name: '运营商报表',
           query:{
             uid: this.ID
           }
