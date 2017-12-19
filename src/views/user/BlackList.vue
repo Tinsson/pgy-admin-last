@@ -299,7 +299,7 @@
         })
       },
       //审核面板
-      DetailsOpt(row){
+      AuditPanel(row){
         this.Audit.modal = true;
         this.Audit.id = row.id;
         let idArr = [];

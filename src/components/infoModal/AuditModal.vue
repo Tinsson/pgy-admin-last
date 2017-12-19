@@ -1037,11 +1037,16 @@
           })
         }
       },
-      //淘宝报价
+      //淘宝报表
       ReportTaobao(){
-        this.$fetch('/backend/Chart/chartTaobao',{phone: this.EditData.info.phone}).then((d)=>{
-          console.log(d);
-        })
+        const { href } = this.$router.resolve({
+          path: '/taobaoReport',
+          name: '淘宝报表',
+          query:{
+            uid: this.ID
+          }
+        });
+        window.open(href, '_blank');
       },
       //查看大图
       CheckBigPic(img){

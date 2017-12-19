@@ -271,7 +271,7 @@
         //获取按钮信息
         this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
-        })
+        });
         //列表数据获取
         this.$post('/backend/Auth/authList').then((d)=>{
           let info = d.data;

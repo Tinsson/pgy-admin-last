@@ -89,8 +89,8 @@
       <Form :model="Report" :label-width="120">
         <FormItem label="报告类型：">
           <Select v-model="Report.type" style="width: 200px">
-            <Option :value="1">借贷宝</Option>
-            <Option :value="2">外包催收</Option>
+            <Option :value="1">借贷宝（txt）</Option>
+            <Option :value="2">外包催收（excel）</Option>
           </Select>
         </FormItem>
       </Form>
@@ -369,7 +369,7 @@
         this.SimpleSearch(0);
       },
       //审核面板
-      DetailsOpt(row){
+      AuditPanel(row){
         this.Audit.modal = true;
         this.Audit.id = row.id;
         this.Audit.unique = row.loan_id;
@@ -464,11 +464,21 @@
         //this.Group.AppmsgModal = false;
       },
       OpenReport(){
-        this.Report.modal = true;
+        if(this.SelectData.length > 0){
+          this.Report.modal = true;
+        }else{
+          this.$Message.error('请先勾选要导出数据的用户！');
+        }
       },
       //导出报告
       ExportReport(){
-        console.log(this.SelectData);
+        const idAll = this.SelectData.join(',');
+        const url = this.Report.type === 1?'/backend/Datacollection/Jdbhandle':'/backend/Datacollection/Wbhandle';
+        this.$post(url,{id: idAll}).then(d=>{
+          if(d.status === 1){
+            window.href = d.pass;
+          }
+        })
       },
       //导出数据
       ExportData(){
