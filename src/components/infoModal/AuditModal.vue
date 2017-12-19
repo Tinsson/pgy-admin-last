@@ -2,7 +2,7 @@
   <div>
     <Modal
       v-model="State"
-      :width="1100"
+      :width="1150"
       class="all-modal"
       :styles="{top: '50px'}"
       @on-cancel="CloseBtn">
@@ -279,21 +279,24 @@
             <p v-for="item in AllInfo.jiben.renz" class="info-box">
               {{item.type + '时间'}}：{{item.create_at}}
             </p>
-            <p class="info-box">
-              <p class="label">备注：</p>
-              <p class="remark-box">
-                <span class="value">{{NavData.baseInfo.remark}}</span>
+            <div>
+              <h3 class="user-title">备注:</h3>
+              <Table :columns="NavData.baseInfo.remark_col"
+                     :data="NavData.baseInfo.remark"
+                     style="margin-bottom: 10px;"
+                     size="large"></Table>
+              <p v-show="NavData.baseInfo.IsRemark">
+                <Input type="textarea"
+                       class="value textarea"
+                       v-model="NavData.baseInfo.remark_ipt"/>
               </p>
-              <Input type="textarea"
-                     class="value textarea"
-                     v-show="NavData.baseInfo.IsRemark"
-                     v-model="NavData.baseInfo.remark_ipt"></Input>
-            </p>
+            </div>
             <div class="bot-btn">
               <Button :type="DelayBtn.type" size="large" @click="OpenDelay">{{DelayBtn.name}}</Button>
               <Button :type="BlackBtn.type" size="large" @click="AddBlack">{{BlackBtn.name}}</Button>
               <Button type="info" size="large" v-show="!NavData.baseInfo.IsRemark" @click="AddRemark">添加备注</Button>
               <Button type="warning" size="large" v-show="NavData.baseInfo.IsRemark" @click="RemarkOver">保存备注</Button>
+              <Button type="default" size="large" v-show="NavData.baseInfo.IsRemark" @click="RemarkCancel">取消</Button>
             </div>
             <div class="bot-btn">
               <Button type="success" size="large" @click="RepayOpt">发起还款</Button>
@@ -631,7 +634,14 @@
           baseInfo: {
             cur: true,
             IsRemark: false,
-            remark: '',
+            remark_col: [{
+              title: '内容',
+              key: 'content'
+            },{
+              title: '添加时间',
+              key: 'create_at'
+            }],
+            remark: [],
             remark_ipt: ''
           },
           tradeRecord:{
@@ -997,6 +1007,9 @@
         this.UploadData('/backend/User/remark',data).then(()=>{
           this.NavData.baseInfo.IsRemark = false;
         });
+      },
+      RemarkCancel(){
+        this.NavData.baseInfo.IsRemark = false;
       },
       //主动还款
       RepayOpt(){

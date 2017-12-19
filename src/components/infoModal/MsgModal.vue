@@ -84,6 +84,9 @@
           name: '{用户ID}',
           value: '{uid}'
         },{
+          name: '{验证码}',
+          value: '{code}'
+        },{
           name: '{客服}',
           value: '{kefu}'
         },{

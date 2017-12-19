@@ -204,7 +204,9 @@
       //筛选操作(重置筛选)
       ResetScreen(){
         for(let key in this.ScreenData){
-          this.ScreenData[key] = '';
+          if(key !== 'type'){
+            this.ScreenData[key] = '';
+          }
         }
         this.allTime = '';
       },
@@ -238,6 +240,8 @@
         this.loading = true;
         this.ScreenData.type = status;
         let sinfo = this.RemoveObserve(this.ScreenData);
+        sinfo.page = 1;
+        sinfo.num = 20;
         this.CountData.forEach(val=>{
           if(val.status === status){
             val.cur = true;
