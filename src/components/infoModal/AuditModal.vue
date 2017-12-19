@@ -292,14 +292,13 @@
               </p>
             </div>
             <div class="bot-btn">
-              <Button type="warning" size="large" @click="LoanOpt">发起放款</Button>
               <Button :type="BlackBtn.type" size="large" @click="AddBlack">{{BlackBtn.name}}</Button>
               <Button type="info" size="large" v-show="!NavData.baseInfo.IsRemark" @click="AddRemark">添加备注</Button>
               <Button type="warning" size="large" v-show="NavData.baseInfo.IsRemark" @click="RemarkOver">保存备注</Button>
               <Button type="default" size="large" v-show="NavData.baseInfo.IsRemark" @click="RemarkCancel">取消</Button>
             </div>
             <div class="bot-btn">
-              <Button :type="DelayBtn.type" size="large" @click="OpenDelay">{{DelayBtn.name}}</Button>
+              <Button type="primary" size="large" @click="DelayOpt">发起展期</Button>
               <Button type="success" size="large" @click="RepayOpt">发起还款</Button>
             </div>
           </div>
@@ -499,7 +498,7 @@
             <Input v-show="Limit.status" v-model="Limit.value" style="width: 120px;"></Input>
             <Button v-show="Limit.status" type="success" @click="SubmitLimit">提交额度</Button>
           </span>
-          <Button v-for="item in ButtonAll" :key="item.id">{{item.name}}</Button>
+          <Button v-for="item in ButtonAll" :key="item.id" :type="item.color" @click="EventTune(item.class)">{{item.name}}</Button>
         </div>
         <Page :current="CurrentPage"
               :total="TotalPage"
@@ -822,6 +821,10 @@
           })
         });
       },
+      //触发事件
+      EventTune(event){
+        this[event]();
+      },
       ResetData(){
         this.EditData = {
           info: {
@@ -986,7 +989,7 @@
         this.BlackBtn.name = black?'移除黑名单':'加入黑名单';
       },
       //开通展期
-      OpenDelay(){
+      DelayOpt(){
         const jk_list = this.AllInfo.loan.jk_list;
         if(jk_list.length > 0){
           const jk_data = jk_list[jk_list.length - 1];
