@@ -476,7 +476,7 @@
         const url = this.Report.type === 1?'/backend/Datacollection/Jdbhandle':'/backend/Datacollection/Wbhandle';
         this.$post(url,{id: idAll}).then(d=>{
           if(d.status === 1){
-            window.href = d.pass;
+            window.location.href = d.data.path;
           }
         })
       },

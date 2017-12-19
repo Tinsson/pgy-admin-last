@@ -10,6 +10,7 @@ import NoContent from '@/components/NoContent'
 import NotFind from '@/components/NotFind'
 import OperateRes from '@/components/phoneView/OperateRes'
 import TaobaoReport from '@/components/reportTable/TaobaoReport'
+import CarrierReport from '@/components/reportTable/CarrierReport'
 
 //登录模块
 import Login from '@/views/login/Login'
@@ -136,6 +137,10 @@ const routes = [
     name: '淘宝报表',
     component: TaobaoReport
   },{
+    path: '/carrierReport',
+    name: '运营商报表',
+    component: CarrierReport
+  },{
     path: '/extend',
     name: '推广H5页面',
     component: Extend,
@@ -191,7 +196,6 @@ router.beforeEach((to, from, next)=>{
   }
   const token = getLocal('token');
   if(token){
-    console.log(to.query);
     if(to.query.admin_url){
       next();
       return;

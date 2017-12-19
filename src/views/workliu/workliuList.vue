@@ -403,11 +403,13 @@
       },
       //审核通过
       AddOpt(row){
+        let url = row.type === 0?'/backend/Loan/zqAuditOk':'/backend/Loan/jkAuditOk';
+        let type = row.type === 0?'展期':'放款';
         this.$Modal.confirm({
           title: '提示',
-          content: `<p class="confirm-text">确认通过该用户的审核？</p>`,
+          content: `<p class="confirm-text">确认通过该用户的${type}审核？</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/Loan/jkAuditOk',{jid: row.id,status: 1}).then(()=>{
+            this.UploadData(url,{jid: row.id,status: 1}).then(()=>{
               this.SimpleSearch(0);
             });
           }
