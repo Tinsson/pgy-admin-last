@@ -211,7 +211,7 @@
     created(){
       const owner = getLocal('owner');
       if(owner){
-        this.Owner = owner;
+        this.Owner = parseInt(owner);
       }else{
         saveLocal('owner',this.Owner);
       }
@@ -388,7 +388,7 @@
       },
       AuditPanel(row){
         this.Audit.modal = true;
-        this.Audit.id = row.id;
+        this.Audit.id = row.uid;
         let idArr = [];
         this.UserData.forEach(val=>{
           idArr.push(val.id);
