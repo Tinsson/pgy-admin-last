@@ -44,23 +44,7 @@
         </FormItem>
         <FormItem label="按钮类型">
           <Select v-model="AddInfo.href" :disabled="AddInfo.hideBtn" placeholder="请选择按钮类型">
-            <Option value="DetailsOpt">查看按钮</Option>
-            <Option value="Delopt">删除按钮</Option>
-            <Option value="AddOpt">添加按钮</Option>
-            <Option value="EditOpt">编辑按钮</Option>
-            <Option value="RemarkOpt">备注按钮</Option>
-            <Option value="DelayOpt">展期按钮</Option>
-            <Option value="MarkOpt">标记按钮</Option>
-            <Option value="LoanOpt">放款按钮</Option>
-            <Option value="QuitOpt">离职按钮</Option>
-            <Option value="RejectOpt">拒绝按钮</Option>
-            <Option value="AuditPanel">审核面板按钮</Option>
-            <Option value="ChangeStatus">禁用启用按钮</Option>
-            <Option value="AssignUrge">主动分配按钮</Option>
-            <Option value="AssignAuth">权限分配按钮</Option>
-            <Option value="AssignDep">分配部门按钮</Option>
-            <Option value="AssignRole">分配角色按钮</Option>
-            <Option value="SeeDep">可视部门按钮</Option>
+            <Option v-for="item in BtnType" :key="item.value" :value="item.value">{{item.name}}</Option>
           </Select>
         </FormItem>
         <FormItem label="按钮颜色">
@@ -112,23 +96,7 @@
         </FormItem>
         <FormItem label="按钮类型">
           <Select v-model="EditInfo.href" :disabled="EditInfo.hideBtn" placeholder="请选择按钮类型">
-            <Option value="DetailsOpt">查看按钮</Option>
-            <Option value="Delopt">删除按钮</Option>
-            <Option value="AddOpt">添加按钮</Option>
-            <Option value="EditOpt">编辑按钮</Option>
-            <Option value="RemarkOpt">备注按钮</Option>
-            <Option value="DelayOpt">展期按钮</Option>
-            <Option value="MarkOpt">标记按钮</Option>
-            <Option value="LoanOpt">放款按钮</Option>
-            <Option value="QuitOpt">离职按钮</Option>
-            <Option value="RejectOpt">拒绝按钮</Option>
-            <Option value="AuditPanel">审核面板按钮</Option>
-            <Option value="ChangeStatus">禁用启用按钮</Option>
-            <Option value="AssignUrge">主动分配按钮</Option>
-            <Option value="AssignAuth">权限分配按钮</Option>
-            <Option value="AssignDep">分配部门按钮</Option>
-            <Option value="AssignRole">分配角色按钮</Option>
-            <Option value="SeeDep">可视部门按钮</Option>
+            <Option v-for="item in BtnType" :key="item.value" :value="item.value">{{item.name}}</Option>
           </Select>
         </FormItem>
         <FormItem label="按钮颜色">
@@ -162,6 +130,70 @@
         title: '菜单管理',
         auth_id: '',
         loading: true,
+        BtnType:[{
+          name: '查看按钮',
+          value: 'DetailsOpt'
+        },{
+          name: '删除按钮',
+          value: 'Delopt'
+        },{
+          name: '添加按钮',
+          value: 'AddOpt'
+        },{
+          name: '编辑按钮',
+          value: 'EditOpt'
+        },{
+          name: '备注按钮',
+          value: 'RemarkOpt'
+        },{
+          name: '展期按钮',
+          value: 'DelayOpt'
+        },{
+          name: '还款按钮',
+          value: 'RepayOpt'
+        },{
+          name: '放款按钮',
+          value: 'LoanOpt'
+        },{
+          name: '离职按钮',
+          value: 'QuitOpt'
+        },{
+          name: '通过按钮',
+          value: 'PassOpt'
+        },{
+          name: '拒绝按钮',
+          value: 'RejectOpt'
+        },{
+          name: '挂起按钮',
+          value: 'HangOpt'
+        },{
+          name: '授予额度按钮',
+          value: 'GiveLimitOpt'
+        },{
+          name: '添加记录',
+          value: 'RecordAddOpt'
+        },{
+          name: '审核面板按钮',
+          value: 'AuditPanel'
+        },{
+          name: '禁用启用按钮',
+          value: 'ChangeStatus'
+        },{
+          name: '主动分配按钮',
+          value: 'AssignUrge'
+        },{
+          name: '权限分配按钮',
+          value: 'AssignAuth'
+        },{
+          name: '分配部门按钮',
+          value: 'AssignDep'
+        },{
+          name: '分配角色按钮',
+          value: 'AssignRole'
+        },{
+          name: '可视部门按钮',
+          value: 'SeeDep'
+        }],
         UserCol: [
           {
             title: '菜单编号',

@@ -297,10 +297,6 @@
               <Button type="warning" size="large" v-show="NavData.baseInfo.IsRemark" @click="RemarkOver">保存备注</Button>
               <Button type="default" size="large" v-show="NavData.baseInfo.IsRemark" @click="RemarkCancel">取消</Button>
             </div>
-            <div class="bot-btn">
-              <Button type="primary" size="large" @click="DelayOpt">发起展期</Button>
-              <Button type="success" size="large" @click="RepayOpt">发起还款</Button>
-            </div>
           </div>
           <div class="trade-record" v-show="NavData.tradeRecord.cur">
             <Tabs>
@@ -464,8 +460,10 @@
                   <span class="label">记录：</span>
                   <Input type="textarea" v-model="Urge.content"></Input>
                 </p>
-                <Button v-show="!Urge.status" type="primary" @click="UrgeAddShow" size="large">添加记录</Button>
-                <Button v-show="Urge.status" type="warning" @click="UrgeAddOver" size="large">保存</Button>
+                <p v-show="Urge.auth">
+                  <Button v-show="!Urge.status" type="primary" @click="RecordAddOpt" size="large">添加记录</Button>
+                  <Button v-show="Urge.status" type="warning" @click="UrgeAddOver" size="large">保存</Button>
+                </p>
               </TabPane>
               <TabPane label="操作日志">
                 <Card>
@@ -487,17 +485,15 @@
           <Button type="info" v-show="!IsEdit" @click="EditInfo">修改</Button>
           <Button type="primary" style="margin-left: 0" v-show="IsEdit" @click="SubOpt">保存</Button>
           <Button type="warning" v-show="IsEdit" @click="EditCancel">取消</Button>
-          <!--<Button :type="IsPass.type" @click="PassOpt">{{ IsPass.text }}</Button>-->
-          <Button type="success" @click="PassOpt(2)">通过</Button>
-          <Button type="error" @click="PassOpt(3)">不通过</Button>
-          <Button :type="IsHang.type" @click="HangOpt">{{ IsHang.text }}</Button>
-          <Button type="warning" v-show="IsPass.status" @click="GiveLimit">授予额度</Button>
-          <span v-show="IsPass.status" class="limit-input">
-            额度：
-            <span v-show="!Limit.status">{{Limit.value}}</span>
-            <Input v-show="Limit.status" v-model="Limit.value" style="width: 120px;"></Input>
-            <Button v-show="Limit.status" type="success" @click="SubmitLimit">提交额度</Button>
-          </span>
+          <p v-show="IsPass.isAudit" class="inline-block">
+            <Button type="warning" v-show="IsPass.status" @click="GiveLimitOpt">授予额度</Button>
+            <span v-show="IsPass.status" class="limit-input">
+              额度：
+              <span v-show="!Limit.status">{{Limit.value}}</span>
+              <Input v-show="Limit.status" v-model="Limit.value" style="width: 120px;"></Input>
+              <Button v-show="Limit.status" type="success" @click="SubmitLimit">提交额度</Button>
+            </span>
+          </p>
           <Button v-for="item in ButtonAll" :key="item.id" :type="item.color" @click="EventTune(item.class)">{{item.name}}</Button>
         </div>
         <Page :current="CurrentPage"
@@ -624,6 +620,7 @@
         DetailsLive: '',
         IsEdit: false,
         IsPass: {
+          isAudit: false,
           type: 'success',
           status: false,
           text: '通过'
@@ -693,6 +690,7 @@
           Data: []
         },
         Urge:{
+          auth: false,
           status: false,
           content: '',
           Col: [{
@@ -864,7 +862,18 @@
       },
       InitData(id){
         this.$fetch('backend/Menuauth/listAuthGet', {auth_id: this.BtnId}).then(d=>{
-          this.ButtonAll = d.data.operation;
+          this.ButtonAll = [];
+          this.IsPass.isAudit = false;
+          this.Urge.auth = false;
+          d.data.operation.forEach(val=>{
+            if(val.class === 'GiveLimitOpt'){
+              this.IsPass.isAudit = true;
+            }else if(val.class === 'RecordAddOpt'){
+              this.Urge.Auth = true;
+            }else{
+              this.ButtonAll.push(val);
+            }
+          })
           this.$fetch('/backend/User/editUser',{uid: id}).then(edit=>{
             this.$fetch('/backend/User/getInfo',{uid: id}).then(info=>{
               this.EditData = edit.data;
@@ -881,8 +890,7 @@
               this.IsPass.type = this.IsPass.status?'ghost':'success';
               this.IsPass.text = this.IsPass.status?'不通过':'通过';
               this.IsHang.status = (info.data.jiben.info.is_hangup === 1)?true:false;
-              this.IsHang.type = this.IsHang.status?'ghost': 'primary';
-              this.IsHang.text = this.IsHang.status?'取消挂起': '挂起';
+              this.JudgeHang(this.IsHang.status);
               this.StateText(this.AllInfo.loan.jk_list);
               this.StateText(this.AllInfo.loan.hk_list);
               this.Authorize.Data = this.AllInfo.operation.user.authorize;
@@ -912,13 +920,25 @@
         this.IsEdit = false;
       },
       //通过审核
-      PassOpt(status){
-        const tips = (status === 3)?'确认不通过该用户的审核吗？':'确认通过该用户的审核吗？';
+      PassOpt(){
         this.$Modal.confirm({
           title: '提示',
-          content: `<p class="confirm-text">${tips}</p>`,
+          content: `<p class="confirm-text">确认通过该用户的审核吗</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/User/auditUser',{uid: this.ID, status}).then(()=>{
+            this.UploadData('/backend/User/auditUser',{uid: this.ID, status: 2}).then(()=>{
+              this.loading = true;
+              this.InitData(this.InitId);
+            });
+          }
+        })
+      },
+      //不通过审核
+      RejectOpt(){
+        this.$Modal.confirm({
+          title: '提示',
+          content: `<p class="confirm-text">确认不通过该用户的审核吗</p>`,
+          onOk: ()=>{
+            this.UploadData('/backend/User/auditUser',{uid: this.ID, status: 3}).then(()=>{
               this.loading = true;
               this.InitData(this.InitId);
             });
@@ -933,13 +953,12 @@
           onOk: ()=>{
             this.UploadData('/backend/User/setGuaQi',{uid: this.ID}).then(()=>{
               this.IsHang.status = !this.IsHang.status;
-              this.IsHang.type = this.IsHang.status?'ghost':'primary';
-              this.IsHang.text = this.IsHang.status?'不挂起':'挂起';
+              this.JudgeHang(this.IsHang.status);
             });
           }
         })
       },
-      GiveLimit(){
+      GiveLimitOpt(){
         this.Limit.status = true;
       },
       SubmitLimit(){
@@ -1126,7 +1145,7 @@
       CloseBigPic(){
         this.BigPic.modal = false;
       },
-      UrgeAddShow(){
+      RecordAddOpt(){
         this.Urge.status = true;
       },
       UrgeAddOver(){
@@ -1140,6 +1159,15 @@
             content: this.Urge.content,
             create_at: d.date
           });
+        })
+      },
+      //判断挂起状态
+      JudgeHang(status){
+        this.ButtonAll.forEach(val=>{
+          if(val.class === 'HangOpt'){
+            val.name = status?'取消挂起':'挂起';
+            val.color = status?'default':'primary';
+          }
         })
       }
     }
@@ -1413,14 +1441,17 @@
   .lxr-line{
     line-height: 40px;
   }
-  .opt-log{
+  .opt-log {
     padding: 12px 0;
     border-bottom: 1px solid #e3e3e3;
-    &:nth-last-child(1){
+    &:nth-last-child(1) {
       border: none;
     }
-    .line{
+    .line {
       line-height: 25px;
     }
+  }
+  .inline-block{
+    display: inline-block;
   }
 </style>
