@@ -1,42 +1,45 @@
 <template>
   <Modal
     v-model="State"
-    :title="`发起展期申请（${initData.name}）`"
+    :title="`放款操作（${initData.name}）`"
     :styles="{top: '30px',zIndex: '10'}"
     @on-cancel="CloseBtn">
-    <Form :model="DelayInfo" :label-width="120">
-      <FormItem label="展期金额：">
-        <Input class="unit-width" v-model="DelayInfo.amount"/>
+    <Form :model="LoanInfo" :label-width="120">
+      <FormItem label="借款金额：">
+        <Input class="unit-width" v-model="LoanInfo.amount" @on-blur="CalcFee(LoanInfo.type,LoanInfo.days,LoanInfo.amount)"/>
       </FormItem>
-      <FormItem label="展期开始日：">
+      <FormItem label="借款时间：">
         <DatePicker type="date"
                     placeholder="选择日期"
                     class="unit-width"
                     format="yyyy-MM-dd"
                     placement="bottom-end"
-                    :value="DelayInfo.start_date"
+                    :value="LoanInfo.jk_date"
                     @on-change="ChoseStart"
                     style="width: 280px"></DatePicker>
       </FormItem>
-      <FormItem label="展期天数：">
-        <Input class="unit-width" v-model="DelayInfo.days"/>
+      <FormItem label="借款天数：">
+        <Input class="unit-width" v-model="LoanInfo.days"/>
       </FormItem>
-      <FormItem label="展期至：">
+      <FormItem label="还款时间：">
         <DatePicker type="date"
                     placeholder="选择日期"
                     format="yyyy-MM-dd"
                     class="unit-width"
                     placement="bottom-end"
-                    :value="DelayInfo.end_date"
+                    :value="LoanInfo.hk_date"
                     @on-change="ChoseEnd"
                     style="width: 280px"></DatePicker>
       </FormItem>
-      <FormItem label="展期费：">
-        <Input class="unit-width" v-model="DelayInfo.fee"/>
+      <FormItem label="费率：">
+        <Input class="unit-width" v-model="LoanInfo.fee"/>
+      </FormItem>
+      <FormItem label="违约金：">
+        <Input class="unit-width" v-model="LoanInfo.wy_amount"/>
       </FormItem>
     </Form>
     <div slot="footer">
-      <Button type="error" @click="CloseBtn">取消</Button>
+      <Button type="error" @click="CloseBtn">关闭</Button>
       <Button type="primary" @click="Submit">提交</Button>
     </div>
   </Modal>
@@ -47,15 +50,16 @@
     name: 'DelayModal',
     data () {
       return{
-        State: this.modalShow,
-        DelayInfo:{
-          uid: this.initData.id,
-          //at: 1,
-          amount: this.initData.amount,
-          start_date: '',
-          end_date: '',
-          days: '',
-          fee: ''
+        State: false,
+        LoanInfo:{
+          uid: '',
+          amount: '',
+          jk_days: '',
+          jk_date: '',
+          hk_date: '',
+          fee: '',
+          wy_amount: '',
+          capital_account: ''
         }
       }
     },
@@ -68,8 +72,8 @@
         this.State = val;
       },
       initData(val){
-        this.DelayInfo.uid = val.id;
-        this.DelayInfo.amount = val.amount;
+        this.LoanInfo.uid = val.uid;
+        this.LoanInfo.amount = val.amount;
         let days = 0;
         switch(val.type){
           case 'A':
@@ -83,14 +87,13 @@
             break;
           default:
             days = 0;
-        }
-        this.DelayInfo.days = days;
-        //获取时间
-        const start = new Date(val.hk_date),
-              end = new Date(start.getTime() + 1000 * 60 * 60 * 24 * days);
-        this.DelayInfo.start_date = `${start.getFullYear()}-${start.getMonth()+1}-${start.getDate()}`;
-        this.DelayInfo.end_date = `${end.getFullYear()}-${end.getMonth()+1}-${end.getDate(0)}`;
-        this.DelayInfo.fee = this.CalcFee(val.type, days, val.amount);
+        };
+        this.LoanInfo.capital_account = this.$getLocal('owner');
+        this.LoanInfo.days = days;
+        const start = new Date(),
+          end = new Date(start.getTime() + 1000 * 60 * 60 * 24 * days);
+        this.LoanInfo.jk_date = `${start.getFullYear()}-${start.getMonth()+1}-${start.getDate()}`;
+        this.LoanInfo.hk_date = `${end.getFullYear()}-${end.getMonth()+1}-${end.getDate(0)}`;
       }
     },
     methods: {
@@ -98,13 +101,13 @@
         this.$emit('CloseModal');
       },
       Submit(){
-        this.$emit('SubModal',this.DelayInfo);
+        this.$emit('SubModal',this.LoanInfo);
       },
       ChoseStart(value){
-        this.DelayInfo.start_date = value;
+        this.LoanInfo.jk_date = value;
       },
       ChoseEnd(value){
-        this.DelayInfo.end_date = value;
+        this.LoanInfo.hk_date = value;
       },
       CalcFee(type, time, amount){
         let free = 0;
@@ -141,7 +144,7 @@
             free = (amount * time * 0.024).toFixed(0);
           }
         }
-        return free;
+        this.LoanInfo.fee = free;
       }
     }
   }

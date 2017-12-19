@@ -48,7 +48,7 @@
           <div class="btn-box">
             <Button type="primary" icon="android-chat" @click="GroupAppOpt" style="margin-right: 12px;">推送本页</Button>
             <span>资金账号：
-            <Select v-model="owner" @on-change="ChoseOwner" style="display: inline-block;width: 80px;">
+            <Select v-model="Owner" @on-change="ChoseOwner" style="display: inline-block;width: 80px;">
               <Option :value="1">李义</Option>
               <Option :value="2">张晓成</Option>
             </Select></span>
@@ -82,7 +82,7 @@
 </template>
 
 <script>
-  import { getLocal } from '@/util/util'
+  import { getLocal,saveLocal } from '@/util/util'
   import AuditModal from '@/components/infoModal/AuditModal'
   import PushApp from '@/components/groupModal/PushApp'
 
@@ -99,7 +99,7 @@
         auth_id: '',
         loading: true,
         allTime: [],
-        owner: 1,
+        Owner: 1,
         //统计数据
         CountData: [{
           name: '潜在客户',
@@ -209,6 +209,12 @@
       }
     },
     created(){
+      const owner = getLocal('owner');
+      if(owner){
+        this.Owner = owner;
+      }else{
+        saveLocal('owner',this.Owner);
+      }
       this.auth_id = getLocal('auth_id');
       this.InitData(this.apiUrl,{type: 'potential_customers'});
     },
@@ -343,7 +349,7 @@
       },
       //选择资金账号
       ChoseOwner(value){
-        this.UploadData('',{});
+        saveLocal('owner',value);
       },
       //改变页数
       ChangePage(curpage){

@@ -183,13 +183,15 @@
           this.$post(url,params).then((d)=>{
             let res = d.data;
             this.UserData = res.collection_list;
-            res.config_list.forEach(val=>{
-              if(val.is_used){
-                this.ModeType.type = val.type;
-                this.ModeType.number = val.number;
-                this.ModeType.per = val.per;
-              }
-            });
+            if(res.collection_list.length > 0 ){
+              res.config_list.forEach(val=>{
+                if(val.is_used){
+                  this.ModeType.type = val.type;
+                  this.ModeType.number = val.number;
+                  this.ModeType.per = val.per;
+                }
+              });
+            }
             that.loading = false;
             resolve();
           })

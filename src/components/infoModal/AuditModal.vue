@@ -292,13 +292,14 @@
               </p>
             </div>
             <div class="bot-btn">
-              <Button :type="DelayBtn.type" size="large" @click="OpenDelay">{{DelayBtn.name}}</Button>
+              <Button type="warning" size="large" @click="LoanOpt">发起放款</Button>
               <Button :type="BlackBtn.type" size="large" @click="AddBlack">{{BlackBtn.name}}</Button>
               <Button type="info" size="large" v-show="!NavData.baseInfo.IsRemark" @click="AddRemark">添加备注</Button>
               <Button type="warning" size="large" v-show="NavData.baseInfo.IsRemark" @click="RemarkOver">保存备注</Button>
               <Button type="default" size="large" v-show="NavData.baseInfo.IsRemark" @click="RemarkCancel">取消</Button>
             </div>
             <div class="bot-btn">
+              <Button :type="DelayBtn.type" size="large" @click="OpenDelay">{{DelayBtn.name}}</Button>
               <Button type="success" size="large" @click="RepayOpt">发起还款</Button>
             </div>
           </div>
@@ -519,6 +520,10 @@
                 :initData="Repay.data"
                 @CloseModal="RepayCancel"
                 @SubModal="RepaySub"></RepayModal>
+    <LoanModal :modalShow="Loan.modal"
+               :initData="Loan.data"
+               @CloseModal="LoanCancel"
+               @SubModal="LoanSub"></LoanModal>
   </div>
 </template>
 
@@ -527,13 +532,15 @@
   import BigPic from '@/components/infoModal/BigPic'
   import DelayModal from '@/components/infoModal/DelayModal'
   import RepayModal from '@/components/infoModal/RepayModal'
+  import LoanModal from '@/components/infoModal/LoanModal'
 
   export default {
     name: 'AuditModal',
     components:{
       BigPic,
       DelayModal,
-      RepayModal
+      RepayModal,
+      LoanModal
     },
     data () {
       return{
@@ -639,7 +646,7 @@
               key: 'content'
             },{
               title: '添加时间',
-              key: 'create_at'
+              key: 'addtime'
             }],
             remark: [],
             remark_ipt: ''
@@ -714,6 +721,15 @@
         Repay:{
           modal: false,
           data:{
+            id: '',
+            name: '',
+            amount: ''
+          }
+        },
+        //放款操作
+        Loan:{
+          modal: false,
+          data: {
             id: '',
             name: '',
             amount: ''
@@ -1006,6 +1022,7 @@
         };
         this.UploadData('/backend/User/remark',data).then(()=>{
           this.NavData.baseInfo.IsRemark = false;
+          this.InitData(this.ID);
         });
       },
       RemarkCancel(){
@@ -1037,6 +1054,25 @@
           this.Repay.modal = false;
           this.InitData(this.InitId);
         });
+      },
+      //放款操作
+      LoanOpt(){
+        this.Loan.modal = true;
+        this.Loan.data = {
+          uid: this.ID,
+          amount: '',
+          name: this.AllInfo.jiben.info.name,
+          type: this.AllInfo.jiben.info.type
+        }
+      },
+      LoanCancel(){
+        this.Loan.modal = false;
+      },
+      LoanSub(data){
+        this.UploadData('/backend/Loan/payLoanRequest',data).then(()=>{
+          this.Loan.modal = false;
+          this.InitData(this.InitId);
+        })
       },
       StateText(arr){
         if(arr !== false && arr.length > 0){
