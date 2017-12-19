@@ -96,7 +96,11 @@
             key: 'title'
           },{
             title: '状态',
-            key: 'status'
+            key: 'status',
+            render: (h, params)=>{
+              let text = params.row.status === 1?'开启':'关闭';
+              return h("span", text);
+            }
           },{
             title: '英文名',
             key: 'title_en'
@@ -170,15 +174,6 @@
             let res = d.data;
             this.RowUserData = res;
             this.UserData = res;
-            if(res.length > 0){
-              this.UserData.forEach(val=>{
-                for(let key in val){
-                  if(key in this.TextArr){
-                    val[key] = this.TextArr[key][val[key]];
-                  }
-                }
-              })
-            }
             that.loading = false;
             resolve();
           })
@@ -214,9 +209,17 @@
       ModalCancel(){
         this.ModeModal.modal = false;
       },
-      AddOver(){
-
-
+      AddOver(data,isEdit){
+        const url = isEdit.status?'/backend/Autopush/modelUp':'/backend/Autopush/modelAdd';
+        data.title = data.title.join('');
+        data.content = data.content.join('');
+        if(isEdit.status){
+          data.id = isEdit.id;
+        }
+        this.$post(url,data).then(()=>{
+          this.InitData(this.apiUrl);
+          this.ModeModal.modal = false;
+        });
         /*this.$refs['ModeModal'].validate(valid=>{
           if(valid){
             this.ModeModal.modal = false;
@@ -232,21 +235,14 @@
           }
         });*/
 
-
       },
       //修改模板
       EditOpt(row){
-        let status_num = 0;
-        this.TextArr.status.forEach((val, index)=>{
-          if(row.status === val){
-            status_num = index
-          }
-        })
         this.ModeModal.data = {
           title: row.title,
           title_en: row.title_en,
           content: row.content,
-          status: status_num
+          status: row.status
         };
         this.ModeModal.isEdit.status = true;
         this.ModeModal.id = row.id;

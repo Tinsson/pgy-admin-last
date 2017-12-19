@@ -226,9 +226,8 @@
       SecondData(sinfo){
         return new Promise(resolve=>{
           this.$post(this.apiUrl,sinfo).then(d=>{
-            this.UserCol = d.data.field;
-            this.UserData = d.data.list;
-            this.Page.count = d.data.count;
+            this.UserData = d.data.customer_list;
+            this.Page.count = d.data.total;
             this.loading = false;
             resolve();
           })
@@ -279,8 +278,8 @@
         return new Promise((resolve)=>{
           this.$post(url,params).then((d)=>{
             let res = d.data;
-            this.Page.count = d.data.count;
-            this.UserData = res;
+            this.Page.count = d.data.total;
+            this.UserData = res.customer_list;
             that.loading = false;
             resolve();
           })

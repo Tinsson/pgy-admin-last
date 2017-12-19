@@ -69,9 +69,6 @@ import generalizeCount from '@/views/generalize/generalizeCount'
 import Extend from '@/views/generalize/Extend'
 import Registered from '@/views/generalize/Registered'
 
-//第三方管理
-import cajlList from '@/views/third/cajlList'
-
 //统计
 import statistiIndex from '@/views/statistical/statistiIndex'
 import statiTrading from '@/views/statistical/statiTrading'
@@ -115,8 +112,6 @@ const componentList = {
 
   generalizeConfig,
   generalizeList,
-
-  cajlList,
 
   statistiIndex,
   statiTrading

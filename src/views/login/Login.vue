@@ -49,7 +49,7 @@
       }
     },
     created(){
-
+      this.dingding = this.$route.query;
     },
     methods:{
       signIn(){
@@ -64,7 +64,8 @@
           this.$post('/backend/Login/login',data).then((d)=>{
               const info = d.data;
               if(d.status === 1) {
-                  if(this.$route.query.admin_url){
+                  if(this.dingding.admin_url){
+                    saveLocal('token', info.token);
                     this.dingTrans();
                   }else{
                     this.$store.commit('SET_USERNAME',info.username);
@@ -111,7 +112,7 @@
         }
       },
       dingTrans(){
-        const params = this.$route.query;
+        const params = this.dingding;
         router.push({path: '/checkover',query: params});
       }
     }

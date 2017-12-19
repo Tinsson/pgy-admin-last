@@ -34,8 +34,11 @@
               <FormItem label="英文名">
                 <Input v-model="SubData.title_en" class="ipt-info"/>
               </FormItem>
-              <FormItem label="备注">
-                <Input v-model="SubData.remark" class="ipt-info"/>
+              <FormItem label="状态">
+                <RadioGroup v-model="SubData.status">
+                  <Radio :label="0">关闭</Radio>
+                  <Radio :label="1">开启</Radio>
+                </RadioGroup>
               </FormItem>
             </Form>
           </div>
@@ -94,11 +97,9 @@
           content: []
         },
         SubData:{
-          type: 'actionCard',
-          template_name: '',
-          send_url: '',
+          status: 1,
+          name: '',
           title_en: '',
-          remark: '',
           title: [],
           content: []
         }
@@ -119,14 +120,11 @@
         }else{
           this.mTitle = '添加';
           this.SubData = {
-            type: 'actionCard',
-            template_name: '',
-            send_url: '',
+            status: 1,
+            name: '',
             title_en: '',
-            remark: '',
             title: [],
-            content: [],
-            check_button: []
+            content: []
           };
           this.ShowData = {
             title: [],
@@ -136,10 +134,8 @@
       },
       initData(val){
         this.SubData.title_en = val.title_en;
-        this.SubData.template_name = val.template_name;
-        this.SubData.remark = val.remark;
-        this.SubData.check_button = val.check_button;
-        this.SubData.send_url = val.send_url;
+        this.SubData.name = val.name;
+        this.SubData.status = val.status;
         this.SubData.title = val.title;
         this.SubData.content = val.content;
 
