@@ -1,6 +1,6 @@
 <template>
   <div class="taobao-report">
-    <h2 class="all-title">淘宝报告</h2>
+    <h2 class="all-title">运营商报告</h2>
     <div class="first-level">
       <h3 class="first-title">1.基本信息</h3>
       <table cellspacing="0" cellpadding="0" border="0">

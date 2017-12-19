@@ -96,7 +96,7 @@
     data () {
       return {
         title: '推广配置',
-        apiUrl: '/backend/PromoteConfig/promoteList',
+        apiUrl: '/backend/Promoteconfig/promoteList',
         auth_id: '',
         loading: true,
         ClipBoard: {},
@@ -324,7 +324,7 @@
       //初始图片数据
       InitPic(){
         this.picloading = true;
-        this.$post('/backend/PromoteConfig/imgList').then(d=>{
+        this.$post('/backend/Promoteconfig/imgList').then(d=>{
           this.PicData = d.data;
           this.picloading = false;
         })
@@ -393,7 +393,7 @@
             this.ModeModal.modal = false;
             let ninfo = this.RemoveObserve(this.ModeModal.data);
             const isEdit = this.ModeModal.isEdit;
-            const url = isEdit?'/backend/PromoteConfig/promoteEdit':'/backend/PromoteConfig/promoteAdd';
+            const url = isEdit?'/backend/Promoteconfig/promoteEdit':'/backend/Promoteconfig/promoteAdd';
             if(isEdit){
               ninfo.id = this.ModeModal.id;
             }
@@ -420,7 +420,7 @@
           title: '提示',
           content: `<p class="confirm-text">删除此推广渠道吗？</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/PromoteConfig/promoteDel',{id: row.id}).then(()=>{
+            this.UploadData('/backend/Promoteconfig/promoteDel',{id: row.id}).then(()=>{
               this.InitData(this.apiUrl);
             });
           }
@@ -454,7 +454,7 @@
             this.PicModal.modal = false;
             let ninfo = this.RemoveObserve(this.PicModal.data);
             const isEdit = this.PicModal.isEdit;
-            const url = isEdit?'/backend/PromoteConfig/imgEdit':'/backend/PromoteConfig/imgAdd';
+            const url = isEdit?'/backend/Promoteconfig/imgEdit':'/backend/Promoteconfig/imgAdd';
             if(isEdit){
               ninfo.id = this.PicModal.id;
             }
@@ -469,7 +469,7 @@
           title: '提示',
           content: `<p class="confirm-text">删除此图片吗？</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/PromoteConfig/imgDel',{id: row.id}).then(()=>{
+            this.UploadData('/backend/Promoteconfig/imgDel',{id: row.id}).then(()=>{
               this.InitPic();
             });
           }

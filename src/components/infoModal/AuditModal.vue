@@ -499,6 +499,7 @@
             <Input v-show="Limit.status" v-model="Limit.value" style="width: 120px;"></Input>
             <Button v-show="Limit.status" type="success" @click="SubmitLimit">提交额度</Button>
           </span>
+          <Button v-for="item in ButtonAll" :key="item.id">{{item.name}}</Button>
         </div>
         <Page :current="CurrentPage"
               :total="TotalPage"
@@ -734,14 +735,17 @@
             name: '',
             amount: ''
           }
-        }
+        },
+        //按钮集合
+        ButtonAll:[]
       }
     },
     props: {
       modalShow: Boolean,
       InitId: [String, Number],
       UniqueId: [String, Number],
-      AllId: [Array,String]
+      AllId: [Array,String],
+      BtnId: [String, Number]
     },
     watch: {
       modalShow(val){
@@ -856,31 +860,34 @@
         this.$emit('CloseModal',this.modalState);
       },
       InitData(id){
-        this.$fetch('/backend/User/editUser',{uid: id}).then(edit=>{
-          this.$fetch('/backend/User/getInfo',{uid: id}).then(info=>{
-            this.EditData = edit.data;
-            this.EditData.uid = this.ID;
-            this.EditData.info.uid = this.ID;
-            this.Limit.value = edit.data.info.credit_limit
-            this.NavData.baseInfo.remark = edit.data.info.remark;
-            this.ChoseCompany = this.StdArea(edit.data.info.address_company);
-            this.ChoseLive = this.StdArea(edit.data.info.address_live);
-            this.DetailsCompany = edit.data.info.address_company[edit.data.info.address_company.length - 1];
+        this.$fetch('backend/Menuauth/listAuthGet', {auth_id: this.BtnId}).then(d=>{
+          this.ButtonAll = d.data.operation;
+          this.$fetch('/backend/User/editUser',{uid: id}).then(edit=>{
+            this.$fetch('/backend/User/getInfo',{uid: id}).then(info=>{
+              this.EditData = edit.data;
+              this.EditData.uid = this.ID;
+              this.EditData.info.uid = this.ID;
+              this.Limit.value = edit.data.info.credit_limit
+              this.NavData.baseInfo.remark = edit.data.info.remark;
+              this.ChoseCompany = this.StdArea(edit.data.info.address_company);
+              this.ChoseLive = this.StdArea(edit.data.info.address_live);
+              this.DetailsCompany = edit.data.info.address_company[edit.data.info.address_company.length - 1];
 
-            this.AllInfo = info.data;
-            this.IsPass.status = (info.data.jiben.info.status === 2)?true:false;
-            this.IsPass.type = this.IsPass.status?'ghost':'success';
-            this.IsPass.text = this.IsPass.status?'不通过':'通过';
-            this.IsHang.status = (info.data.jiben.info.is_hangup === 1)?true:false;
-            this.IsHang.type = this.IsHang.status?'ghost': 'primary';
-            this.IsHang.text = this.IsHang.status?'取消挂起': '挂起';
-            this.StateText(this.AllInfo.loan.jk_list);
-            this.StateText(this.AllInfo.loan.hk_list);
-            this.Authorize.Data = this.AllInfo.operation.user.authorize;
-            this.Audit.Data = this.AllInfo.operation.user.audit;
-            this.Urge.Data = this.AllInfo.operation.collection.inputlist;
-            this.BindHidden();
-            this.loading = false;
+              this.AllInfo = info.data;
+              this.IsPass.status = (info.data.jiben.info.status === 2)?true:false;
+              this.IsPass.type = this.IsPass.status?'ghost':'success';
+              this.IsPass.text = this.IsPass.status?'不通过':'通过';
+              this.IsHang.status = (info.data.jiben.info.is_hangup === 1)?true:false;
+              this.IsHang.type = this.IsHang.status?'ghost': 'primary';
+              this.IsHang.text = this.IsHang.status?'取消挂起': '挂起';
+              this.StateText(this.AllInfo.loan.jk_list);
+              this.StateText(this.AllInfo.loan.hk_list);
+              this.Authorize.Data = this.AllInfo.operation.user.authorize;
+              this.Audit.Data = this.AllInfo.operation.user.audit;
+              this.Urge.Data = this.AllInfo.operation.collection.inputlist;
+              this.BindHidden();
+              this.loading = false;
+            });
           });
         });
       },

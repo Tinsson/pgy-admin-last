@@ -70,6 +70,7 @@
     </div>
     <AuditModal :modalShow="Audit.modal"
                 :InitId="Audit.id"
+                :BtnId="Audit.btn"
                 :UniqueId="Audit.id"
                 :AllId="Audit.allId"
                 @CloseModal="AuditCancel"/>
@@ -204,7 +205,8 @@
         Audit:{
           modal: false,
           id: '',
-          allId: ''
+          allId: '',
+          btn: ''
         }
       }
     },
@@ -299,6 +301,11 @@
         //获取按钮信息
         this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
+          this.BtnData.forEach(val=>{
+            if(val.class === "AuditPanel"){
+              this.Audit.btn = val.id;
+            }
+          })
         });
         //列表数据获取
         return new Promise((resolve)=>{
@@ -388,7 +395,7 @@
       },
       AuditPanel(row){
         this.Audit.modal = true;
-        this.Audit.id = row.uid;
+        this.Audit.id = row.uid !== undefined? row.uid: row.id;
         let idArr = [];
         this.UserData.forEach(val=>{
           idArr.push(val.id);

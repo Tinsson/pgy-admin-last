@@ -198,7 +198,7 @@
             width: '220',
             render: (h, params)=>{
               let BtnArr = this.$renderBtn(h, params, this.BtnData);
-              if(!params.row.hasAdd){
+              if(!params.row.hasAdd && params.row.href !== 'AuditPanel'){
                 BtnArr.shift();
               }
               return h('div',BtnArr);
@@ -291,19 +291,19 @@
           val.levelNum = num;
           let space = '';
           if(num > 1){
-              for(let i = 1;i<num;i++){
-                space += "　";
-              }
-              val.title = space + "|——" + val.title;
+            for(let i = 1;i<num;i++){
+              space += "　";
+            }
+            val.title = space + "|——" + val.title;
           }
           if(num > 2){
-              val.hasAdd = false;
+            val.hasAdd = false;
           }else{
-              val.hasAdd = true;
+            val.hasAdd = true;
           }
           val.status = (val.status === 1)?'开启':'关闭';
           arr.push(val);
-          if(val.auth.length > 0){
+          if(val.auth !== undefined && val.auth.length > 0){
             this.GetChild(val.auth,arr,num);
           }
         })
@@ -349,7 +349,7 @@
           this.AddInfo.topLevel = false;
           this.AddInfo.pid = p.id;
         }else{
-          if(p.levelNum === 2){
+          if(p.levelNum === 2 || p.levelNum === 3){
             this.AddInfo.mark = 1;
             this.AddInfo.hideBtn = false;
           }else{

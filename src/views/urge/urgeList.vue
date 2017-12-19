@@ -107,6 +107,7 @@
              @UpOver="AppOpt"></PushApp>
     <AuditModal :modalShow="Audit.modal"
                 :InitId="Audit.id"
+                :BtnId="Audit.btn"
                 :UniqueId="Audit.unique"
                 :AllId="Audit.allId"
                 @CloseModal="AuditCancel"></AuditModal>
@@ -256,7 +257,8 @@
           modal: false,
           id: '',
           unique: '',
-          allId: ''
+          allId: '',
+          btn: ''
         },
         //展期操作
         Delay:{
@@ -336,6 +338,11 @@
         //获取按钮信息
         this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
+          this.BtnData.forEach(val=>{
+            if(val.class === "AuditPanel"){
+              this.Audit.btn = val.id;
+            }
+          })
         });
         //列表数据获取
         return new Promise((resolve)=>{

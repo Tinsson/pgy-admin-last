@@ -87,7 +87,7 @@
     data () {
       return {
         title: '推广列表',
-        apiUrl: '/backend/PromoteInfo/Index',
+        apiUrl: '/backend/Promoteinfo/Index',
         auth_id: '',
         loading: true,
         ClipBoard: {},
@@ -298,7 +298,7 @@
       //二次获取数据
       SecondData(sinfo){
         return new Promise(resolve=>{
-          this.$post('/backend/PromoteInfo/detail',sinfo).then(d=>{
+          this.$post('/backend/Promoteinfo/detail',sinfo).then(d=>{
             this.UserCol = d.data.field;
             this.UserData = d.data.list;
             this.Page.count = d.data.count;
@@ -345,7 +345,7 @@
       InitData(url,params = {}){
         const that = this;
         this.loading = true;
-        this.$fetch('/backend/PromoteInfo/topIndex').then(d=>{
+        this.$fetch('/backend/Promoteinfo/topIndex').then(d=>{
           this.CountData.forEach(val=>{
             if(val.second){
               val.count = d.data[val.status].count;
@@ -391,7 +391,7 @@
       ExportData(){
         let sinfo = this.RemoveObserve(this.ScreenData);
         sinfo.expro = 1;
-        this.UploadData('/backend/PromoteInfo/detail',sinfo).then((url)=>{
+        this.UploadData('/backend/Promoteinfo/detail',sinfo).then((url)=>{
           //console.log(url);
           window.location.href = url;
         });
@@ -402,7 +402,7 @@
           page: curpage,
           num: this.Page.size
         });
-        this.InitData('/backend/PromoteInfo/detail',sinfo).then(()=>{
+        this.InitData('/backend/Promoteinfo/detail',sinfo).then(()=>{
           this.Page.cur = curpage;
         })
       },
@@ -412,7 +412,7 @@
           page: 1,
           num: size
         });
-        this.InitData('/backend/PromoteInfo/detail',sinfo).then(()=>{
+        this.InitData('/backend/Promoteinfo/detail',sinfo).then(()=>{
           this.Page.cur = 1;
           this.Page.size = size;
         })
