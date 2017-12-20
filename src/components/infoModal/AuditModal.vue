@@ -487,6 +487,9 @@
           <Button type="primary" style="margin-left: 0" v-show="IsEdit" @click="SubOpt">保存</Button>
           <Button type="warning" v-show="IsEdit" @click="EditCancel">取消</Button>
           <Button v-for="item in ButtonAll" :key="item.id" :type="item.color" @click="EventTune(item.class)">{{item.name}}</Button>
+          <p v-show="IsPass.status" class="inline-block">
+            <Button :type="SetLoan.type" @click="SetLoanOpt">{{SetLoan.name}}</Button>
+          </p>
           <p v-show="IsPass.isLimit" class="inline-block">
             <Button type="primary" v-show="IsPass.status" @click="GiveLimitOpt">授予额度</Button>
             <span v-show="IsPass.status" class="limit-input">
@@ -497,16 +500,16 @@
               <Button v-show="Limit.status" type="error" @click="LimitCancel">取消</Button>
             </span>
           </p>
-          <p v-show="IsPass.isLoan" class="inline-block">
-            <Button type="info" v-show="IsPass.status" @click="SetLoanOpt">设置放款员</Button>
-            <span v-show="IsPass.status">
-              <Select v-show="SetLoan.status" v-model="SetLoan.value" style="width: 75px;">
-                <Option v-for="item in SetLoan.select" :key="item.id" :value="item.id">{{item.nickname}}</Option>
-              </Select>
-              <Button v-show="SetLoan.status" type="success" @click="SubmitSetLoan">提交操作</Button>
-              <Button v-show="SetLoan.status" type="error" @click="SetLoanCancel">取消</Button>
-            </span>
-          </p>
+          <!--<p v-show="IsPass.isLoan" class="inline-block">-->
+            <!--<Button type="info" v-show="IsPass.status" @click="SetLoanOpt">设置放款员</Button>-->
+            <!--<span v-show="IsPass.status">-->
+              <!--<Select v-show="SetLoan.status" v-model="SetLoan.value" style="width: 75px;">-->
+                <!--<Option v-for="item in SetLoan.select" :key="item.id" :value="item.id">{{item.nickname}}</Option>-->
+              <!--</Select>-->
+              <!--<Button v-show="SetLoan.status" type="success" @click="SubmitSetLoan">提交操作</Button>-->
+              <!--<Button v-show="SetLoan.status" type="error" @click="SetLoanCancel">取消</Button>-->
+            <!--</span>-->
+          <!--</p>-->
         </div>
         <Page :current="CurrentPage"
               :total="TotalPage"
@@ -650,7 +653,9 @@
         SetLoan: {
           status: false,
           select: [],
-          value: ''
+          value: '',
+          type: '',
+          name: ''
         },
         NavData: {
           baseInfo: {
@@ -882,10 +887,15 @@
         this.$fetch('backend/Menuauth/listAuthGet', {auth_id: this.BtnId}).then(d=>{
           this.ButtonAll = [];
           this.IsPass.isLimit = false;
+          this.IsPass.isLoan = false;
           this.Urge.auth = false;
           d.data.operation.forEach(val=>{
             if(val.class === 'GiveLimitOpt'){
               this.IsPass.isLimit = true;
+            }else if(val.class === 'SetLoanOpt'){
+              this.SetLoan.name = val.name;
+              this.SetLoan.type = val.color;
+              this.IsPass.isLoan = true;
             }else if(val.class === 'RecordAddOpt'){
               this.Urge.auth = true;
             }else{
@@ -964,17 +974,18 @@
         })
       },
       HangOpt(){
-        const tips = this.IsHang.status?'确认要取消该用户挂起状态吗？':'确认挂起该用户吗？';
+        /*const tips = this.IsHang.status?'确认要取消该用户挂起状态吗？':'确认挂起该用户吗？';
         this.$Modal.confirm({
           title: '提示',
           content: `<p class="confirm-text">${tips}</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/User/setGuaQi',{uid: this.ID}).then(()=>{
-              this.IsHang.status = !this.IsHang.status;
-              this.JudgeHang(this.IsHang.status);
-            });
           }
-        })
+        })*/
+        this.UploadData('/backend/User/setGuaQi',{uid: this.ID}).then(()=>{
+          this.IsHang.status = !this.IsHang.status;
+          this.JudgeHang(this.IsHang.status);
+          this.CloseBtn();
+        });
       },
       GiveLimitOpt(){
         this.Limit.status = true;

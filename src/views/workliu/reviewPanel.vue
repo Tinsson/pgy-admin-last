@@ -47,7 +47,7 @@
           </h3>
           <div class="btn-box">
             <Button :type="HangType" icon="pin" @click="ShowHang">{{HangText}}</Button>
-            <Button type="warning" icon="checkmark" @click="SumPass">一键通过</Button>
+            <Button type="warning" v-show="PassShow" icon="checkmark" @click="SumPass">一键通过</Button>
           </div>
         </div>
         <Table :columns="UserCol"
@@ -215,6 +215,13 @@
       },
       HangType(){
         return this.ScreenData.is_hang?'default':'primary';
+      },
+      PassShow(){
+        if(this.CountData[1].cur || this.CountData[2].cur){
+          return true;
+        }else{
+          return false;
+        }
       }
     },
     methods: {
@@ -273,8 +280,14 @@
         this.SecondData(sinfo);
       },
       //查询结果
-      SimpleSearch(sign = 1){
+      SimpleSearch(sign = 1,isPage = 0){
         let sinfo = this.RemoveObserve(this.ScreenData);
+        if(isPage){
+          sinfo = Object.assign(sinfo,{
+            page: this.Page.cur,
+            num: this.Page.size
+          })
+        }
         if(this.allTime[0] !== ""){
           sinfo.start_time = this.allTime[0];
           sinfo.end_time = this.allTime[1];
@@ -283,7 +296,9 @@
           sinfo.end_time = '';
         }
         this.SecondData(sinfo).then(()=>{
-          this.$Message.success('筛选成功！');
+          if(sign){
+            this.$Message.success('筛选成功！');
+          }
         });
       },
       //初始化数据
@@ -363,6 +378,7 @@
       },
       AuditCancel(){
         this.Audit.modal = false;
+        this.SimpleSearch(0,1);
       },
       HangStatus(row){
         if(row.is_hangup){

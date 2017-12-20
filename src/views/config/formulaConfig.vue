@@ -74,7 +74,7 @@
       </Form>
       <div slot="footer">
         <Button type="text" @click="ModalCancel('ModeModal')" size="large">取消</Button>
-        <Button type="primary" @click="AddOver('ModeModal','Sysconfig/sysFormulaUp','Sysconfig/sysFormulaAdd')" size="large">保存</Button>
+        <Button type="primary" @click="AddOver('ModeModal','/backend/Sysconfig/sysFormulaUp','/backend/Sysconfig/sysFormulaAdd')" size="large">保存</Button>
       </div>
     </Modal>
     <Modal v-model="ParamsModal.modal"
@@ -98,7 +98,7 @@
       </Form>
       <div slot="footer">
         <Button type="text" @click="ModalCancel('ParamsModal')" size="large">取消</Button>
-        <Button type="primary" @click="AddOver('ParamsModal','Sysconfig/sysFormulaBUp','Sysconfig/sysFormulaBAdd')" size="large">保存</Button>
+        <Button type="primary" @click="AddOver('ParamsModal','/backend/Sysconfig/sysFormulaBUp','/backend/Sysconfig/sysFormulaBAdd')" size="large">保存</Button>
       </div>
     </Modal>
   </div>
