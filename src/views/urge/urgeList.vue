@@ -492,7 +492,6 @@
         let sinfo = this.RemoveObserve(this.ScreenData);
         sinfo.expro = 1;
         this.UploadData('/backend/Collection/CollectionList',sinfo).then((url)=>{
-            //console.log(url);
             window.location.href = url;
         });
       },
