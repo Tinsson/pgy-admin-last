@@ -240,7 +240,7 @@
         //导出报告
         Report: {
           modal: false,
-          type: ''
+          type: 1
         },
         Group: {
           SmsModal: false,

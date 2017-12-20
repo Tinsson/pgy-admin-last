@@ -313,7 +313,7 @@
           },{
             title: '来源渠道',
             align: 'center',
-            key: 'black'
+            key: 'qudao'
           },{
             title: '审核员',
             key: 'auditorId'

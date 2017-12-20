@@ -223,6 +223,16 @@
     computed: {
 
     },
+    watch:{
+      UserCol(col){
+        console.log(col);
+        col.forEach(val=>{
+          if(val.key === "auth_status"){
+            val.render = this.AuthIcon;
+          }
+        });
+      }
+    },
     methods: {
       //去除data数据里绑定的监视器
       RemoveObserve(rowdata){
@@ -407,6 +417,19 @@
       },
       ShowHang(){
 
+      },
+      AuthIcon(h,params){
+        const auth = params.row.auth_status;
+        let elmArr = [];
+        Object.keys(auth).forEach(key=>{
+          if(auth[key]){
+            const elm = h('span',{
+              class:['auth-icon',key]
+            });
+            elmArr.push(elm);
+          }
+        });
+        return h('div',elmArr);
       }
     }
   }

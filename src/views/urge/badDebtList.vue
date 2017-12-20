@@ -49,8 +49,8 @@
             数据列表
           </h3>
           <div class="btn-box">
-            <!--<Button type="warning" size="large" icon="chatbubble" @click="GroupSmsOpt">群发短信</Button>-->
-            <Button type="info" size="large" icon="chatbox" @click="GroupAppOpt">群发APP消息</Button>
+            <!--<Button type="warning" size="large" icon="chatbubble" @click="GroupSmsOpt">群发短信</Button>
+            <Button type="info" size="large" icon="chatbox" @click="GroupAppOpt">群发APP消息</Button>-->
             <Button type="primary" size="large" icon="archive" @click="ExportData">导出数据</Button>
           </div>
         </div>

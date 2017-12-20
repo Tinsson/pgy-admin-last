@@ -26,12 +26,12 @@
                           @on-change="PickDate"
                           style="width: 280px"></DatePicker>
             </FormItem>
-            <FormItem label="总人数：">
+            <!--<FormItem label="总人数：">
               <span class="count-span">{{CountAll.person}}</span>人
             </FormItem>
             <FormItem label="总金额：">
               <span class="count-span">{{CountAll.money}}</span>元
-            </FormItem>
+            </FormItem>-->
           </Form>
         </div>
       </Card>
@@ -121,7 +121,7 @@
     },
     created(){
       const src = this.$route.query.src;
-      //this.InitData(this.apiUrl,{src});
+      this.InitData(this.apiUrl,{src});
     },
     methods: {
       //去除data数据里绑定的监视器

@@ -883,19 +883,15 @@
           this.ButtonAll = [];
           this.IsPass.isLimit = false;
           this.Urge.auth = false;
-          this.IsPass.isLoan = false;
           d.data.operation.forEach(val=>{
             if(val.class === 'GiveLimitOpt'){
               this.IsPass.isLimit = true;
-            }else if(val.class === 'SetLoanOpt'){
-              this.IsPass.isLoan = true;
-              this.GetFangkuan();
             }else if(val.class === 'RecordAddOpt'){
               this.Urge.auth = true;
             }else{
               this.ButtonAll.push(val);
             }
-          })
+          });
           this.$fetch('/backend/User/editUser',{uid: id}).then(edit=>{
             this.$fetch('/backend/User/getInfo',{uid: id}).then(info=>{
               this.EditData = edit.data;
@@ -996,7 +992,14 @@
         this.Limit.status = false;
       },
       SetLoanOpt(){
-        this.SetLoan.status = true;
+        const data = {
+          type: 0,
+          uid: this.ID,
+          fk_id: 7
+        };
+        this.UploadData('/backend/User/distributionFk',data).then(()=>{
+          this.InitData(this.InitId);
+        })
       },
       SubmitSetLoan(){
         const data = {

@@ -42,12 +42,14 @@
                           @on-change="PickDate"
                           style="width: 280px"></DatePicker>
             </FormItem>
+            <!--
             <FormItem label="总人数：">
               <span class="count-span">{{CountAll.person}}</span>人
             </FormItem>
             <FormItem label="总金额：">
               <span class="count-span">{{CountAll.money}}</span>元
             </FormItem>
+            -->
           </Form>
         </div>
       </Card>
@@ -341,12 +343,14 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
     flex-wrap: wrap;
     padding-bottom: 20px;
+    .card-col{
+      padding: 0 8px;
+    }
     .sim-card{
       position: relative;
-      width: 24%;
+      width: 100%;
       padding: 15px;
       color: #FFF;
       overflow: hidden;
