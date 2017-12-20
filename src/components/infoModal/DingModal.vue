@@ -172,7 +172,8 @@
     },
     props: {
       modalShow: Boolean,
-      isEdit: Object,
+      isEdit: Boolean,
+      initId: [String,Number],
       initData: Object
     },
     watch:{
@@ -180,7 +181,8 @@
         this.State = val;
       },
       isEdit(val){
-        if(val.status){
+        console.log(val);
+        if(val){
           this.mTitle = '编辑';
         }else{
           this.mTitle = '添加';
@@ -267,9 +269,8 @@
         this.$emit('CloseModal');
       },
       Submit(){
-        this.$emit('SubModal',this.SubData,this.isEdit);
+        this.$emit('SubModal',this.SubData,this.isEdit,this.initId);
       },
-
       AddTag(tag){
         if(this.FocusKey){
           this.SubData[this.FocusKey].push(tag.value);

@@ -37,7 +37,8 @@
       <div class="ding-footer" slot="footer"></div>
     </Modal>
     <DingModal :modalShow="ModalData.show"
-               :isEdit="ModalData.edit"
+               :isEdit="ModalData.edit.status"
+               :initId="ModalData.edit.id"
                :initData="ModalData.data"
                @CloseModal="ModalCancel"
                @SubModal="DingSubmit"></DingModal>
@@ -168,7 +169,6 @@
       EditOpt(row){
         this.$post('/backend/Dingdingtp/templateDetail',{id: row.id}).then(d=>{
           this.ModalData.data = d.data.template_detail;
-          console.log(d.data.template_detail);
           this.ModalData.edit.status = true;
           this.ModalData.edit.id = row.id;
           this.ModalData.show = true;
@@ -177,6 +177,7 @@
       //添加模板
       AddTemp(){
         this.ModalData.edit.status = false;
+        this.ModalData.edit.id = '';
         this.ModalData.show = true;
         this.ModalData.data = {
           type: 'actionCard',
@@ -192,11 +193,11 @@
       ModalCancel(){
         this.ModalData.show = false;
       },
-      DingSubmit(data, is_edit){
+      DingSubmit(data, is_edit,id){
         let info = data;
-        const url = is_edit.status?'/backend/Dingdingtp/templateEdit':'/backend/Dingdingtp/templateAdd';
-        if(is_edit.status){
-          info.id = is_edit.id;
+        const url = is_edit?'/backend/Dingdingtp/templateEdit':'/backend/Dingdingtp/templateAdd';
+        if(is_edit){
+          info.id = id;
         }
         this.UploadData(url,{template_data: JSON.stringify(info)}).then((d)=>{
           this.InitData(this.apiUrl);
