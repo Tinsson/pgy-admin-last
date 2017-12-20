@@ -415,9 +415,9 @@
               }
               this.EditInfo['title'] = title;
           }else if(key === 'hideBtn'){
-            this.EditInfo.hideBtn = (row.levelNum === 3)?false:true;
+            this.EditInfo.hideBtn = (row.levelNum === 3 || row.levelNum === 4)?false:true;
           }else if(key === 'mark'){
-            this.EditInfo.mark = (row.levelNum === 3)?1:0;
+            this.EditInfo.mark = (row.levelNum === 3 || row.levelNum === 4)?1:0;
           }else{
             this.EditInfo[key] = row[key];
           }

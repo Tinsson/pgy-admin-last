@@ -485,6 +485,7 @@
           <Button type="info" v-show="!IsEdit" @click="EditInfo">修改</Button>
           <Button type="primary" style="margin-left: 0" v-show="IsEdit" @click="SubOpt">保存</Button>
           <Button type="warning" v-show="IsEdit" @click="EditCancel">取消</Button>
+          <Button v-for="item in ButtonAll" :key="item.id" :type="item.color" @click="EventTune(item.class)">{{item.name}}</Button>
           <p v-show="IsPass.isAudit" class="inline-block">
             <Button type="warning" v-show="IsPass.status" @click="GiveLimitOpt">授予额度</Button>
             <span v-show="IsPass.status" class="limit-input">
@@ -494,7 +495,6 @@
               <Button v-show="Limit.status" type="success" @click="SubmitLimit">提交额度</Button>
             </span>
           </p>
-          <Button v-for="item in ButtonAll" :key="item.id" :type="item.color" @click="EventTune(item.class)">{{item.name}}</Button>
         </div>
         <Page :current="CurrentPage"
               :total="TotalPage"
@@ -869,7 +869,7 @@
             if(val.class === 'GiveLimitOpt'){
               this.IsPass.isAudit = true;
             }else if(val.class === 'RecordAddOpt'){
-              this.Urge.Auth = true;
+              this.Urge.auth = true;
             }else{
               this.ButtonAll.push(val);
             }
