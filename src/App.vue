@@ -18,7 +18,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
   /*全局样式*/
   #app{
     height: auto;
@@ -33,8 +33,8 @@ export default {
     color: #fff!important;
   }
   .ivu-table .table-hang-row td{
-    background-color: #69c0ff!important;
-    color: #fff!important;
+    background-color: #76d2fb!important;
+    color: #333!important;
   }
   .ivu-table .super-admin td{
     background-color: #4ba2f8!important;
@@ -62,6 +62,22 @@ export default {
     position: absolute!important;
     top: 32px!important;
   }
-  /*钉钉模版对话框*/
-
+  .auth-icon{
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    margin-right: 5px;
+  &.TB{
+     background: url('./assets/images/taobao.png') no-repeat center;
+     background-size: cover;
+   }
+  &.MB{
+     background: url('./assets/images/phone.png') no-repeat center;
+     background-size: cover;
+   }
+  &.JD{
+     background: url('./assets/images/jd.png') no-repeat center;
+     background-size: cover;
+   }
+  }
 </style>

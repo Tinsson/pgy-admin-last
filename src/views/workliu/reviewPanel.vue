@@ -162,7 +162,20 @@
             key: 'status'
           },{
             title: '授权状态',
-            key: 'auth_status'
+            key: 'auth_status',
+            render: (h,params)=>{
+              const auth = params.row.auth_status;
+              let elmArr = [];
+              Object.keys(auth).forEach(key=>{
+                if(auth[key]){
+                  const elm = h('span',{
+                    class:['auth-icon',key]
+                  });
+                  elmArr.push(elm);
+                }
+              });
+              return h('div',elmArr);
+            }
           },{
             title: '操作',
             key: 'operation',
@@ -346,7 +359,7 @@
         this.Audit.modal = false;
       },
       HangStatus(row){
-        if(row.hang){
+        if(row.is_hangup){
           return 'table-hang-row';
         }else{
           return '';
@@ -456,5 +469,23 @@
     font-size: 18px;
     padding: 0 5px;
     color: #d7000f;
+  }
+  .auth-icon{
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    margin-right: 5px;
+    &.TB{
+      background: url('../../assets/images/taobao.png') no-repeat center;
+      background-size: cover;
+    }
+    &.MB{
+      background: url('../../assets/images/phone.png') no-repeat center;
+      background-size: cover;
+    }
+    &.JD{
+      background: url('../../assets/images/phone.png') no-repeat center;
+      background-size: cover;
+    }
   }
 </style>
