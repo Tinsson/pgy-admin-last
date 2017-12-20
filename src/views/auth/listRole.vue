@@ -75,7 +75,14 @@
               <Checkbox :label="item.id">{{item.title}}</Checkbox>
               <div class="auth-seclist" v-for="(secItem,secIndex) in item.auth" :key="secItem.id">
                 <Checkbox :label="secItem.id">{{secItem.title}}</Checkbox>
-                <Checkbox v-for="(thirdItem, thirdIndex) in secItem.auth" :label="thirdItem.id" :key="thirdItem.id">{{thirdItem.title}}</Checkbox>
+                <div class="inline-block" v-for="(thirdItem, thirdIndex) in secItem.auth" :key="thirdItem.id">
+                  <p>
+                    <Checkbox :label="thirdItem.id">{{thirdItem.title}}</Checkbox>
+                  </p>
+                  <p v-for="fourItem in thirdItem.auth" :key="fourItem.id">
+                    <Checkbox :label="fourItem.id">{{fourItem.title}}</Checkbox>
+                  </p>
+                </div>
               </div>
             </div>
           </CheckboxGroup>
@@ -300,9 +307,14 @@
   }
   .auth-seclist{
     padding-left: 8px;
+    display: flex;
+    flex-direction: row;
   }
   .auto-area{
     max-height: 400px;
     overflow-y: auto;
+  }
+  .inline-block{
+    display: inline-block;
   }
 </style>

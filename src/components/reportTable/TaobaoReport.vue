@@ -660,6 +660,9 @@
       }
       tbody{
         tr{
+          &:nth-child(even){
+            background: #f5f5f5;
+          }
           td{
             min-width: 0;
             height: 48px;

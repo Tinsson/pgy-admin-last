@@ -487,12 +487,13 @@
           <Button type="warning" v-show="IsEdit" @click="EditCancel">取消</Button>
           <Button v-for="item in ButtonAll" :key="item.id" :type="item.color" @click="EventTune(item.class)">{{item.name}}</Button>
           <p v-show="IsPass.isAudit" class="inline-block">
-            <Button type="warning" v-show="IsPass.status" @click="GiveLimitOpt">授予额度</Button>
+            <Button type="primary" v-show="IsPass.status" @click="GiveLimitOpt">授予额度</Button>
             <span v-show="IsPass.status" class="limit-input">
               额度：
               <span v-show="!Limit.status">{{Limit.value}}</span>
               <Input v-show="Limit.status" v-model="Limit.value" style="width: 120px;"></Input>
               <Button v-show="Limit.status" type="success" @click="SubmitLimit">提交额度</Button>
+              <Button v-show="Limit.status" type="error" @click="LimitCancel">取消</Button>
             </span>
           </p>
         </div>
@@ -879,7 +880,7 @@
               this.EditData = edit.data;
               this.EditData.uid = this.ID;
               this.EditData.info.uid = this.ID;
-              this.Limit.value = edit.data.info.credit_limit
+              this.Limit.value = edit.data.info.credit_limit;
               this.NavData.baseInfo.remark = edit.data.info.remark;
               this.ChoseCompany = this.StdArea(edit.data.info.address_company);
               this.ChoseLive = this.StdArea(edit.data.info.address_live);
@@ -969,6 +970,9 @@
         this.UploadData('/backend/User/creditLimit',data).then(()=>{
           this.Limit.status = false;
         });
+      },
+      LimitCancel(){
+        this.Limit.status = false;
       },
       PickDate(time){
         this.EditData.info.birth = time;
@@ -1089,7 +1093,7 @@
         this.Loan.modal = true;
         this.Loan.data = {
           uid: this.ID,
-          amount: '',
+          amount: this.Limit.value,
           name: this.AllInfo.jiben.info.name,
           type: this.AllInfo.jiben.info.type
         }
