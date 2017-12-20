@@ -176,6 +176,9 @@
           name: '设置放款员按钮',
           value: 'SetLoanOpt'
         },{
+          name: '加入黑名单按钮',
+          value: 'AddBlackOpt'
+        },{
           name: '审核面板按钮',
           value: 'AuditPanel'
         },{

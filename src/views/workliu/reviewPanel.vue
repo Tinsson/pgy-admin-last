@@ -218,9 +218,9 @@
       },
       PassShow(){
         if(this.CountData[1].cur || this.CountData[2].cur){
-          return true;
-        }else{
           return false;
+        }else{
+          return true;
         }
       }
     },
@@ -388,7 +388,7 @@
         }
       },
       ShowHang(){
-        this.ScreenData.is_hang = this.ScreenData.is_hang === 1?0:1;
+        this.ScreenData.is_hang = this.ScreenData.is_hang === 1?-1:1;
         this.SimpleSearch(0);
       },
       SumPass(){

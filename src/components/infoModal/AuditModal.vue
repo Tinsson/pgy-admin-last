@@ -293,7 +293,6 @@
               </p>
             </div>
             <div class="bot-btn">
-              <Button :type="BlackBtn.type" size="large" @click="AddBlack">{{BlackBtn.name}}</Button>
               <Button type="info" size="large" v-show="!NavData.baseInfo.IsRemark" @click="AddRemark">添加备注</Button>
               <Button type="warning" size="large" v-show="NavData.baseInfo.IsRemark" @click="RemarkOver">保存备注</Button>
               <Button type="default" size="large" v-show="NavData.baseInfo.IsRemark" @click="RemarkCancel">取消</Button>
@@ -487,7 +486,7 @@
           <Button type="primary" style="margin-left: 0" v-show="IsEdit" @click="SubOpt">保存</Button>
           <Button type="warning" v-show="IsEdit" @click="EditCancel">取消</Button>
           <Button v-for="item in ButtonAll" :key="item.id" :type="item.color" @click="EventTune(item.class)">{{item.name}}</Button>
-          <p v-show="IsPass.status" class="inline-block">
+          <p v-show="IsPass.status && IsPass.isLoan" class="inline-block">
             <Button :type="SetLoan.type" @click="SetLoanOpt">{{SetLoan.name}}</Button>
           </p>
           <p v-show="IsPass.isLimit" class="inline-block">
@@ -683,6 +682,7 @@
           name: '发起展期'
         },
         BlackBtn: {
+          status: false,
           type: 'error',
           name: '加入黑名单'
         },
@@ -1059,8 +1059,8 @@
       },
       BindHidden(){
         const black = this.EditData.info.black;
-        this.BlackBtn.type = black?'default':'error';
-        this.BlackBtn.name = black?'移除黑名单':'加入黑名单';
+        this.BlackBtn.status = black;
+        this.JudgeBlack(black);
       },
       //开通展期
       DelayOpt(){
@@ -1090,7 +1090,7 @@
         });
       },
       //加入黑名单
-      AddBlack(){
+      AddBlackOpt(){
         this.UploadData('/backend/User/black',{uid: this.ID}).then((d)=>{
           this.EditData.info.black = d.val;
           this.BindHidden();
@@ -1234,6 +1234,15 @@
           if(val.class === 'HangOpt'){
             val.name = status?'取消挂起':'挂起';
             val.color = status?'default':'primary';
+          }
+        })
+      },
+      //判断黑名单
+      JudgeBlack(status){
+        this.ButtonAll.forEach(val=>{
+          if(val.class === 'AddBlackOpt'){
+            val.name = status?'移除黑名单':'加入黑名单';
+            val.color = status?'default':'error';
           }
         })
       },
