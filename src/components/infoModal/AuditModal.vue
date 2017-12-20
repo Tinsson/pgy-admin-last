@@ -270,11 +270,12 @@
               <span class="half">催收员：{{AllInfo.jiben.info.collectorId}}</span>
             </p>
             <p class="info-box">
+              <span class="half">放款员：{{AllInfo.jiben.info.fangkuanId}}</span>
               <span class="half">用户ID：{{ID}}</span>
-              <span class="half">借款用途：{{AllInfo.jiben.info.money_use_to}}</span>
             </p>
             <p class="info-box">
-              审核状态：{{ReviewStatus}}
+              <span class="half">审核状态：{{ReviewStatus}}</span>
+              <span class="half">借款用途：{{AllInfo.jiben.info.money_use_to}}</span>
             </p>
             <p v-for="item in AllInfo.jiben.renz" class="info-box">
               {{item.type + '时间'}}：{{item.create_at}}
@@ -486,7 +487,7 @@
           <Button type="primary" style="margin-left: 0" v-show="IsEdit" @click="SubOpt">保存</Button>
           <Button type="warning" v-show="IsEdit" @click="EditCancel">取消</Button>
           <Button v-for="item in ButtonAll" :key="item.id" :type="item.color" @click="EventTune(item.class)">{{item.name}}</Button>
-          <p v-show="IsPass.isAudit" class="inline-block">
+          <p v-show="IsPass.isLimit" class="inline-block">
             <Button type="primary" v-show="IsPass.status" @click="GiveLimitOpt">授予额度</Button>
             <span v-show="IsPass.status" class="limit-input">
               额度：
@@ -494,6 +495,16 @@
               <Input v-show="Limit.status" v-model="Limit.value" style="width: 120px;"></Input>
               <Button v-show="Limit.status" type="success" @click="SubmitLimit">提交额度</Button>
               <Button v-show="Limit.status" type="error" @click="LimitCancel">取消</Button>
+            </span>
+          </p>
+          <p v-show="IsPass.isLoan" class="inline-block">
+            <Button type="info" v-show="IsPass.status" @click="SetLoanOpt">设置放款员</Button>
+            <span v-show="IsPass.status">
+              <Select v-show="SetLoan.status" v-model="SetLoan.value" style="width: 75px;">
+                <Option v-for="item in SetLoan.select" :key="item.id" :value="item.id">{{item.nickname}}</Option>
+              </Select>
+              <Button v-show="SetLoan.status" type="success" @click="SubmitSetLoan">提交操作</Button>
+              <Button v-show="SetLoan.status" type="error" @click="SetLoanCancel">取消</Button>
             </span>
           </p>
         </div>
@@ -621,7 +632,8 @@
         DetailsLive: '',
         IsEdit: false,
         IsPass: {
-          isAudit: false,
+          isLimit: false,
+          isLoan: false,
           type: 'success',
           status: false,
           text: '通过'
@@ -633,6 +645,11 @@
         },
         Limit: {
           status: false,
+          value: ''
+        },
+        SetLoan: {
+          status: false,
+          select: [],
           value: ''
         },
         NavData: {
@@ -864,11 +881,15 @@
       InitData(id){
         this.$fetch('backend/Menuauth/listAuthGet', {auth_id: this.BtnId}).then(d=>{
           this.ButtonAll = [];
-          this.IsPass.isAudit = false;
+          this.IsPass.isLimit = false;
           this.Urge.auth = false;
+          this.IsPass.isLoan = false;
           d.data.operation.forEach(val=>{
             if(val.class === 'GiveLimitOpt'){
-              this.IsPass.isAudit = true;
+              this.IsPass.isLimit = true;
+            }else if(val.class === 'SetLoanOpt'){
+              this.IsPass.isLoan = true;
+              this.GetFangkuan();
             }else if(val.class === 'RecordAddOpt'){
               this.Urge.auth = true;
             }else{
@@ -973,6 +994,22 @@
       },
       LimitCancel(){
         this.Limit.status = false;
+      },
+      SetLoanOpt(){
+        this.SetLoan.status = true;
+      },
+      SubmitSetLoan(){
+        const data = {
+          type: 0,
+          uid: this.ID,
+          fk_id: this.SetLoan.value
+        };
+        this.UploadData('/backend/User/distributionFk',data).then(()=>{
+          this.SetLoan.status = false;
+        })
+      },
+      SetLoanCancel(){
+        this.SetLoan.status = false;
       },
       PickDate(time){
         this.EditData.info.birth = time;
@@ -1121,25 +1158,37 @@
       },
       //淘宝报表
       ReportTaobao(){
-        const { href } = this.$router.resolve({
-          path: '/taobaoReport',
-          name: '淘宝报表',
-          query:{
-            uid: this.ID
+        this.$post('/backend/Report/taobao',{user_id: this.ID}).then(d=>{
+          if(d.status === 0){
+            this.$Message.error(d.message);
+          }else{
+            const { href } = this.$router.resolve({
+              path: '/taobaoReport',
+              name: '淘宝报表',
+              query:{
+                uid: this.ID
+              }
+            });
+            window.open(href, '_blank');
           }
         });
-        window.open(href, '_blank');
       },
       //运营商报表
       ReportCarrier(){
-        const { href } = this.$router.resolve({
-          path: '/carrierReport',
-          name: '运营商报表',
-          query:{
-            uid: this.ID
+        this.$post('/backend/Report/carrier',{user_id: this.ID}).then(d=>{
+          if(d.status === 0){
+            this.$Message.error(d.message);
+          }else{
+            const { href } = this.$router.resolve({
+              path: '/carrierReport',
+              name: '运营商报表',
+              query:{
+                uid: this.ID
+              }
+            });
+            window.open(href, '_blank');
           }
         });
-        window.open(href, '_blank');
       },
       //查看大图
       CheckBigPic(img){
@@ -1172,6 +1221,12 @@
             val.name = status?'取消挂起':'挂起';
             val.color = status?'default':'primary';
           }
+        })
+      },
+      //获取放款员列表
+      GetFangkuan(){
+        this.$fetch('/backend/User/distributionFk',{type:1}).then(d=>{
+          this.SetLoan.select = d.data;
         })
       }
     }

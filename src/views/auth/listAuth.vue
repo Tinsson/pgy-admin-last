@@ -173,6 +173,9 @@
           name: '添加记录',
           value: 'RecordAddOpt'
         },{
+          name: '设置放款员按钮',
+          value: 'SetLoanOpt'
+        },{
           name: '审核面板按钮',
           value: 'AuditPanel'
         },{

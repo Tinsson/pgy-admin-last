@@ -46,7 +46,7 @@
             用户列表
           </h3>
           <div class="btn-box">
-            <Button type="primary" icon="pin" @click="ShowHang">显示挂起</Button>
+            <Button :type="HangType" icon="pin" @click="ShowHang">{{HangText}}</Button>
             <Button type="warning" icon="checkmark" @click="SumPass">一键通过</Button>
           </div>
         </div>
@@ -128,7 +128,8 @@
         ScreenData: {
           type: 'check_waiting',
           name: '',
-          phone: ''
+          phone: '',
+          is_hang: 0
         },
         UserCol: [
           {
@@ -209,7 +210,12 @@
       this.InitData(this.apiUrl,{type: 'check_waiting'});
     },
     computed: {
-
+      HangText(){
+        return this.ScreenData.is_hang?'取消挂起显示':'显示挂起';
+      },
+      HangType(){
+        return this.ScreenData.is_hang?'default':'primary';
+      }
     },
     methods: {
       //去除data数据里绑定的监视器
@@ -366,7 +372,8 @@
         }
       },
       ShowHang(){
-
+        this.ScreenData.is_hang = this.ScreenData.is_hang === 1?0:1;
+        this.SimpleSearch(0);
       },
       SumPass(){
         if(this.SelectData.length > 0){
