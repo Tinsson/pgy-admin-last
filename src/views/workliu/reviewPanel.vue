@@ -129,7 +129,7 @@
           type: 'check_waiting',
           name: '',
           phone: '',
-          is_hang: 0
+          is_hang: -1
         },
         UserCol: [
           {
@@ -394,8 +394,8 @@
       SumPass(){
         if(this.SelectData.length > 0){
           const id = this.SelectData.join(',');
-          this.UploadData('/backend/Loanaudit/passMore',{ids: id}).then(()=>{
-            this.InitData(this.apiUrl);
+          this.UploadData('/backend/User/auditUserMore',{uid: id,status: 2}).then(()=>{
+            this.SimpleSearch(0,1);
           })
         }else{
           this.$Message.error('请先勾选需要通过的用户！');

@@ -6,7 +6,7 @@
     @on-cancel="CloseBtn">
     <Form :model="DelayInfo" :label-width="120">
       <FormItem label="展期金额：">
-        <Input class="unit-width" v-model="DelayInfo.amount"/>
+        <Input class="unit-width" v-model="DelayInfo.amount" @on-blur="ResetCalc"/>
       </FormItem>
       <FormItem label="展期开始日：">
         <DatePicker type="date"
@@ -19,7 +19,7 @@
                     style="width: 280px"></DatePicker>
       </FormItem>
       <FormItem label="展期天数：">
-        <Input class="unit-width" v-model="DelayInfo.days"/>
+        <Input class="unit-width" v-model="DelayInfo.days" @on-blur="ResetCalc"/>
       </FormItem>
       <FormItem label="展期至：">
         <DatePicker type="date"
@@ -70,6 +70,7 @@
       initData(val){
         this.DelayInfo.uid = val.id;
         this.DelayInfo.amount = val.amount;
+        this.DelayInfo.type = val.type;
         let days = 0;
         switch(val.type){
           case 'A':
@@ -142,6 +143,12 @@
           }
         }
         return free;
+      },
+      ResetCalc(){
+        const start = new Date(this.DelayInfo.start_date),
+          end = new Date(start.getTime() + 1000 * 60 * 60 * 24 * this.DelayInfo.days);
+        this.DelayInfo.end_date = `${end.getFullYear()}-${end.getMonth()+1}-${end.getDate(0)}`;
+        this.DelayInfo.fee = this.CalcFee(this.DelayInfo.type, this.DelayInfo.days, this.DelayInfo.amount);
       }
     }
   }

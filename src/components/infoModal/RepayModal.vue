@@ -7,8 +7,8 @@
     <Form :model="RepayInfo" :label-width="120">
       <FormItem label="还款类型：">
         <Select v-model="RepayInfo.type" style="width:280px">
-          <Option :value="1">主动还款</Option>
-          <Option :value="2">催收还款</Option>
+          <Option :value="1">提前还款</Option>
+          <Option :value="2">销账还款</Option>
         </Select>
       </FormItem>
       <FormItem label="借款金额：">
