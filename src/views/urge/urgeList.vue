@@ -193,7 +193,6 @@
             align: 'center'
           },{
             title: '用户姓名',
-            width: '120',
             align: 'center',
             key: 'name',
             render: (h, params)=>{
@@ -212,7 +211,6 @@
             }
           },{
             title: '用户手机号',
-            width: '120',
             align: 'center',
             key: 'phone',
             render: (h, params)=>{
@@ -231,23 +229,20 @@
             }
           },{
             title: '金额',
-            width: '120',
             key: 'amount'
           },{
             title: '还款日期',
-            width: '120',
             key: 'hk_date'
           },{
             title: '逾期天数',
-            width: '120',
             key: 'overdue_day'
           },{
             title: '备注',
-            width: '350',
-            key: 'remark',
+            width: '250',
+            key: 'remark'/*,
             render: (h,params)=>{
               return this.RenderRemark(h, params);
-            }
+            }*/
           },{
             title: '类型',
             key: 'type'
@@ -623,15 +618,13 @@
         },params.row.remark);
         const input = h('Input',{
           style:{
-            margin: '3px 0',
-            display
+            margin: '3px 0'
           },
           props:{
-            type: 'textarea',
-            value: params.row.status
+            show: params.row.remark_status
           },
           on: {
-            onEnter: this.SetRemark(params.row.remark)
+            input: this.SetRemark
           }
         });
         return h('div',[span,input]);

@@ -184,7 +184,7 @@
                   <Col span="8">
                     <p class="label">审核员</p>
                     <p class="value">
-                      <span v-show="!IsEdit">{{EditData.info.auditorId}}</span>
+                      <span v-show="!IsEdit">{{ GetAuditor }}</span>
                       <Select v-show="IsEdit" v-model="EditData.info.auditorId" :style="{width: IptWidth}">
                         <Option v-for="item in EditData.auditor" :value="item.id" :key="item.id">{{item.admin_name}}</Option>
                       </Select>
@@ -193,9 +193,9 @@
                   <Col span="8">
                     <p class="label">催收员</p>
                     <p class="value">
-                      <span v-show="!IsEdit">{{EditData.info.collectorId}}</span>
+                      <span v-show="!IsEdit">{{ GetCollector }}</span>
                       <Select v-show="IsEdit" v-model="EditData.info.collectorId" :style="{width: IptWidth}">
-                        <Option v-for="item in EditData.auditor" :value="item.id" :key="item.id">{{item.admin_name}}</Option>
+                        <Option v-for="item in EditData.collector" :value="item.id" :key="item.id">{{item.admin_name}}</Option>
                       </Select>
                     </p>
                   </Col>
@@ -827,6 +827,24 @@
           default:
             return '未知';
         }
+      },
+      GetAuditor(){
+        let name = ''
+        this.EditData.auditor.forEach(val=>{
+          if(val.id === this.EditData.info.auditorId){
+            name = val.admin_name;
+          }
+        });
+        return name;
+      },
+      GetCollector(){
+        let name = '';
+        this.EditData.collector.forEach(val=>{
+          if(val.id === this.EditData.info.collectorId){
+            name = val.admin_name;
+          }
+        });
+        return name;
       }
     },
     methods: {
@@ -915,6 +933,7 @@
               this.ChoseCompany = this.StdArea(edit.data.info.address_company);
               this.ChoseLive = this.StdArea(edit.data.info.address_live);
               this.DetailsCompany = edit.data.info.address_company[edit.data.info.address_company.length - 1];
+
 
               this.AllInfo = info.data;
               this.IsPass.status = (info.data.jiben.info.status === 2)?true:false;

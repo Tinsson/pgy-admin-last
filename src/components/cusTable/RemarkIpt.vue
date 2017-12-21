@@ -1,20 +1,26 @@
 <template>
   <div v-show="State" class="remark-input">
-    <Input v-model="Data" @on-enter="SubOver">
+    <Input v-model="Data" @on-enter="SubOver"/>
   </div>
 </template>
 
 <script>
   export default {
-    name: 'SumTable',
+    name: 'RemarkIpt',
     data () {
       return{
-        State: false,
+        State: true,
         Data: ''
       }
     },
     props: {
-      initData: [String, Number]
+      initData: [String, Number],
+      show: String
+    },
+    watch: {
+      show(state){
+        this.State = state;
+      }
     },
     methods: {
       SubOver(){

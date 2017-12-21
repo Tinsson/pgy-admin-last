@@ -12,12 +12,7 @@ const IsDev = process.env.NODE_ENV === 'development'?true:false;
 const IsZZ = 0;
 
 if(IsDev){
-  if(IsZZ){
-    //axios.defaults.baseURL = 'http://apitest.jkxxkj.com';
-    axios.defaults.baseURL = 'http://www.pgyqb.com';
-  }else{
-    axios.defaults.baseURL = '';
-  }
+  axios.defaults.baseURL = '';
 }else if(IsProd){
   axios.defaults.baseURL = 'http://apitest.pgyxwd.com';
 };
@@ -31,14 +26,7 @@ axios.interceptors.request.use(
     config.headers.common['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
     //判断token是否存在
     if (token) {
-      if(IsZZ){
-
-      }else{
         config.headers['token'] = token;
-      }
-      if(IsProd){
-        config.headers['token'] = token;
-      }
     }else{
       if(path === '/login'){
         router.push({path: '/login'});
@@ -63,9 +51,9 @@ axios.interceptors.response.use(
     return response;
   },
   error => {
-    if (error.response) {
+    /*if (error.response) {
       router.push({path: '/login'});
-    }
+    }*/
     return Promise.reject(error.response.data)
   });
 

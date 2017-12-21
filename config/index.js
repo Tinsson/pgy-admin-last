@@ -2,7 +2,14 @@
 // Template version: 1.2.5
 // see http://vuejs-templates.github.io/webpack for documentation.
 
-const path = require('path')
+const path = require('path');
+const IsZZ = 1;
+let url = '';
+if(IsZZ){
+  url = 'http://www.pgyqb.com';
+}else{
+  url = 'http://apitest.pgyxwd.com';
+}
 
 module.exports = {
   dev: {
@@ -12,7 +19,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/': {
-        target: 'http://apitest.pgyxwd.com',
+        target: url,
         changeOrigin: true,
       }
     },
