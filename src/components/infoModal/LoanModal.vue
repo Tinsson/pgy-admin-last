@@ -6,7 +6,7 @@
     @on-cancel="CloseBtn">
     <Form :model="LoanInfo" :label-width="120">
       <FormItem label="借款金额：">
-        <Input class="unit-width" v-model="LoanInfo.amount" @on-blur="CalcFee(LoanInfo.type,LoanInfo.days,LoanInfo.amount)"/>
+        <Input class="unit-width" v-model="LoanInfo.amount" @on-blur=""/>
       </FormItem>
       <FormItem label="合同还款金额：">
         <Input class="unit-width" v-model="LoanInfo.ht_amount"/>
@@ -34,9 +34,6 @@
                     @on-change="ChoseEnd"
                     style="width: 280px"></DatePicker>
       </FormItem>
-      <FormItem label="费率：">
-        <Input class="unit-width" v-model="LoanInfo.fee"/>
-      </FormItem>
       <FormItem label="违约金：">
         <Input class="unit-width" v-model="LoanInfo.wy_amount"/>
       </FormItem>
@@ -61,7 +58,7 @@
           jk_days: '',
           jk_date: '',
           hk_date: '',
-          fee: '',
+          fee: 0,
           wy_amount: '',
           capital_account: ''
         }
@@ -76,22 +73,9 @@
         this.State = val;
       },
       initData(val){
+        const days = val.jk_date;
         this.LoanInfo.uid = val.uid;
         this.LoanInfo.amount = val.amount;
-        let days = 0;
-        switch(val.type){
-          case 'A':
-            days = 28;
-            break;
-          case 'B':
-            days = 15;
-            break;
-          case 'C':
-            days = 15;
-            break;
-          default:
-            days = 0;
-        };
         this.LoanInfo.capital_account = this.$getLocal('owner');
         this.LoanInfo.jk_days = days;
         const start = new Date(),
@@ -117,45 +101,8 @@
       },
       GetTotalCount(){
         this.$post('/backend/Tocalculate/LoanTocal',{N:this.LoanInfo.amount,T:this.LoanInfo.jk_days}).then(d=>{
-          this.LoanInfo.fee = d.data;
+          this.LoanInfo.ht_amount = d.data;
         })
-      },
-      CalcFee(type, time, amount){
-        let free = 0;
-        time = parseInt(time);
-        amount = parseInt(amount);
-        if (type === 'A') {
-          if (time === 15) {
-            free = (amount * 0.14).toFixed(0);
-          } else if (time === 28) {
-            free = (amount * 0.24).toFixed(0);
-          } else if (time < 0) {
-            alert('请输入大于0的天数');
-          } else {
-            free = (amount * time * 0.01).toFixed(0);
-          }
-        } else if (type === 'B') {
-          if (time === 15) {
-            free = (amount * 0.26).toFixed(0);
-          } else if (time === 14) {
-            free = (amount * 0.24).toFixed(0);
-          } else if (time < 0) {
-            alert('请输入大于0的天数');
-          } else {
-            free = (amount * time * 0.018).toFixed(0);
-          }
-        } else if (type === 'C') {
-          if (time === 10) {
-            free = (amount * 0.24).toFixed(0);
-          } else if (time === 15) {
-            free = (amount * 0.36).toFixed(0);
-          } else if (time < 0) {
-            alert('请输入大于0的天数');
-          } else {
-            free = (amount * time * 0.024).toFixed(0);
-          }
-        }
-        this.LoanInfo.fee = free;
       },
       ClacRes(type){
         switch(type){
@@ -163,7 +110,6 @@
             const start = new Date(this.LoanInfo.jk_date),
               end = new Date(start.getTime() + 1000 * 60 * 60 * 24 * this.LoanInfo.jk_days);
             this.LoanInfo.hk_date = `${end.getFullYear()}-${end.getMonth()+1}-${end.getDate(0)}`;
-            this.LoanInfo.fee = this.CalcFee(this.LoanInfo.type, this.LoanInfo.jk_days, this.LoanInfo.amount);
             break;
           case 'hk':
             let stamp = new Date(this.LoanInfo.hk_date) - new Date(this.LoanInfo.jk_date);

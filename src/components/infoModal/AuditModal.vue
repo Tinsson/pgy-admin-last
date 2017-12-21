@@ -336,11 +336,14 @@
                       </div>
                     </div>
                     <div class="text-line">
+                      <span class="msg-area">{{JudgeAmtTip(item.status)}}金额：<i class="price_num">{{ item.yh_amount }}</i></span>
                       <span class="msg-area">借款天数：{{ item.jk_days }}</span>
-                      <span class="msg-area">违约金：{{ item.wy_amount }}</span>
                     </div>
                     <div class="text-line">
+                      <span class="msg-area">违约金：{{ item.wy_amount }}</span>
                       <span class="msg-area">借款日期：{{ item.jk_date }}</span>
+                    </div>
+                    <div class="text-line">
                       <span class="msg-area">出资人：{{ item.capital_account }}</span>
                     </div>
                     <div class="text-line">
@@ -1116,7 +1119,7 @@
       RepayOpt(){
         const jk_list = this.AllInfo.loan.jk_list;
         if(jk_list.length > 0){
-          const jk_data = jk_list[jk_list.length - 1];
+          const jk_data = this.ArrLast(jk_list);
           const data = {
             uid: this.ID,
             jid: jk_data.id,
@@ -1142,11 +1145,23 @@
       //放款操作
       LoanOpt(){
         this.Loan.modal = true;
+        let amount = '';
+        if(this.AllInfo.loan.jk_list.length > 0){
+          const last_jk = this.ArrLast(this.AllInfo.loan.jk_list);
+          if(last_jk.status === 0){
+            this.$Message.error('该用户已放款！');
+            return false;
+          }
+          amount = last_jk.amount;
+        }else{
+          amount = this.Limit.value;
+        }
         this.Loan.data = {
           uid: this.ID,
-          amount: this.Limit.value,
+          amount,
           name: this.AllInfo.jiben.info.name,
-          type: this.AllInfo.jiben.info.type
+          type: this.AllInfo.jiben.info.type,
+          jk_date: this.AllInfo.jiben.info.days
         }
       },
       LoanCancel(){
@@ -1251,6 +1266,16 @@
         this.$fetch('/backend/User/distributionFk',{type:1}).then(d=>{
           this.SetLoan.select = d.data;
         })
+      },
+      JudgeAmtTip(status){
+        if(status === 1){
+          return '已还';
+        }else{
+          return '应还';
+        }
+      },
+      ArrLast(arr){
+        return arr[arr.length - 1];
       }
     }
   }
@@ -1499,6 +1524,9 @@
         display: inline-block;
         width: 50%;
         font-size: 14px;
+        .price_num{
+          color: #F00;
+        }
         &.remark{
           width: 100%;
           padding-bottom: 20px;
