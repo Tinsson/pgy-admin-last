@@ -98,6 +98,7 @@
           end = new Date(start.getTime() + 1000 * 60 * 60 * 24 * days);
         this.LoanInfo.jk_date = `${start.getFullYear()}-${start.getMonth()+1}-${start.getDate()}`;
         this.LoanInfo.hk_date = `${end.getFullYear()}-${end.getMonth()+1}-${end.getDate(0)}`;
+        this.GetTotalCount();
       }
     },
     methods: {
@@ -113,6 +114,11 @@
       ChoseEnd(value){
         this.LoanInfo.hk_date = value;
         this.ClacRes('hk');
+      },
+      GetTotalCount(){
+        this.$post('/backend/Tocalculate/LoanTocal',{N:this.LoanInfo.amount,T:this.LoanInfo.jk_days}).then(d=>{
+          this.LoanInfo.fee = d.data;
+        })
       },
       CalcFee(type, time, amount){
         let free = 0;
