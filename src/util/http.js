@@ -16,7 +16,7 @@ if(IsDev){
     //axios.defaults.baseURL = 'http://apitest.jkxxkj.com';
     axios.defaults.baseURL = 'http://www.pgyqb.com';
   }else{
-    axios.defaults.baseURL = 'http://apitest.pgyxwd.com';
+    axios.defaults.baseURL = '';
   }
 }else if(IsProd){
   axios.defaults.baseURL = 'http://apitest.pgyxwd.com';
@@ -34,7 +34,7 @@ axios.interceptors.request.use(
       if(IsZZ){
 
       }else{
-        config.headers['TOKEN'] = token;
+        config.headers['token'] = token;
       }
       if(IsProd){
         config.headers['TOKEN'] = token;

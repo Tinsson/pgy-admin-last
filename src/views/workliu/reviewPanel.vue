@@ -86,7 +86,7 @@
     data () {
       return {
         title: '审核面板',
-        apiUrl: '/backend/Loanaudit/getlistOnServerside',
+        apiUrl: '/backend/loan-audit/list',
         auth_id: '',
         loading: true,
         allTime: [],
@@ -305,7 +305,7 @@
       InitData(url,params = {}){
         const that = this;
         this.loading = true;
-        this.$fetch('/backend/Loanaudit/getBlockStatics').then(d=>{
+        this.$fetch('/backend/loan-audit/block-data').then(d=>{
           this.CountData.forEach(val=>{
             val.count = d.data[val.status];
           })
@@ -321,7 +321,7 @@
         });
         //列表数据获取
         return new Promise((resolve)=>{
-          this.$post(url,params).then((d)=>{
+          this.$fetch(url,params).then((d)=>{
             let res = d.data;
             this.Page.count = d.data.total;
             this.UserData = res.customer_list;

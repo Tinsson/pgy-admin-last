@@ -11,6 +11,10 @@
             </tr>
             </thead>
             <tbody>
+              <tr>
+                <td>姓名：</td>
+                <td colspan="3">身份证号：</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -34,7 +38,7 @@
     },
     created(){
       const uid = this.$route.query.uid;
-      this.$fetch('/backend/Report/carrier',{user_id: uid}).then(d=>{
+      this.$fetch('/backend/report/carrier',{user_id: uid}).then(d=>{
         if(d.status === 1){
           this.Report = d.data.data;
         }

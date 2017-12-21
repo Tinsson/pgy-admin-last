@@ -607,7 +607,7 @@
     },
     created(){
       const uid = this.$route.query.uid;
-      this.$fetch('/backend/Report/taobao',{user_id: uid}).then(d=>{
+      this.$fetch('/backend/report/taobao',{user_id: uid}).then(d=>{
         if(d.status === 1){
           this.Report = d.data.data;
         }

@@ -480,7 +480,7 @@
       //导出报告
       ExportReport(){
         const idAll = this.SelectData.join(',');
-        const url = this.Report.type === 1?'/backend/Datacollection/Jdbhandle':'/backend/Datacollection/Wbhandle';
+        const url = this.Report.type === 1?'/backend/data-collection/jdb-handle':'/backend/data-collection/wb-handle';
         this.$post(url,{id: idAll}).then(d=>{
           if(d.status === 1){
             window.location.href = d.data.download_url;

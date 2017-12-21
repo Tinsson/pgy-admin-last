@@ -56,7 +56,7 @@
     data () {
       return {
         title: '钉钉推送模版',
-        apiUrl: '/backend/Dingdingtp/templateList',
+        apiUrl: '/backend/ding-template/template-list',
         auth_id: '',
         loading: true,
         //模板详情
@@ -132,7 +132,7 @@
         });
         //列表数据获取
         return new Promise((resolve)=>{
-          this.$post(url,params).then((d)=>{
+          this.$fetch(url,params).then((d)=>{
             let res = d.data;
             this.UserData = res.template_list;
             that.loading = false;
@@ -157,7 +157,7 @@
       },
       //查看详情
       DetailsOpt(row){
-        this.$post('/backend/Dingdingtp/templateDetail',{id: row.id}).then(d=>{
+        this.$fetch('/backend/ding-template/template-detail',{id: row.id}).then(d=>{
           const res = d.data.template_detail;
           this.DingDetail.title = res.title.join('');
           this.DingDetail.content = res.content.join('');
@@ -167,7 +167,7 @@
       },
       //编辑模板
       EditOpt(row){
-        this.$post('/backend/Dingdingtp/templateDetail',{id: row.id}).then(d=>{
+        this.$fetch('/backend/ding-template/template-detail',{id: row.id}).then(d=>{
           this.ModalData.data = d.data.template_detail;
           this.ModalData.edit.status = true;
           this.ModalData.edit.id = row.id;
@@ -195,7 +195,7 @@
       },
       DingSubmit(data, is_edit,id){
         let info = data;
-        const url = is_edit?'/backend/Dingdingtp/templateEdit':'/backend/Dingdingtp/templateAdd';
+        const url = is_edit?'/backend/ding-template/template-edit':'/backend/ding-template/template-add';
         if(is_edit){
           info.id = id;
         }
@@ -209,7 +209,7 @@
           title: '提示',
           content: `<p class="confirm-text">删除此消息模板？</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/Dingdingtp/templateDelete',{id: row.id}).then(()=>{
+            this.UploadData('/backend/ding-template/template-delete',{id: row.id}).then(()=>{
               this.InitData(this.apiUrl);
             });
           }

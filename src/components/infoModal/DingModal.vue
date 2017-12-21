@@ -248,7 +248,7 @@
       }
     },
     created(){
-      this.$fetch('/backend/Dingdingtp/keywordList').then(d=>{
+      this.$fetch('/backend/ding-template/keyword-list').then(d=>{
         let arr = [];
         Object.keys(d.data.keyword_list).forEach(key=>{
           const data = {

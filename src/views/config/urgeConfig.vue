@@ -85,7 +85,7 @@
     data () {
       return {
         title: '催收人员配置',
-        apiUrl: '/backend/Configvc/collectionList',
+        apiUrl: '/backend/config-vc/collection-list',
         auth_id: '',
         loading: true,
         ModeType:{
@@ -180,7 +180,7 @@
         });
         //列表数据获取
         return new Promise((resolve)=>{
-          this.$post(url,params).then((d)=>{
+          this.$fetch(url,params).then((d)=>{
             let res = d.data;
             this.UserData = res.collection_list;
             if(res.collection_list.length > 0 ){
@@ -222,7 +222,7 @@
             if(this.ModeType.type === 1){
               this.ModeType.per = 'circle';
             }
-            this.UploadData('/backend/Configvc/updateConfig',{
+            this.UploadData('/backend/config-vc/config-update',{
               type: this.ModeType.type,
               number: this.ModeType.number,
               per: this.ModeType.per
@@ -241,7 +241,7 @@
           title: '提示',
           content: `<p class="confirm-text">确认该催收人员离职吗？</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/Configvc/equalCollection',{admin_id: row.uid}).then(()=>{
+            this.UploadData('/backend/config-vc/equal-collection',{admin_id: row.uid}).then(()=>{
               this.InitData(this.apiUrl);
             });
           }

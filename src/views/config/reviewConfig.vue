@@ -29,7 +29,7 @@
     data () {
       return {
         title: '审核人员配置',
-        apiUrl: '/backend/Configvc/verifyList',
+        apiUrl: '/backend/config-vc/verify-list',
         auth_id: '',
         loading: true,
         TextArr:{
@@ -95,7 +95,7 @@
         });
         //列表数据获取
         return new Promise((resolve)=>{
-          this.$post(url,params).then((d)=>{
+          this.$fetch(url,params).then((d)=>{
             let res = d.data;
             if(res.verify_list.length > 0){
               res.verify_list.forEach(val=>{
@@ -129,7 +129,7 @@
           title: '提示',
           content: '<p>如果设置离职，该人员下未转化的用户将进行平均分配</p>',
           onOk: () => {
-            this.UploadData('/backend/Configvc/equalVerify',{admin_id: row.uid}).then(()=>{
+            this.UploadData('/backend/config-vc/equal-verify',{admin_id: row.uid}).then(()=>{
               this.InitData(this.apiUrl);
             })
           },

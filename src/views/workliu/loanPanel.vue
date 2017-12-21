@@ -96,7 +96,7 @@
     data () {
       return {
         title: '放款面板',
-        apiUrl: '/backend/Loanmake/getlistOnServerside',
+        apiUrl: '/backend/loan-make/list',
         auth_id: '',
         loading: true,
         allTime: [],
@@ -303,7 +303,7 @@
       InitData(url,params = {}){
         const that = this;
         this.loading = true;
-        this.$fetch('/backend/Loanmake/getBlockStatics').then(d=>{
+        this.$fetch('/backend/loan-make/block-data').then(d=>{
           this.CountData.forEach(val=>{
             val.count = d.data[val.status];
           })

@@ -436,6 +436,15 @@
       FormulaDel(){
         const content = this.ModeModal.data.content;
         this.ModeModal.data.content = content.substr(0, content.length - 1);
+      },
+      Delopt(row){
+        this.$Modal.confirm({
+          title: '温馨提示',
+          content: '<p class="confirm-text">确认删除此公式吗？</p>',
+          onOk: ()=>{
+            this.UploadData('/backend/Sysconfig/sysFormulaDel',{id: row.id});
+          }
+        })
       }
     }
   }
