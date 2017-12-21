@@ -19,7 +19,7 @@
                     style="width: 280px"></DatePicker>
       </FormItem>
       <FormItem label="借款天数：">
-        <Input class="unit-width" v-model="LoanInfo.days"/>
+        <Input class="unit-width" v-model="LoanInfo.days" @on-blur="ClacRes('day')"/>
       </FormItem>
       <FormItem label="还款时间：">
         <DatePicker type="date"
@@ -108,6 +108,7 @@
       },
       ChoseEnd(value){
         this.LoanInfo.hk_date = value;
+        this.ClacRes('hk');
       },
       CalcFee(type, time, amount){
         let free = 0;
@@ -145,6 +146,15 @@
           }
         }
         this.LoanInfo.fee = free;
+      },
+      ClacRes(type){
+        switch(type){
+          case 'day':
+
+            break;
+          case 'hk':
+            break;
+        }
       }
     }
   }
