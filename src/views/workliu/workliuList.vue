@@ -240,9 +240,9 @@
               }
             },
           }, val.name);
-          if((val.name === '审核通过' || val.name === '拒绝') && params.row.status === 0){
+          if((val.class === 'AddOpt' || val.class === 'RejectOpt') && params.row.status === 0){
             arr.push(btn);
-          }else if(val.name === '确认服务费' && params.row.status === 1){
+          }else if(val.class === 'DetailsOpt' && params.row.status === 1){
             let tips = '';
             switch(params.row.type){
               case 0:
@@ -268,7 +268,7 @@
                 }
               },
             }, tips));
-          }else if((val.name === '放款' || val.name === '拒绝') && params.row.status === 2){
+          }else if((val.class === 'LoanOpt' || val.class === 'RejectOpt') && params.row.status === 2){
             let tips = '借款通过';
             switch(params.row.type){
               case 0:
@@ -281,7 +281,7 @@
                 tips = '续借通过';
                 break;
             }
-            if(val.name === '拒绝'){
+            if(val.class === 'RejectOpt'){
               arr.push(btn);
             }else{
               arr.push(h('Button', {

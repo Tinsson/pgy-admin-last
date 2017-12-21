@@ -39,6 +39,9 @@
             if(d.status === 1){
               this.state = true;
               this.success = true;
+            }else{
+              this.state = true;
+              this.success = false;
             }
           })
         }else{
