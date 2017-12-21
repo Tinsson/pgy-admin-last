@@ -37,7 +37,7 @@ axios.interceptors.request.use(
         config.headers['token'] = token;
       }
       if(IsProd){
-        config.headers['TOKEN'] = token;
+        config.headers['token'] = token;
       }
     }else{
       if(path === '/login'){
