@@ -442,7 +442,9 @@
           title: '温馨提示',
           content: '<p class="confirm-text">确认删除此公式吗？</p>',
           onOk: ()=>{
-            this.UploadData('/backend/Sysconfig/sysFormulaDel',{id: row.id});
+            this.UploadData('/backend/Sysconfig/sysFormulaDel',{id: row.id}).then(()=>{
+              this.InitData(this.apiUrl);
+            });
           }
         })
       }
