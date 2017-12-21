@@ -115,6 +115,10 @@
                 :initData="Delay.data"
                 @CloseModal="DelayCancel"
                 @SubModal="DelaySub"></DelayModal>
+    <RepayModal :modalShow="Repay.modal"
+                :initData="Repay.data"
+                @CloseModal="RepayCancel"
+                @SubModal="RepaySub"></RepayModal>
   </div>
 </template>
 
@@ -124,6 +128,7 @@
   import PushApp from '@/components/groupModal/PushApp'
   import AuditModal from '@/components/infoModal/AuditModal'
   import DelayModal from '@/components/infoModal/DelayModal'
+  import RepayModal from '@/components/infoModal/RepayModal'
 
   export default {
     name: 'UrgeList',
@@ -268,6 +273,15 @@
             name: '',
             amount: ''
           }
+        },
+        //主动还款操作
+        Repay:{
+          modal: false,
+          data:{
+            id: '',
+            name: '',
+            amount: ''
+          }
         }
       }
     },
@@ -346,7 +360,7 @@
         });
         //列表数据获取
         return new Promise((resolve)=>{
-          this.$post(url,params).then((d)=>{
+          this.$fetch(url,params).then((d)=>{
             let res = d.data.list;
             if(isinit){
               this.CountData[0].count = d.data.today_count;
@@ -422,6 +436,26 @@
           this.Delay.modal = false;
           this.InitData(this.apiUrl, this.GetCurrentScreen());
         })
+      },
+      //主动还款
+      RepayOpt(row){
+        const data = {
+          uid: row.uid,
+          amount: row.amount,
+          wy_amount: '',
+          name: row.name
+        };
+        this.Repay.modal = true;
+        this.Repay.data = data;
+      },
+      RepayCancel(){
+        this.Repay.modal = false;
+      },
+      RepaySub(data){
+        this.UploadData('/backend/Loan/payMentDone',data).then(()=>{
+          this.Repay.modal = false;
+          this.SimpleSearch(0);
+        });
       },
       //标记功能
       MarkOpt(row){

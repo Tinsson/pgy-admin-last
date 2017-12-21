@@ -92,6 +92,7 @@
         this.DelayInfo.start_date = `${start.getFullYear()}-${start.getMonth()+1}-${start.getDate()}`;
         this.DelayInfo.end_date = `${end.getFullYear()}-${end.getMonth()+1}-${end.getDate(0)}`;
         this.DelayInfo.fee = this.CalcFee(val.type, days, val.amount);
+        this.GetTotalCount();
       }
     },
     methods: {
@@ -107,48 +108,15 @@
       ChoseEnd(value){
         this.DelayInfo.end_date = value;
       },
-      CalcFee(type, time, amount){
-        let free = 0;
-        time = parseInt(time);
-        amount = parseInt(amount);
-        if (type === 'A') {
-          if (time === 15) {
-            free = (amount * 0.14).toFixed(0);
-          } else if (time === 28) {
-            free = (amount * 0.24).toFixed(0);
-          } else if (time < 0) {
-            alert('请输入大于0的天数');
-          } else {
-            free = (amount * time * 0.01).toFixed(0);
-          }
-        } else if (type === 'B') {
-          if (time === 15) {
-            free = (amount * 0.26).toFixed(0);
-          } else if (time === 14) {
-            free = (amount * 0.24).toFixed(0);
-          } else if (time < 0) {
-            alert('请输入大于0的天数');
-          } else {
-            free = (amount * time * 0.018).toFixed(0);
-          }
-        } else if (type === 'C') {
-          if (time === 10) {
-            free = (amount * 0.24).toFixed(0);
-          } else if (time === 15) {
-            free = (amount * 0.36).toFixed(0);
-          } else if (time < 0) {
-            alert('请输入大于0的天数');
-          } else {
-            free = (amount * time * 0.024).toFixed(0);
-          }
-        }
-        return free;
+      GetTotalCount(){
+        this.$post('/backend/Tocalculate/zhanqiTocal',{uid: this.DelayInfo.uid}).then(d=>{
+          this.DelayInfo.fee = d.data;
+        })
       },
       ResetCalc(){
         const start = new Date(this.DelayInfo.start_date),
           end = new Date(start.getTime() + 1000 * 60 * 60 * 24 * this.DelayInfo.days);
         this.DelayInfo.end_date = `${end.getFullYear()}-${end.getMonth()+1}-${end.getDate(0)}`;
-        this.DelayInfo.fee = this.CalcFee(this.DelayInfo.type, this.DelayInfo.days, this.DelayInfo.amount);
       }
     }
   }

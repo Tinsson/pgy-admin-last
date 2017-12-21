@@ -8,9 +8,9 @@
       <FormItem label="借款金额：">
         <Input class="unit-width" v-model="LoanInfo.amount" @on-blur=""/>
       </FormItem>
-      <FormItem label="合同还款金额：">
+      <!--<FormItem label="合同还款金额：">
         <Input class="unit-width" v-model="LoanInfo.ht_amount"/>
-      </FormItem>
+      </FormItem>-->
       <FormItem label="借款时间：">
         <DatePicker type="date"
                     placeholder="选择日期"
