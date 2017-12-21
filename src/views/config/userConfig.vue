@@ -24,7 +24,10 @@
       title="设置等级">
       <Form ref="ModeModal" :model="ModeModal.data" :rules="ValidateRules" label-position="right" :label-width="100">
         <FormItem label="等级：" prop="level">
-          <Input v-model="ModeModal.data.level"></Input>
+          <Input v-model="ModeModal.data.level"/>
+        </FormItem>
+        <FormItem label="借款天数：" prop="days">
+          <Input v-model="ModeModal.data.days"/>
         </FormItem>
         <FormItem label="分数下限：" prop="between_start">
           <InputNumber v-model="ModeModal.data.between_start"></InputNumber>
@@ -65,6 +68,7 @@
           id: '',
           data: {
             level: '',
+            days: '',
             between_start: 0,
             between_end: 100,
             remark: ''
@@ -79,6 +83,9 @@
           },{
             title: '等级',
             key: 'level'
+          },{
+            title: '借款天数',
+            key: 'days'
           },{
             title: '分数下限',
             key: 'between_start'
@@ -101,6 +108,9 @@
         ValidateRules:{
           level: [
             {required: true, message: '等级不能为空！'}
+          ],
+          days: [
+            {required: true, message: '借款天数不能为空！'}
           ],
           between_start: [
             {required: true, message: '下限不能为空！'}
@@ -171,6 +181,7 @@
         this.$refs['ModeModal'].resetFields();
         this.ModeModal.data = {
           level: '',
+          days: '',
           between_start: 0,
           between_end: 100,
           remark: ''
@@ -201,6 +212,7 @@
       EditOpt(row){
         this.ModeModal.data = {
           level: row.level,
+          days: row.days,
           between_start: row.between_start,
           between_end: row.between_end,
           remark: row.remark

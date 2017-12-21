@@ -67,7 +67,7 @@
       </Form>
       <div slot="footer">
         <Button type="text" @click="ModalCancel('ParamsModal')" size="large">取消</Button>
-        <Button type="primary" @click="AddOver('ParamsModal','Commission/resultparmEdit','Commission/resultparmAdd')" size="large">保存</Button>
+        <Button type="primary" @click="AddOver('ParamsModal','/backend/Commission/resultparmEdit','/backend/Commission/resultparmAdd')" size="large">保存</Button>
       </div>
     </Modal>
     <Modal
@@ -94,7 +94,7 @@
       </Form>
       <div slot="footer">
         <Button type="text" @click="ModalCancel('ModeModal')" size="large">取消</Button>
-        <Button type="primary" @click="AddOver('ModeModal','Commission/resultsFormulaEdit','Commission/resultsFormulaAdd')" size="large">保存</Button>
+        <Button type="primary" @click="AddOver('ModeModal','/backend/Commission/resultsFormulaEdit','/backend/Commission/resultsFormulaAdd')" size="large">保存</Button>
       </div>
     </Modal>
   </div>

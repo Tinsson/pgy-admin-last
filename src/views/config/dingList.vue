@@ -26,7 +26,7 @@
       <p class="ding-title">{{ DingDetail.title }}</p>
       <div class="ding-content">
         <p class="line">
-          <span v-for="item in DingDetail.content" :key="item">{{item}}</span>
+          <span v-for="(item,index) in DingDetail.content" :key="index">{{item}}</span>
         </p>
       </div>
       <Row class="ding-btn">

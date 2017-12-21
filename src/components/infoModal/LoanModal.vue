@@ -8,6 +8,9 @@
       <FormItem label="借款金额：">
         <Input class="unit-width" v-model="LoanInfo.amount" @on-blur="CalcFee(LoanInfo.type,LoanInfo.days,LoanInfo.amount)"/>
       </FormItem>
+      <FormItem label="合同还款金额：">
+        <Input class="unit-width" v-model="LoanInfo.ht_amount"/>
+      </FormItem>
       <FormItem label="借款时间：">
         <DatePicker type="date"
                     placeholder="选择日期"
@@ -19,7 +22,7 @@
                     style="width: 280px"></DatePicker>
       </FormItem>
       <FormItem label="借款天数：">
-        <Input class="unit-width" v-model="LoanInfo.days" @on-blur="ClacRes('day')"/>
+        <Input class="unit-width" v-model="LoanInfo.jk_days" @on-blur="ClacRes('day')"/>
       </FormItem>
       <FormItem label="还款时间：">
         <DatePicker type="date"
@@ -54,6 +57,7 @@
         LoanInfo:{
           uid: '',
           amount: '',
+          ht_amount: '',
           jk_days: '',
           jk_date: '',
           hk_date: '',
@@ -89,7 +93,7 @@
             days = 0;
         };
         this.LoanInfo.capital_account = this.$getLocal('owner');
-        this.LoanInfo.days = days;
+        this.LoanInfo.jk_days = days;
         const start = new Date(),
           end = new Date(start.getTime() + 1000 * 60 * 60 * 24 * days);
         this.LoanInfo.jk_date = `${start.getFullYear()}-${start.getMonth()+1}-${start.getDate()}`;
@@ -150,9 +154,14 @@
       ClacRes(type){
         switch(type){
           case 'day':
-
+            const start = new Date(this.LoanInfo.jk_date),
+              end = new Date(start.getTime() + 1000 * 60 * 60 * 24 * this.LoanInfo.jk_days);
+            this.LoanInfo.hk_date = `${end.getFullYear()}-${end.getMonth()+1}-${end.getDate(0)}`;
+            this.LoanInfo.fee = this.CalcFee(this.LoanInfo.type, this.LoanInfo.jk_days, this.LoanInfo.amount);
             break;
           case 'hk':
+            let stamp = new Date(this.LoanInfo.hk_date) - new Date(this.LoanInfo.jk_date);
+            this.LoanInfo.jk_days = parseInt(stamp/1000/60/60/24);
             break;
         }
       }
