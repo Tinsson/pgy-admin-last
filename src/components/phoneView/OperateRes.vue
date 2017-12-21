@@ -1,6 +1,5 @@
 <template>
   <div id="operate-res" v-show="state">
-    <p>{{info}}</p>
     <div class="res-box" v-if="success">
       <img src="../../assets/images/success.png" alt="">
       <p class="tip-text">操作成功</p>
@@ -21,8 +20,7 @@
     data () {
       return{
         state: false,
-        success: true,
-        info: ''
+        success: true
       }
     },
     created(){
@@ -39,7 +37,6 @@
           });
           this.$post(url,obj).then(d=>{
             this.state = true;
-            this.info = JSON.stringify(d);
             if(d.status === 1){
               this.success = true;
             }else{
