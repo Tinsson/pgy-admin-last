@@ -653,7 +653,7 @@
           status: false,
           select: [],
           value: '',
-          type: '',
+          type: 'info',
           name: ''
         },
         NavData: {

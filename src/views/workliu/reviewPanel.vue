@@ -211,10 +211,10 @@
     },
     computed: {
       HangText(){
-        return this.ScreenData.is_hang?'取消挂起显示':'显示挂起';
+        return this.ScreenData.is_hang === 1?'取消挂起显示':'显示挂起';
       },
       HangType(){
-        return this.ScreenData.is_hang?'default':'primary';
+        return this.ScreenData.is_hang === 1?'default':'primary';
       },
       PassShow(){
         if(this.CountData[1].cur || this.CountData[2].cur){
@@ -255,7 +255,7 @@
       //二次获取数据
       SecondData(sinfo){
         return new Promise(resolve=>{
-          this.$post(this.apiUrl,sinfo).then(d=>{
+          this.$fetch(this.apiUrl,sinfo).then(d=>{
             this.UserData = d.data.customer_list;
             this.Page.count = d.data.total;
             this.loading = false;
@@ -389,6 +389,7 @@
       },
       ShowHang(){
         this.ScreenData.is_hang = this.ScreenData.is_hang === 1?-1:1;
+        console.log(this.ScreenData.is_hang);
         this.SimpleSearch(0);
       },
       SumPass(){

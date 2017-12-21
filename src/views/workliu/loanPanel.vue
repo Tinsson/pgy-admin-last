@@ -225,7 +225,6 @@
     },
     watch:{
       UserCol(col){
-        console.log(col);
         col.forEach(val=>{
           if(val.key === "auth_status"){
             val.render = this.AuthIcon;
@@ -262,7 +261,7 @@
       //二次获取数据
       SecondData(sinfo){
         return new Promise(resolve=>{
-          this.$post(this.apiUrl,sinfo).then(d=>{
+          this.$fetch(this.apiUrl,sinfo).then(d=>{
             this.UserCol = this.GetField(d.data.field);
             this.UserData = d.data.fk_list;
             this.Page.count = d.data.total;
@@ -319,7 +318,7 @@
         });
         //列表数据获取
         return new Promise((resolve)=>{
-          this.$post(url,params).then((d)=>{
+          this.$fetch(url,params).then((d)=>{
             let res = d.data;
             this.Page.count = d.data.total;
             this.UserCol = this.GetField(res.field);
