@@ -124,6 +124,7 @@
 
 <script>
   import { getLocal } from '@/util/util'
+  import Clipboard from 'clipboard';
   import GroupSms from '@/components/groupModal/GroupSms'
   import PushApp from '@/components/groupModal/PushApp'
   import AuditModal from '@/components/infoModal/AuditModal'
@@ -136,7 +137,8 @@
       GroupSms,
       PushApp,
       AuditModal,
-      DelayModal
+      DelayModal,
+      RepayModal
     },
     data () {
       return {
@@ -190,32 +192,62 @@
             width: 55,
             align: 'center'
           },{
-            title: '序号',
-            width: '70',
-            align: 'center',
-            key: 'id'
-          },{
             title: '用户姓名',
-            width: '100',
+            width: '120',
             align: 'center',
-            key: 'name'
+            key: 'name',
+            render: (h, params)=>{
+              return h('div',{
+                'class': {
+                  clipBtn : true
+                },
+                style:{
+                  cursor: 'pointer',
+                  color: '#0f76c7'
+                },
+                attrs:{
+                  src: params.row.name
+                }
+              }, params.row.name);
+            }
           },{
             title: '用户手机号',
-            width: '150',
+            width: '120',
             align: 'center',
-            key: 'phone'
+            key: 'phone',
+            render: (h, params)=>{
+              return h('div',{
+                'class': {
+                  clipBtn : true
+                },
+                style:{
+                  cursor: 'pointer',
+                  color: '#0f76c7'
+                },
+                attrs:{
+                  src: params.row.phone
+                }
+              }, params.row.phone);
+            }
           },{
             title: '金额',
+            width: '120',
             key: 'amount'
           },{
             title: '还款日期',
+            width: '120',
             key: 'hk_date'
           },{
             title: '逾期天数',
+            width: '120',
             key: 'overdue_day'
           },{
             title: '备注',
-            key: 'remark'
+            width: '350',
+            key: 'remark',
+            render: (h,params)=>{
+              return this.RenderRemark(h, params);
+            }
           },{
             title: '类型',
             key: 'type'
@@ -223,7 +255,6 @@
             title: '操作',
             key: 'operation',
             align: 'center',
-            width: '200',
             render: (h, params)=>{
               let rule = {};
               rule.btns = [{
@@ -288,6 +319,20 @@
     created(){
       this.auth_id = getLocal('auth_id');
       this.InitData('/backend/Collection/CollectionList',{},1);
+    },
+    mounted(){
+      //剪切板功能
+      this.ClipBoard = new Clipboard('.clipBtn',{
+        text: function(elm){
+          return elm.getAttribute('src');
+        }
+      });
+      this.ClipBoard.on('success',(e)=>{
+        this.$Message.success('链接粘贴成功！');
+      })
+    },
+    destroyed() {
+      this.ClipBoard.destroy();
     },
     methods: {
       //去除data数据里绑定的监视器
@@ -369,8 +414,7 @@
               this.CountData[3].count = d.data.alreadyhk_count;
             }
             this.Page.count = d.data.count;
-            this.RowUserData = res;
-            this.UserData = this.TransText(res,'error_msg','无');
+            this.UserData = this.SetRemarkState(res);
             that.loading = false;
             resolve();
           })
@@ -556,6 +600,41 @@
           this.Page.cur = 1;
           this.Page.size = size;
         })
+      },
+      //渲染备注功能
+      SetRemarkState(arr){
+        arr.forEach(val=>{
+          val.remark_state = true;
+        });
+        return arr;
+      },
+      SetRemark(data){
+        console.log(data);
+      },
+      RenderRemark(h,params){
+        let display = 'none';
+        if(params.row.remark_state){
+          display = 'block';
+        }
+        const span = h('span',{
+          style: {
+            color: '#f00'
+          }
+        },params.row.remark);
+        const input = h('Input',{
+          style:{
+            margin: '3px 0',
+            display
+          },
+          props:{
+            type: 'textarea',
+            value: params.row.status
+          },
+          on: {
+            onEnter: this.SetRemark(params.row.remark)
+          }
+        });
+        return h('div',[span,input]);
       }
     }
   }

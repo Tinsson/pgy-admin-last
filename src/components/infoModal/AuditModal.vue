@@ -1144,7 +1144,6 @@
       },
       //放款操作
       LoanOpt(){
-        this.Loan.modal = true;
         let amount = '';
         if(this.AllInfo.loan.jk_list.length > 0){
           const last_jk = this.ArrLast(this.AllInfo.loan.jk_list);
@@ -1163,6 +1162,7 @@
           type: this.AllInfo.jiben.info.type,
           jk_date: this.AllInfo.jiben.info.days
         }
+        this.Loan.modal = true;
       },
       LoanCancel(){
         this.Loan.modal = false;

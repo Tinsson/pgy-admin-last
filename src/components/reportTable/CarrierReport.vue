@@ -1,26 +1,131 @@
 <template>
   <div class="carrier-report">
     <h2 class="all-title">运营商报告</h2>
-    <Tabs type="card">
-      <TabPane label="运营商报告">
-        <div class="first-level">
-          <table class="table-info" cellspacing="0" cellpadding="0" border="0">
-            <thead>
+      <div class="first-level">
+        <table class="table-info" cellspacing="0" cellpadding="0" border="0">
+          <thead>
+          <tr>
+            <th colspan="5" class="cus-head">1.1 用户及账号基本信息</th>
+          </tr>
+          </thead>
+          <tbody>
             <tr>
-              <th colspan="5" class="cus-head">1.1 用户及账号基本信息</th>
+              <td>姓名：{{ UserBasic.name }}</td>
+              <td colspan="3">身份证号：{{ UserBasic.id_card }}</td>
             </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>姓名：</td>
-                <td colspan="3">身份证号：</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </TabPane>
-      <TabPane label="通讯录报告"></TabPane>
-    </Tabs>
+            <tr>
+              <td>姓名From客户：{{UserBasic.name}}</td>
+              <td colspan="3">身份证From客户：{{UserBasic.name}}</td>
+            </tr>
+            <tr>
+              <td>手机号码：{{}}</td>
+              <td>入网时长：</td>
+              <td>性别：</td>
+              <td>年龄：</td>
+            </tr>
+            <tr>
+              <td>星座：</td>
+              <td>邮箱：</td>
+              <td colspan="2">通讯地址：</td>
+            </tr>
+            <tr>
+              <td>籍贯：</td>
+              <td>手机号码归属地：</td>
+              <td>居住地址：</td>
+              <td>工作地址：</td>
+            </tr>
+            <tr>
+              <td colspan="4">账号余额：</td>
+            </tr>
+            <tr>
+              <td colspan="2">联系人 | 手机号码：</td>
+              <td colspan="2">：</td>
+            </tr>
+            <tr>
+              <td colspan="4">有该联系人电话的通话记录，[180]天内联系[39]次，共[62.12]分钟，按时长计算排名第[1]位</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="first-level">
+        <table class="table-info long" cellspacing="0" cellpadding="0" border="0">
+          <thead>
+          <tr>
+            <th colspan="32" class="cus-head">详细统计</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>号码</td>
+              <td>号码标识</td>
+              <td>号码类型</td>
+              <td>归属地</td>
+              <td>近一周通话次数</td>
+              <td>近一月通话次数</td>
+              <td>近三月通话次数</td>
+              <td>近六月通话次数</td>
+              <td>近三月通话时长（秒）</td>
+              <td>近六月通话时长（秒）</td>
+              <td>近三月主叫次数</td>
+              <td>近六月主叫次数</td>
+              <td>近三月被叫次数</td>
+              <td>近六月被叫次数</td>
+              <td>近三月早上（5:30-11:30）通话次数</td>
+              <td>近六月早上（5:30-11:30）通话次数</td>
+              <td>近三月中午（11:30-13:30）通话次数</td>
+              <td>近六月中午（11:30-13:30）通话次数</td>
+              <td>近六月中午（11:30-13:30）通话次数</td>
+              <td>近六月下午（13:30-17:30）通话次数</td>
+              <td>近三月晚上（17:30-23:30）通话次数</td>
+              <td>近六月晚上（17:30-23:30）通话次数</td>
+              <td>近三月凌晨（23:30-5:30）通话次数</td>
+              <td>近六月凌晨（23:30-5:30）通话次数</td>
+              <td>近三月工作日通话次数</td>
+              <td>近六月工作日通话次数</td>
+              <td>近三月周末通话次数</td>
+              <td>近六月周末通话次数</td>
+              <td>近三月节假日通话次数</td>
+              <td>近六月节假日通话次数</td>
+              <td>近三月是否有全天联系</td>
+              <td>近六月是否有全天联系</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
   </div>
 </template>
 
@@ -30,11 +135,18 @@
     data () {
       return{
         Report:{
+          user_basic: []
         }
       }
     },
     computed:{
-
+      UserBasic(){
+        let info = {};
+        this.Report.user_basic.forEach(val=>{
+          info[val.key] = val.value;
+        });
+        return info;
+      }
     },
     created(){
       const uid = this.$route.query.uid;
@@ -59,8 +171,8 @@
 <style lang="less" scoped>
   .all-title{
     text-align: center;
-    font-size: 20px;
-    padding: 10px 0;
+    font-size: 24px;
+    padding: 15px 0;
   }
   .carrier-report{
     width: 100%;
@@ -68,8 +180,13 @@
     padding: 0 5%;
     .first-level{
       padding-bottom: 20px;
+      width: 100%;
+      overflow: auto;
       .table-info{
-        padding-botton: 20px;
+        margin-bottom: 20px;
+        &.long{
+          width: 7000px;
+        }
       }
     }
     .first-title{

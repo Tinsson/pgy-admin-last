@@ -2,11 +2,11 @@
   <div class="taobao-report">
     <h2 class="all-title">淘宝报告</h2>
     <div class="first-level">
-      <h3 class="first-title">1.基本信息</h3>
+      <h3 class="first-title"></h3>
       <table cellspacing="0" cellpadding="0" border="0">
         <thead>
         <tr>
-          <th colspan="5" class="cus-head">1.1 用户及账号基本信息</th>
+          <th colspan="5" class="cus-head">1. 基本信息</th>
         </tr>
         </thead>
         <tbody>
@@ -27,11 +27,11 @@
       </table>
     </div>
     <div class="first-level">
-      <h3 class="first-title">2.财富信息</h3>
+      <h3 class="first-title"></h3>
       <table cellspacing="0" cellpadding="0" border="0">
         <thead>
         <tr>
-          <th colspan="5" class="cus-head">2.1 总资产</th>
+          <th colspan="5" class="cus-head">2. 财富信息</th>
         </tr>
         </thead>
         <tbody>
@@ -63,8 +63,8 @@
       </table>
     </div>
     <div class="first-level">
-      <h3 class="first-title">3.地址分析</h3>
-      <table cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 20px;">
+      <h3 class="first-title"></h3>
+      <!--<table cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 20px;">
         <thead>
         <tr>
           <th colspan="5" class="cus-head">3.1 基本地点分析</th>
@@ -92,11 +92,11 @@
           <td>使用{{BaseAddressAnalysis.nonself_address_cnt}}个地址，平均每个地址使用{{BaseAddressAnalysis.avg_nonself_address_cnt}}次</td>
         </tr>
         </tbody>
-      </table>
+      </table>-->
       <table cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 20px;">
         <thead>
         <tr>
-          <th colspan="5" class="cus-head">3.2 常用地址（收货次数Top3）</th>
+          <th colspan="5" class="cus-head">3. 常用地址（收货次数Top3）</th>
         </tr>
         </thead>
         <tbody>
@@ -186,7 +186,7 @@
         </tr>
         </tbody>
       </table>
-      <table cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 20px;">
+      <!--<table cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 20px;">
         <thead>
         <tr>
           <th colspan="5" class="cus-head">3.3 收件详细信息</th>
@@ -239,9 +239,9 @@
           <td>{{ReceiptDetails.max_deliver_city_cnt_6}}</td>
         </tr>
         </tbody>
-      </table>
+      </table>-->
     </div>
-    <div class="first-level">
+    <!--<div class="first-level">
       <h3 class="first-title">4.消费分析</h3>
       <table cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 20px;">
         <thead>
@@ -330,7 +330,7 @@
         </tr>
         </tbody>
       </table>
-    </div>
+    </div>-->
   </div>
 </template>
 

@@ -26,6 +26,12 @@
         <FormItem label="等级：" prop="level">
           <Input v-model="ModeModal.data.level"/>
         </FormItem>
+        <FormItem label="性别：">
+          <RadioGroup v-model="ModeModal.data.sex">
+            <Radio label="男"></Radio>
+            <Radio label="女"></Radio>
+          </RadioGroup>
+        </FormItem>
         <FormItem label="借款天数：" prop="days">
           <Input v-model="ModeModal.data.days"/>
         </FormItem>
@@ -68,6 +74,7 @@
           id: '',
           data: {
             level: '',
+            sex: '男',
             days: '',
             between_start: 0,
             between_end: 100,
@@ -83,6 +90,9 @@
           },{
             title: '等级',
             key: 'level'
+          },{
+            title: '性别',
+            key: 'sex'
           },{
             title: '借款天数',
             key: 'days'
@@ -181,6 +191,7 @@
         this.$refs['ModeModal'].resetFields();
         this.ModeModal.data = {
           level: '',
+          sex: '男',
           days: '',
           between_start: 0,
           between_end: 100,
@@ -212,6 +223,7 @@
       EditOpt(row){
         this.ModeModal.data = {
           level: row.level,
+          sex: row.sex,
           days: row.days,
           between_start: row.between_start,
           between_end: row.between_end,
