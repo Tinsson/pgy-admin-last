@@ -15,11 +15,11 @@
       </div>
       <Row type="flex" justify="space-between">
         <Col :span="11">
-          <h4 class="table-tit">无参数值</h4>
+          <h4 class="table-tit">用户数据（不可修改参数值）</h4>
           <Table :columns="ParamsTable.FixedCol" :data="ParamsTable.FixedData"></Table>
         </Col>
         <Col :span="11">
-          <h4 class="table-tit">有参数值</h4>
+          <h4 class="table-tit">配置数据（可修改参数值）</h4>
           <Table :columns="ParamsTable.DynamicCol" :data="ParamsTable.DynamicData"></Table>
         </Col>
       </Row>
