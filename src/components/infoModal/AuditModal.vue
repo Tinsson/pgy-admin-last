@@ -1187,7 +1187,7 @@
       },
       //淘宝报表
       ReportTaobao(){
-        this.$post('/backend/Report/taobao',{user_id: this.ID}).then(d=>{
+        this.$fetch('/backend/Report/taobao',{user_id: this.ID}).then(d=>{
           if(d.status === 0){
             this.$Message.error(d.message);
           }else{
@@ -1204,7 +1204,7 @@
       },
       //运营商报表
       ReportCarrier(){
-        this.$post('/backend/Report/carrier',{user_id: this.ID}).then(d=>{
+        this.$fetch('/backend/Report/carrier',{user_id: this.ID}).then(d=>{
           if(d.status === 0){
             this.$Message.error(d.message);
           }else{

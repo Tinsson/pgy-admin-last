@@ -231,12 +231,13 @@
       },
       //筛选操作(重置筛选)
       ResetScreen(){
-        for(let key in this.ScreenData){
+        /*for(let key in this.ScreenData){
           if(key !== 'type'){
             this.ScreenData[key] = '';
           }
-        }
-        this.allTime = '';
+        }*/
+        this.ScreenData.name = '';
+        this.ScreenData.phone = '';
       },
       //多选打钩绑定数据
       SelectTable(data){
