@@ -176,7 +176,7 @@
           name: '授予额度按钮',
           value: 'GiveLimitOpt'
         },{
-          name: '添加记录',
+          name: '添加记录按钮',
           value: 'RecordAddOpt'
         },{
           name: '设置放款员按钮',

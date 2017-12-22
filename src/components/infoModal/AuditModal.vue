@@ -448,14 +448,14 @@
                          :data="Urge.Data"
                          size="large"></Table>
                 </Card>
-                <p v-show="Urge.status" class="urge-add">
+                <!--<p v-show="Urge.status" class="urge-add">
                   <span class="label">记录：</span>
                   <Input type="textarea" v-model="Urge.content"></Input>
                 </p>
                 <p v-show="Urge.auth">
                   <Button v-show="!Urge.status" type="primary" @click="RecordAddOpt" size="large">添加记录</Button>
                   <Button v-show="Urge.status" type="warning" @click="UrgeAddOver" size="large">保存</Button>
-                </p>
+                </p>-->
               </TabPane>
               <TabPane label="操作日志">
                 <Card>
@@ -1121,14 +1121,18 @@
         this.NavData.baseInfo.IsRemark = true;
       },
       RemarkOver(){
-        const data = {
-          uid: this.ID,
-          remark: this.NavData.baseInfo.remark_ipt
-        };
-        this.UploadData('/backend/User/remark',data).then(()=>{
-          this.NavData.baseInfo.IsRemark = false;
-          this.InitData(this.ID);
-        });
+        if(this.Urge.auth){
+          this.UrgeAddOver();
+        }else{
+          const data = {
+            uid: this.ID,
+            remark: this.NavData.baseInfo.remark_ipt
+          };
+          this.UploadData('/backend/User/remark',data).then(()=>{
+            this.NavData.baseInfo.IsRemark = false;
+            this.InitData(this.ID);
+          });
+        }
       },
       RemarkCancel(){
         this.NavData.baseInfo.IsRemark = false;
@@ -1250,12 +1254,13 @@
       UrgeAddOver(){
         const data = {
           uid: this.ID,
-          content: this.Urge.content
+          content: this.NavData.baseInfo.remark_ipt
+          //content: this.Urge.content
         };
         this.UploadData('/backend/User/addCollection',data).then((d)=>{
-          this.Urge.status = false;
+          //this.Urge.status = false;
           this.Urge.Data.push({
-            content: this.Urge.content,
+            content: this.NavData.baseInfo.remark_ipt,
             create_at: d.date
           });
         })
