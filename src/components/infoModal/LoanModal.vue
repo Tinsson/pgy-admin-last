@@ -6,7 +6,7 @@
     @on-cancel="CloseBtn">
     <Form :model="LoanInfo" :label-width="120">
       <FormItem label="借款金额：">
-        <Input class="unit-width" v-model="LoanInfo.amount" @on-blur=""/>
+        <Input class="unit-width" v-model="LoanInfo.amount" @on-change="ChangeAmount"/>
       </FormItem>
       <!--<FormItem label="合同还款金额：">
         <Input class="unit-width" v-model="LoanInfo.ht_amount"/>
@@ -54,6 +54,7 @@
         LoanInfo:{
           uid: '',
           amount: '',
+          limit: '',
           ht_amount: '',
           jk_days: '',
           jk_date: '',
@@ -78,6 +79,7 @@
         this.LoanInfo.amount = val.amount;
         this.LoanInfo.capital_account = this.$getLocal('owner');
         this.LoanInfo.jk_days = days;
+        this.LoanInfo.limit = val.limit;
         const start = new Date(),
           end = new Date(start.getTime() + 1000 * 60 * 60 * 24 * days);
         this.LoanInfo.jk_date = `${start.getFullYear()}-${start.getMonth()+1}-${start.getDate()}`;
@@ -115,6 +117,11 @@
             let stamp = new Date(this.LoanInfo.hk_date) - new Date(this.LoanInfo.jk_date);
             this.LoanInfo.jk_days = parseInt(stamp/1000/60/60/24);
             break;
+        }
+      },
+      ChangeAmount(){
+        if(this.LoanInfo.amount > this.LoanInfo.limit){
+          this.LoanInfo.amount = this.LoanInfo.limit;
         }
       }
     }

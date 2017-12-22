@@ -199,7 +199,15 @@
                       </Select>
                     </p>
                   </Col>
-                  <Col span="8"></Col>
+                  <Col span="8">
+                    <p class="label">出资人</p>
+                    <!--<p class="value">
+                      <span v-show="!IsEdit">{{ GetCollector }}</span>
+                      <Select v-show="IsEdit" v-model="EditData.info.collectorId" :style="{width: IptWidth}">
+                        <Option v-for="item in EditData.collector" :value="item.id" :key="item.id">{{item.admin_user}}</Option>
+                      </Select>
+                    </p>-->
+                  </Col>
                 </Row>
               </li>
               <li class="single-line">
@@ -1182,6 +1190,7 @@
           amount,
           name: this.AllInfo.jiben.info.name,
           type: this.AllInfo.jiben.info.type,
+          limit: this.Limit.value,
           jk_date: this.AllInfo.jiben.info.days
         }
         this.Loan.modal = true;

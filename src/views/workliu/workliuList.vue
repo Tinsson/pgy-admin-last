@@ -243,7 +243,6 @@
           const types = params.row.types,
                 status = params.row.status,
                 hktype = params.row.hktype;
-          console.log(val.class,types,status,hktype);
           if((val.class === 'AddOpt' || val.class === 'RejectOpt') && status === 0 && types === 1){
             arr.push(btn);
           }else if((val.class === 'DelayOpt' || val.class === 'RejectOpt') && types === 2){

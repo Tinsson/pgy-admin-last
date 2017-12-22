@@ -38,7 +38,7 @@
           });
           this.$post(url,obj).then(d=>{
             this.state = true;
-            if(d.status === 2){
+            if(d.status === 1){
               this.success = true;
             }else{
               this.success = false;
