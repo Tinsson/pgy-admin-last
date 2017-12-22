@@ -64,10 +64,11 @@
     <Modal
       v-model="AssignModal"
       title="权限分配"
+      :width="800"
       @on-ok="AssignOver">
       <Form class="auto-area" label-position="right" :label-width="60">
         <FormItem label="角色编号">
-          <Input v-model="AssignInfo.role_id" disabled></Input>
+          <Input v-model="AssignInfo.role_id" disabled style="width: 350px"></Input>
         </FormItem>
         <FormItem label="权限">
           <CheckboxGroup v-model="AssignInfo.auth_id">
@@ -122,7 +123,7 @@
             title: '操作',
             key: 'operation',
             align: 'center',
-            width: '200',
+            width: '250',
             render: (h, params)=>{
               return h('div',this.$renderBtn(h, params, this.BtnData));
             }
@@ -292,6 +293,17 @@
         for(let key in normal){
           normal[key] = obdata[key];
         }
+      },
+      //删除角色
+      Delopt(row){
+        //删除确认
+        this.$Modal.confirm({
+          title: '温馨提示',
+          content: '<p class="confirm-text">确认删除此角色吗？</p>',
+          onOk: ()=>{
+            this.UploadData('/backend/Auth/authDel',{id: row.id});
+          }
+        })
       }
     }
   }

@@ -91,7 +91,6 @@
               end = new Date(start.getTime() + 1000 * 60 * 60 * 24 * days);
         this.DelayInfo.start_date = `${start.getFullYear()}-${start.getMonth()+1}-${start.getDate()}`;
         this.DelayInfo.end_date = `${end.getFullYear()}-${end.getMonth()+1}-${end.getDate(0)}`;
-        this.DelayInfo.fee = this.CalcFee(val.type, days, val.amount);
         this.GetTotalCount();
       }
     },

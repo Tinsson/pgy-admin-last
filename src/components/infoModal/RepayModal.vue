@@ -6,19 +6,22 @@
     @on-cancel="CloseBtn">
     <Form :model="RepayInfo" :label-width="120">
       <FormItem label="还款类型：">
-        <Select v-model="RepayInfo.type" style="width:280px">
+        <Select v-model="RepayInfo.type" style="width:280px" @on-change="ChangeType">
           <Option :value="2">提前还款</Option>
           <Option :value="3">销账还款</Option>
         </Select>
       </FormItem>
-      <FormItem label="借款金额：">
+      <FormItem label="当前未还本金">
         <Input class="unit-width" v-model="RepayInfo.amount"/>
       </FormItem>
-      <FormItem label="实际还款金额：">
-        <Input class="unit-width" v-model="RepayInfo.sj_amount"/>
+      <FormItem label="当前应还金额">
+        <Input class="unit-width" v-model="RepayInfo.amountn"/>
       </FormItem>
-      <FormItem label="费率：">
-        <Input class="unit-width" v-model="RepayInfo.fee"/>
+      <FormItem label="实际还款本金：">
+        <Input class="unit-width" v-model="RepayInfo.yh_amount"/>
+      </FormItem>
+      <FormItem label="实际还款金额：">
+        <Input class="unit-width" v-model="RepayInfo.yh_amountn"/>
       </FormItem>
       <FormItem label="违约金：">
         <Input class="unit-width" v-model="RepayInfo.wy_amount"/>
@@ -42,9 +45,9 @@
           jid: '',
           type: '',
           amount: '',
-          sj_amount: '',
-          wy_amount: '',
-          fee: ''
+          amountn: '',
+          yh_amount: '',
+          yh_amountn: ''
         }
       }
     },
@@ -68,14 +71,14 @@
       Submit(){
         this.$emit('SubModal',this.RepayInfo);
       },
-      ChoseDate(val){
-        this.RepayInfo.date;
-      },
       GetTotalCount(){
         this.$post('/backend/Tocalculate/fangkuanTocal',{jid: this.RepayInfo.jid}).then(d=>{
           this.RepayInfo.sj_amount = d.data;
         })
       },
+      ChangeType(type){
+
+      }
     }
   }
 </script>

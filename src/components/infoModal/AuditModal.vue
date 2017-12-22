@@ -493,7 +493,7 @@
             <Button :type="SetLoan.type" @click="SetLoanOpt">{{SetLoan.name}}</Button>
           </p>
           <p v-show="IsPass.isLimit" class="inline-block">
-            <Button type="primary" v-show="IsPass.status" @click="GiveLimitOpt">授予额度</Button>
+            <Button type="primary" v-show="IsPass.status" @click="GiveLimitOpt">借款额度</Button>
             <span v-show="IsPass.status" class="limit-input">
               额度：
               <span v-show="!Limit.status">{{Limit.value}}</span>
@@ -1275,7 +1275,7 @@
       JudgeBlack(status){
         this.ButtonAll.forEach(val=>{
           if(val.class === 'AddBlackOpt'){
-            val.name = status?'移除黑名单':'加入黑名单';
+            val.name = status?'移除黑名单':'进黑名单';
             val.color = status?'default':'error';
           }
         })

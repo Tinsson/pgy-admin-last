@@ -239,16 +239,17 @@
           },{
             title: '备注',
             width: '250',
-            key: 'remark'/*,
+            key: 'remark',
             render: (h,params)=>{
               return this.RenderRemark(h, params);
-            }*/
+            }
           },{
             title: '类型',
             key: 'type'
           },{
             title: '操作',
             key: 'operation',
+            width: '220',
             align: 'center',
             render: (h, params)=>{
               let rule = {};
@@ -604,7 +605,7 @@
         return arr;
       },
       SetRemark(data){
-        console.log(data);
+        //console.log(data.target.value);
       },
       RenderRemark(h,params){
         let display = 'none';
@@ -616,15 +617,12 @@
             color: '#f00'
           }
         },params.row.remark);
-        const input = h('Input',{
-          style:{
-            margin: '3px 0'
-          },
-          props:{
-            show: params.row.remark_status
-          },
+        const input = h('input',{
           on: {
-            input: this.SetRemark
+            input: this.SetRemark,
+            keyup: function(event){
+              console.log(event.key);
+            }
           }
         });
         return h('div',[span,input]);

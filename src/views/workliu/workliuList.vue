@@ -243,61 +243,11 @@
           if((val.class === 'AddOpt' || val.class === 'RejectOpt') && params.row.status === 0){
             arr.push(btn);
           }else if(val.class === 'DetailsOpt' && params.row.status === 1){
-            let tips = '';
-            switch(params.row.type){
-              case 0:
-                tips = '确认展期服务费';
-                break;
-              case 1:
-                tips = '确认首借服务费';
-                break;
-              case 2:
-                tips = '确认续借服务费';
-                break;
-            }
-            arr.push(h('Button', {
-              props: {
-                type: val.color
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: () => {
-                  this[val.class](params.row)
-                }
-              },
-            }, tips));
+            arr.push(btn);
           }else if((val.class === 'LoanOpt' || val.class === 'RejectOpt') && params.row.status === 2){
-            let tips = '借款通过';
-            switch(params.row.type){
-              case 0:
-                tips = '展期通过';
-                break;
-              case 1:
-                tips = '首借通过';
-                break;
-              case 2:
-                tips = '续借通过';
-                break;
-            }
-            if(val.class === 'RejectOpt'){
-              arr.push(btn);
-            }else{
-              arr.push(h('Button', {
-                props: {
-                  type: val.color
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    this[val.class](params.row)
-                  }
-                },
-              }, tips));
-            }
+            arr.push(btn);
+          }else if((val.class === 'DelayOpt' || val.class === 'RejectOpt') && params.row.type === 0){
+            arr.push(btn);
           }
         });
         return arr;
@@ -385,7 +335,7 @@
         })
       },
       //审核面板
-      DetailsOpt(row){
+      AuditPanel(row){
         this.Audit.modal = true;
         this.Audit.id = row.id;
         let idArr = [];
@@ -403,11 +353,11 @@
       },
       //审核通过
       AddOpt(row){
-        let url = row.type === 0?'/backend/Loan/zqAuditOk':'/backend/Loan/jkAuditOk';
-        let type = row.type === 0?'展期':'放款';
+        let url = row.type === 0?'/backend/Loan/payDelayOk':'/backend/Loan/jkAuditOk';
+        let type = row.type === 0?'展期':'放款审核';
         this.$Modal.confirm({
           title: '提示',
-          content: `<p class="confirm-text">确认通过该用户的${type}审核？</p>`,
+          content: `<p class="confirm-text">确认通过该用户的${type}？</p>`,
           onOk: ()=>{
             this.UploadData(url,{jid: row.id,status: 1}).then(()=>{
               this.SimpleSearch(0);
@@ -437,6 +387,42 @@
           content: `<p class="confirm-text">${tips}</p>`,
           onOk: ()=>{
             this.UploadData(url,{jid: row.id,status: 1}).then(()=>{
+              this.SimpleSearch(0);
+            });
+          }
+        })
+      },
+      //展期通过操作
+      DelayOpt(row){
+        this.$Modal.confirm({
+          title: '提示',
+          content: `<p class="confirm-text">确认展期成功通过吗？</p>`,
+          onOk: ()=>{
+            this.UploadData('/backend/Loan/payDelayOk',{jid: row.id,status: 1}).then(()=>{
+              this.SimpleSearch(0);
+            });
+          }
+        })
+      },
+      //销账通过
+      WriteOffOpt(row){
+        this.$Modal.confirm({
+          title: '提示',
+          content: `<p class="confirm-text">确认销账成功吗？</p>`,
+          onOk: ()=>{
+            this.UploadData('/backend/Loan/payMentDone',{hid: row.id}).then(()=>{
+              this.SimpleSearch(0);
+            });
+          }
+        })
+      },
+      //提前还款
+      PreRepayOpt(row){
+        this.$Modal.confirm({
+          title: '提示',
+          content: `<p class="confirm-text">确认提前还款成功通过吗？</p>`,
+          onOk: ()=>{
+            this.UploadData('/backend/Loan/payMentDoneOk',{hid: row.id}).then(()=>{
               this.SimpleSearch(0);
             });
           }

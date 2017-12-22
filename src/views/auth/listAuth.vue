@@ -167,6 +167,12 @@
           name: '挂起按钮',
           value: 'HangOpt'
         },{
+          name: '销账按钮',
+          value: 'WriteOffOpt'
+        },{
+          name: '提前还款按钮',
+          value: 'PreRepayOpt'
+        },{
           name: '授予额度按钮',
           value: 'GiveLimitOpt'
         },{
