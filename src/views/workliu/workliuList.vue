@@ -240,17 +240,21 @@
               }
             },
           }, val.name);
-          if((val.class === 'AddOpt' || val.class === 'RejectOpt') && params.row.type === 1){
+          const types = params.row.types,
+                status = params.row.status,
+                hktype = params.row.hktype;
+          console.log(val.name,types,status,hktype);
+          if((val.class === 'AddOpt' || val.class === 'RejectOpt') && types === 1){
             arr.push(btn);
-          }else if((val.class === 'DelayOpt' || val.class === 'RejectOpt') && params.row.type === 2){
+          }else if((val.class === 'DelayOpt' || val.class === 'RejectOpt') && types === 2){
             arr.push(btn);
-          }else if(val.class === 'DetailsOpt' && params.row.status === 1){
+          }else if(val.class === 'DetailsOpt' && status === 1){
             arr.push(btn);
-          }else if((val.class === 'LoanOpt' || val.class === 'RejectOpt') && params.row.status === 2){
+          }else if((val.class === 'LoanOpt' || val.class === 'RejectOpt') && status === 2){
             arr.push(btn);
-          }else if((val.class === 'PreRepayOpt' || val.class === 'RejectOpt') && params.row.hktype === 2){
+          }else if((val.class === 'PreRepayOpt' || val.class === 'RejectOpt') && types === 3 && hktype === 2){
             arr.push(btn);
-          }else if((val.class === 'WriteOffOpt' || val.class === 'RejectOpt') && params.row.hktype === 3){
+          }else if((val.class === 'WriteOffOpt' || val.class === 'RejectOpt') && types === 3 && hktype === 3){
             arr.push(btn);
           }
         });

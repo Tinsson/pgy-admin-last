@@ -113,11 +113,6 @@
             align: 'center',
             key: 'id'
           },{
-            title: '用户ID',
-            width: '75',
-            align: 'center',
-            key: 'uid'
-          },{
             title: '用户姓名',
             width: '100',
             align: 'center',
