@@ -249,12 +249,6 @@
                   <img v-for="item in AllInfo.jiben.idcardimg" :src="item" @click="CheckBigPic(item)" :key="item" alt="">
                 </p>
               </li>
-              <li class="single-line">
-                <p class="label">人脸识别</p>
-                <p class="idcard-box">
-                  <img v-for="(item, index) in AllInfo.jiben.huoti" :src="item" @click="CheckBigPic(item)" :key="index" alt="">
-                </p>
-              </li>
             </ul>
           </div>
         </Col>

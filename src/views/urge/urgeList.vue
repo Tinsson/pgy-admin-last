@@ -324,7 +324,7 @@
         }
       });
       this.ClipBoard.on('success',(e)=>{
-        this.$Message.success('链接粘贴成功！');
+        this.$Message.success('复制成功！');
       })
     },
     destroyed() {
@@ -458,10 +458,12 @@
         this.Remark.modal = true;
       },
       //提交备注
-      SubRemark(){
-        this.UploadData('/backend/Collection/remark',this.Remark).then(()=>{
-          this.SimpleSearch(0);
-        });
+      SubRemark(event){
+        if(event.keyCode === 13){
+          this.UploadData('/backend/Collection/remark',this.Remark).then(()=>{
+            this.SimpleSearch(0);
+          });
+        }
       },
       //展期功能
       DelayOpt(row){
@@ -623,13 +625,9 @@
           },
           on: {
             input: this.SetRemark,
-            keyup: function(event){
-              if(event.key === "Enter"){
-               this.SubRemark();
-              }
-            }
+            keyup: this.SubRemark
           }
-        });
+        },params.row.remark);
         return h('div',[span,input]);
       }
     }
