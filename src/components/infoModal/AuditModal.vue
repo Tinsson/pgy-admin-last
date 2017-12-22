@@ -186,7 +186,7 @@
                     <p class="value">
                       <span v-show="!IsEdit">{{ GetAuditor }}</span>
                       <Select v-show="IsEdit" v-model="EditData.info.auditorId" :style="{width: IptWidth}">
-                        <Option v-for="item in EditData.auditor" :value="item.id" :key="item.id">{{item.admin_name}}</Option>
+                        <Option v-for="item in EditData.auditor" :value="item.id" :key="item.id">{{item.admin_user}}</Option>
                       </Select>
                     </p>
                   </Col>
@@ -195,7 +195,7 @@
                     <p class="value">
                       <span v-show="!IsEdit">{{ GetCollector }}</span>
                       <Select v-show="IsEdit" v-model="EditData.info.collectorId" :style="{width: IptWidth}">
-                        <Option v-for="item in EditData.collector" :value="item.id" :key="item.id">{{item.admin_name}}</Option>
+                        <Option v-for="item in EditData.collector" :value="item.id" :key="item.id">{{item.admin_user}}</Option>
                       </Select>
                     </p>
                   </Col>
@@ -823,7 +823,7 @@
         let name = ''
         this.EditData.auditor.forEach(val=>{
           if(val.id === this.EditData.info.auditorId){
-            name = val.admin_name;
+            name = val.admin_user;
           }
         });
         return name;
@@ -832,7 +832,7 @@
         let name = '';
         this.EditData.collector.forEach(val=>{
           if(val.id === this.EditData.info.collectorId){
-            name = val.admin_name;
+            name = val.admin_user;
           }
         });
         return name;
