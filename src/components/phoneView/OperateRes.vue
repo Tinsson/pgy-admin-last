@@ -2,11 +2,11 @@
   <div id="operate-res" v-show="state">
     <div class="res-box" v-if="success">
       <img src="../../assets/images/success.png" alt="">
-      <p class="tip-text">操作成功</p>
+      <p class="tip-text">{{ tipText }}</p>
     </div>
     <div class="res-box" v-else>
-      <img src="../../assets/images/info.png" alt="">
-      <p class="tip-text">已成功，请勿重复操作</p>
+      <img src="../../assets/images/fail.png" alt="">
+      <p class="tip-text">{{tipText}}</p>
     </div>
   </div>
 </template>
@@ -20,7 +20,8 @@
     data () {
       return{
         state: false,
-        success: true
+        success: true,
+        tipText: ''
       }
     },
     created(){
@@ -37,11 +38,12 @@
           });
           this.$post(url,obj).then(d=>{
             this.state = true;
-            if(d.status === 1){
+            if(d.status === 2){
               this.success = true;
             }else{
               this.success = false;
             }
+            this.tipText = d.message;
           })
         }else{
           const params = this.$route.query;

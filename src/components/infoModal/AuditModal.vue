@@ -484,7 +484,7 @@
           </p>
           <p v-show="IsPass.isLimit" class="inline-block">
             <Button type="primary" v-show="IsPass.status && !Limit.status" @click="GiveLimitOpt">{{ Limit.text }}</Button>
-            <Input ref="LimitInput" v-show="Limit.status" v-model="Limit.value" autofocus @on-enter="SubmitLimit" style="width: 120px;display: inline-block"/>
+            <Input ref="LimitInput" v-show="Limit.status" v-model="Limit.value" autofocus @on-enter="SubmitLimit" style="width: 80px;display: inline-block"/>
           </p>
           <!--<p v-show="IsPass.isLoan" class="inline-block">-->
             <!--<Button type="info" v-show="IsPass.status" @click="SetLoanOpt">设置放款员</Button>-->
@@ -1259,7 +1259,7 @@
         };
         this.UploadData('/backend/User/addCollection',data).then((d)=>{
           //this.Urge.status = false;
-          this.Urge.Data.push({
+          this.Urge.Data.unshift({
             content: this.NavData.baseInfo.remark_ipt,
             create_at: d.date
           });

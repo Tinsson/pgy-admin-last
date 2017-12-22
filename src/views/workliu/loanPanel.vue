@@ -103,12 +103,12 @@
         Owner: 1,
         //统计数据
         CountData: [{
-          name: '潜在客户',
-          icon: 'ios-list-outline',
+          name: '待放款列表',
+          icon: 'android-bookmark',
           count: 0,
           cunit: '人',
           second: false,
-          status: 'potential_customers',
+          status: 'fk_customers_ready',
           cur: true
         },{
           name: '今日放款',
@@ -119,12 +119,12 @@
           status: 'fk_today',
           cur: false
         },{
-          name: '昨日放款',
-          icon: 'android-calendar',
+          name: '潜在客户',
+          icon: 'ios-list-outline',
           count: 0,
           cunit: '人',
           second: false,
-          status: 'fk_yesterday',
+          status: 'potential_customers',
           cur: false
         },{
           name: '放款总数',
@@ -134,18 +134,10 @@
           second: false,
           status: 'fk_total_number',
           cur: false
-        },{
-          name: '待放款列表',
-          icon: 'android-bookmark',
-          count: 0,
-          cunit: '人',
-          second: false,
-          status: 'fk_customers_ready',
-          cur: false
         }],
         //基础筛选数据
         ScreenData: {
-          type: 'potential_customers',
+          type: 'fk_customers_ready',
           name: '',
           phone: ''
         },
@@ -218,7 +210,7 @@
         saveLocal('owner',this.Owner);
       }
       this.auth_id = getLocal('auth_id');
-      this.InitData(this.apiUrl,{type: 'potential_customers'});
+      this.InitData(this.apiUrl,{type: 'fk_customers_ready'});
     },
     computed: {
 

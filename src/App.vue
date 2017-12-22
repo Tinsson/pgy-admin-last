@@ -64,6 +64,7 @@ export default {
   }
   .table-input{
     color: #333;
+    width: 230px;
     min-height: 30px;
     border: 1px solid #bbb;
     border-radius: 5px;

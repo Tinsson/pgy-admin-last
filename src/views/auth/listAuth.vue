@@ -419,6 +419,7 @@
       //编辑操作
       EditOpt(row){
         this.EditModal = true;
+        console.log(row.levelNum);
         for(let key in this.EditInfo){
           if(key === 'title'){
               let title = row['title'];
@@ -445,6 +446,9 @@
             this.EditInfo.topLevel = false;
             break;
           case 3:
+            this.EditInfo.hideBtn = false;
+            break;
+          case 4:
             this.EditInfo.hideBtn = false;
             break;
         }

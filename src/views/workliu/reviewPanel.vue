@@ -77,6 +77,7 @@
 <script>
   import { getLocal } from '@/util/util'
   import AuditModal from '@/components/infoModal/AuditModal'
+  import Clipboard from 'clipboard'
 
   export default {
     name: 'ReviewPanel',
@@ -145,13 +146,41 @@
             title: '姓名',
             width: '100',
             align: 'center',
-            key: 'name'
+            key: 'name',
+            render: (h, params)=>{
+              return h('div',{
+                'class': {
+                  clipBtn : true
+                },
+                style:{
+                  cursor: 'pointer',
+                  color: '#0f76c7'
+                },
+                attrs:{
+                  src: params.row.name
+                }
+              }, params.row.name);
+            }
           },{
             title: '性别',
             key: 'sex'
           },{
             title: '手机',
-            key: 'phone'
+            key: 'phone',
+            render: (h, params)=>{
+              return h('div',{
+                'class': {
+                  clipBtn : true
+                },
+                style:{
+                  cursor: 'pointer',
+                  color: '#0f76c7'
+                },
+                attrs:{
+                  src: params.row.phone
+                }
+              }, params.row.phone);
+            }
           },{
             title: '身份证',
             key: 'idcard'
@@ -208,6 +237,20 @@
     created(){
       this.auth_id = getLocal('auth_id');
       this.InitData(this.apiUrl,{type: 'check_waiting'});
+    },
+    mounted(){
+      //剪切板功能
+      this.ClipBoard = new Clipboard('.clipBtn',{
+        text: function(elm){
+          return elm.getAttribute('src');
+        }
+      });
+      this.ClipBoard.on('success',(e)=>{
+        this.$Message.success('复制成功！');
+      })
+    },
+    destroyed() {
+      this.ClipBoard.destroy();
     },
     computed: {
       HangText(){

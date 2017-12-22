@@ -160,16 +160,16 @@
           type: 0,
           cur: true
         },{
-          name: '逾期列表',
-          icon: 'android-time',
-          count: 0,
-          type: 1,
-          cur: false
-        },{
           name: '明天还款',
           icon: 'android-calendar',
           count: 0,
           type: 2,
+          cur: false
+        },{
+          name: '逾期列表',
+          icon: 'android-time',
+          count: 0,
+          type: 1,
           cur: false
         },{
           name: '已还列表',
@@ -239,6 +239,7 @@
           },{
             title: '备注',
             width: '250',
+            align: 'center',
             key: 'remark',
             render: (h,params)=>{
               return this.RenderRemark(h, params);
@@ -634,7 +635,7 @@
             display: spanShow
           },
         },params.row.remark);
-        const input = h('input',{
+        const input = h('textarea',{
           class:['table-input'],
           style:{
             display

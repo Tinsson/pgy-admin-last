@@ -174,14 +174,14 @@
             render: (h,params)=>{
               let text = '';
               switch(params.row.type){
-                case 0:
-                  text = '展期';
-                  break;
                 case 1:
-                  text = '首借';
+                  text = '借款';
                   break;
                 case 2:
-                  text = '续借';
+                  text = '展期';
+                  break;
+                case 3:
+                  text = '还款';
                   break;
               }
               return h('span',text);
@@ -240,26 +240,17 @@
               }
             },
           }, val.name);
-          if((val.class === 'AddOpt' || val.class === 'RejectOpt') && params.row.status === 0){
-            if(params.row.type === 0){
-              btn = h('Button', {
-                props:{
-                  type: val.color
-                },
-                style:{
-                  marginRight: '5px'
-                },
-                on:{
-                  click: ()=>{
-                    this[val.class](params.row)
-                  }
-                }
-              },'展期成功');
-            }
+          if((val.class === 'AddOpt' || val.class === 'RejectOpt') && params.row.type === 1){
+            arr.push(btn);
+          }else if((val.class === 'DelayOpt' || val.class === 'RejectOpt') && params.row.type === 2){
             arr.push(btn);
           }else if(val.class === 'DetailsOpt' && params.row.status === 1){
             arr.push(btn);
           }else if((val.class === 'LoanOpt' || val.class === 'RejectOpt') && params.row.status === 2){
+            arr.push(btn);
+          }else if((val.class === 'PreRepayOpt' || val.class === 'RejectOpt') && params.row.hktype === 2){
+            arr.push(btn);
+          }else if((val.class === 'WriteOffOpt' || val.class === 'RejectOpt') && params.row.hktype === 3){
             arr.push(btn);
           }
         });
@@ -443,8 +434,22 @@
       },
       //拒绝操作
       RejectOpt(row){
-        let url = row.type === 0?'/backend/Loan/zqAuditOk':'/backend/Loan/jkAuditOk';
-        let tips = row.type === 0?'确认拒绝该展期吗？':'确认拒绝该借款吗？';
+        let url = '',
+            tips = '';
+        switch(row.type){
+          case 1:
+            url = '/backend/Loan/jkAuditOk';
+            tips = '确认拒绝该借款吗？';
+            break;
+          case 2:
+            url = '/backend/Loan/zqAuditOk';
+            tips = '确认拒绝该展期吗？';
+            break;
+          case 3:
+            url = '';
+            tips = '确认拒绝该还款吗？';
+            break;
+        }
         this.$Modal.confirm({
           title: '提示',
           content: `<p class="confirm-text">${tips}</p>`,
