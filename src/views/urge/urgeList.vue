@@ -148,7 +148,7 @@
         loading: true,
         Remark: {
           modal: false,
-          loan_id: '',
+          loan_id: 58304,
           remark: ''
         },
         allTime: [],
@@ -460,8 +460,17 @@
       //提交备注
       SubRemark(event){
         if(event.keyCode === 13){
-          this.UploadData('/backend/Collection/remark',this.Remark).then(()=>{
-            this.SimpleSearch(0);
+          const data = {
+            loan_id: this.Remark.loan_id,
+            remark: this.Remark.remark
+          }
+          this.UploadData('/backend/Collection/remark',data).then(()=>{
+            this.UserData.forEach(val=>{
+              val.remark_state = false;
+              if(val.loan_id === this.Remark.loan_id){
+                val.remark = this.Remark.remark;
+              }
+            });
           });
         }
       },
@@ -602,25 +611,35 @@
       //渲染备注功能
       SetRemarkState(arr){
         arr.forEach(val=>{
-          val.remark_state = true;
+          val.remark_state = false;
         });
         return arr;
       },
       SetRemark(event){
         this.Remark.remark = event.target.value;
       },
+      ShowRemark(id){
+        console.log(id);
+      },
       RenderRemark(h,params){
-        let display = 'none';
+        let display = 'none',
+            spanShow = 'block';
         if(params.row.remark_state){
           display = 'block';
+          spanShow = 'none';
         }
         const span = h('span',{
           style: {
-            color: '#f00'
-          }
+            color: '#f00',
+            display: spanShow
+          },
         },params.row.remark);
         const input = h('input',{
-          props:{
+          class:['table-input'],
+          style:{
+            display
+          },
+          domProps: {
             value: params.row.remark
           },
           on: {
@@ -628,7 +647,18 @@
             keyup: this.SubRemark
           }
         },params.row.remark);
-        return h('div',[span,input]);
+        return h('div',{
+          on: {
+            click: ()=>{
+              this.Remark.loan_id = params.row.loan_id;
+              this.UserData.forEach(val=>{
+                if(val.loan_id === params.row.loan_id){
+                  val.remark_state = true;
+                }
+              })
+            }
+          }
+        },[span,input]);
       }
     }
   }
@@ -712,5 +742,4 @@
       }
     }
   }
-
 </style>

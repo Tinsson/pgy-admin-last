@@ -62,6 +62,14 @@ export default {
     position: absolute!important;
     top: 32px!important;
   }
+  .table-input{
+    color: #333;
+    min-height: 30px;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    box-sizing: border-box;
+    padding: 2px 5px;
+  }
   .auth-icon{
     width: 32px;
     height: 32px;

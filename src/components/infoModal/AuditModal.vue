@@ -280,16 +280,11 @@
                      :data="NavData.baseInfo.remark"
                      style="margin-bottom: 10px;"
                      size="large"></Table>
-              <p v-show="NavData.baseInfo.IsRemark">
+              <!--<p v-show="NavData.baseInfo.IsRemark">
                 <Input type="textarea"
                        class="value textarea"
                        v-model="NavData.baseInfo.remark_ipt"/>
-              </p>
-            </div>
-            <div class="bot-btn">
-              <Button type="info" size="large" v-show="!NavData.baseInfo.IsRemark" @click="AddRemark">添加备注</Button>
-              <Button type="warning" size="large" v-show="NavData.baseInfo.IsRemark" @click="RemarkOver">保存备注</Button>
-              <Button type="default" size="large" v-show="NavData.baseInfo.IsRemark" @click="RemarkCancel">取消</Button>
+              </p>-->
             </div>
           </div>
           <div class="trade-record" v-show="NavData.tradeRecord.cur">
@@ -483,11 +478,12 @@
           <Button type="primary" style="margin-left: 0" v-show="IsEdit" @click="SubOpt">保存</Button>
           <Button type="warning" v-show="IsEdit" @click="EditCancel">取消</Button>
           <Button v-for="item in ButtonAll" :key="item.id" :type="item.color" @click="EventTune(item.class)">{{item.name}}</Button>
+          <Button type="info" @click="RemarkOpt">添加备注</Button>
           <p v-show="IsPass.status && IsPass.isLoan" class="inline-block">
             <Button :type="SetLoan.type" @click="SetLoanOpt">{{SetLoan.name}}</Button>
           </p>
           <p v-show="IsPass.isLimit" class="inline-block">
-            <Button type="primary" v-show="IsPass.status && !Limit.status" @click="GiveLimitOpt">借款额度</Button>
+            <Button type="primary" v-show="IsPass.status && !Limit.status" @click="GiveLimitOpt">{{ Limit.text }}</Button>
             <Input ref="LimitInput" v-show="Limit.status" v-model="Limit.value" autofocus @on-enter="SubmitLimit" style="width: 120px;display: inline-block"/>
           </p>
           <!--<p v-show="IsPass.isLoan" class="inline-block">-->
@@ -508,6 +504,12 @@
               simple></Page>
       </div>
       <Spin size="large" fix v-if="loading"></Spin>
+    </Modal>
+    <Modal v-model="NavData.baseInfo.IsRemark"
+           @on-ok="RemarkOver"
+           style="z-index: 10">
+      <h2 slot="header">备注信息</h2>
+      <Input v-model="NavData.baseInfo.remark_ipt" type="textarea" :rows="4" placeholder="请输入备注信息"></Input>
     </Modal>
     <BigPic :modalShow="BigPic.modal"
             :InitData="BigPic.img"
@@ -638,7 +640,8 @@
         },
         Limit: {
           status: false,
-          value: ''
+          value: '',
+          text: '借款额度'
         },
         SetLoan: {
           status: false,
@@ -917,6 +920,7 @@
               this.EditData.uid = this.ID;
               this.EditData.info.uid = this.ID;
               this.Limit.value = edit.data.info.credit_limit;
+              this.Limit.text = edit.data.info.credit_limit;
               this.NavData.baseInfo.remark = edit.data.info.remark;
               this.ChoseCompany = this.StdArea(edit.data.info.address_company);
               this.ChoseLive = this.StdArea(edit.data.info.address_live);
@@ -1009,6 +1013,7 @@
         }
         this.UploadData('/backend/User/creditLimit',data).then(()=>{
           this.Limit.status = false;
+          this.Limit.text = this.Limit.value;
         });
       },
       LimitCancel(){
@@ -1111,7 +1116,8 @@
           this.BindHidden();
         })
       },
-      AddRemark(){
+      RemarkOpt(){
+        this.NavData.baseInfo.remark_ipt = '';
         this.NavData.baseInfo.IsRemark = true;
       },
       RemarkOver(){

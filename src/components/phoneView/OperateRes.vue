@@ -5,8 +5,8 @@
       <p class="tip-text">操作成功</p>
     </div>
     <div class="res-box" v-else>
-      <img src="../../assets/images/fail.png" alt="">
-      <p class="tip-text">操作失败</p>
+      <img src="../../assets/images/info.png" alt="">
+      <p class="tip-text">已成功，请勿重复操作</p>
     </div>
   </div>
 </template>

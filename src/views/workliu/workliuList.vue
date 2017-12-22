@@ -241,12 +241,25 @@
             },
           }, val.name);
           if((val.class === 'AddOpt' || val.class === 'RejectOpt') && params.row.status === 0){
+            if(params.row.type === 0){
+              btn = h('Button', {
+                props:{
+                  type: val.color
+                },
+                style:{
+                  marginRight: '5px'
+                },
+                on:{
+                  click: ()=>{
+                    this[val.class](params.row)
+                  }
+                }
+              },'展期成功');
+            }
             arr.push(btn);
           }else if(val.class === 'DetailsOpt' && params.row.status === 1){
             arr.push(btn);
           }else if((val.class === 'LoanOpt' || val.class === 'RejectOpt') && params.row.status === 2){
-            arr.push(btn);
-          }else if((val.class === 'DelayOpt' || val.class === 'RejectOpt') && params.row.type === 0){
             arr.push(btn);
           }
         });
