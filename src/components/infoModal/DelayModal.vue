@@ -49,8 +49,8 @@
       return{
         State: this.modalShow,
         DelayInfo:{
-          uid: this.initData.id,
-          //at: 1,
+          uid: this.initData.uid,
+          jid: this.initData.id,
           amount: this.initData.amount,
           start_date: '',
           end_date: '',
@@ -68,23 +68,11 @@
         this.State = val;
       },
       initData(val){
-        this.DelayInfo.uid = val.id;
+        this.DelayInfo.uid = val.uid;
+        this.DelayInfo.jid = val.id;
         this.DelayInfo.amount = val.amount;
         this.DelayInfo.type = val.type;
-        let days = 0;
-        switch(val.type){
-          case 'A':
-            days = 28;
-            break;
-          case 'B':
-            days = 15;
-            break;
-          case 'C':
-            days = 15;
-            break;
-          default:
-            days = 0;
-        }
+        let days = val.days;
         this.DelayInfo.days = days;
         //获取时间
         const start = new Date(val.hk_date),
@@ -108,7 +96,7 @@
         this.DelayInfo.end_date = value;
       },
       GetTotalCount(){
-        this.$post('/backend/Tocalculate/zhanqiTocal',{uid: this.DelayInfo.uid}).then(d=>{
+        this.$post('/backend/Tocalculate/zhanqiTocal',{jid: this.DelayInfo.jid,days: this.DelayInfo.days}).then(d=>{
           this.DelayInfo.fee = d.data;
         })
       },
@@ -116,6 +104,7 @@
         const start = new Date(this.DelayInfo.start_date),
           end = new Date(start.getTime() + 1000 * 60 * 60 * 24 * this.DelayInfo.days);
         this.DelayInfo.end_date = `${end.getFullYear()}-${end.getMonth()+1}-${end.getDate(0)}`;
+        this.GetTotalCount();
       }
     }
   }

@@ -604,8 +604,8 @@
         });
         return arr;
       },
-      SetRemark(data){
-        //console.log(data.target.value);
+      SetRemark(event){
+        this.Remark.remark = event.target.value;
       },
       RenderRemark(h,params){
         let display = 'none';
@@ -618,10 +618,15 @@
           }
         },params.row.remark);
         const input = h('input',{
+          props:{
+            value: params.row.remark
+          },
           on: {
             input: this.SetRemark,
             keyup: function(event){
-              console.log(event.key);
+              if(event.key === "Enter"){
+               this.SubRemark();
+              }
             }
           }
         });

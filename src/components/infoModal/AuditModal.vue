@@ -493,14 +493,8 @@
             <Button :type="SetLoan.type" @click="SetLoanOpt">{{SetLoan.name}}</Button>
           </p>
           <p v-show="IsPass.isLimit" class="inline-block">
-            <Button type="primary" v-show="IsPass.status" @click="GiveLimitOpt">借款额度</Button>
-            <span v-show="IsPass.status" class="limit-input">
-              额度：
-              <span v-show="!Limit.status">{{Limit.value}}</span>
-              <Input v-show="Limit.status" v-model="Limit.value" style="width: 120px;"></Input>
-              <Button v-show="Limit.status" type="success" @click="SubmitLimit">提交额度</Button>
-              <Button v-show="Limit.status" type="error" @click="LimitCancel">取消</Button>
-            </span>
+            <Button type="primary" v-show="IsPass.status && !Limit.status" @click="GiveLimitOpt">借款额度</Button>
+            <Input ref="LimitInput" v-show="Limit.status" v-model="Limit.value" autofocus @on-enter="SubmitLimit" style="width: 120px;display: inline-block"/>
           </p>
           <!--<p v-show="IsPass.isLoan" class="inline-block">-->
             <!--<Button type="info" v-show="IsPass.status" @click="SetLoanOpt">设置放款员</Button>-->
@@ -1011,6 +1005,8 @@
       },
       GiveLimitOpt(){
         this.Limit.status = true;
+        console.log(this.$refs['LimitInput']);
+        this.$refs['LimitInput'].focus();
       },
       SubmitLimit(){
         const data = {
@@ -1089,8 +1085,11 @@
         const jk_list = this.AllInfo.loan.jk_list;
         if(jk_list.length > 0){
           const jk_data = jk_list[jk_list.length - 1];
+          console.log(jk_data);
           const data = {
-            id: this.ID,
+            uid: this.ID,
+            id: jk_data.id,
+            days: this.AllInfo.jiben.info.days,
             amount: jk_data.amount,
             hk_date: jk_data.hk_date,
             name: this.AllInfo.jiben.info.name,
@@ -1142,8 +1141,7 @@
           const data = {
             uid: this.ID,
             jid: jk_data.id,
-            amount: jk_data.amount,
-            wy_amount: jk_data.wy_amount,
+            amount: this.AllInfo.jiben.info.yuE,
             name: this.AllInfo.jiben.info.name
           };
           this.Repay.modal = true;
