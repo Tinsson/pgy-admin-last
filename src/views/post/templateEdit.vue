@@ -105,6 +105,9 @@
             title: '英文名',
             key: 'title_en'
           },{
+            title: '内容',
+            key: 'content'
+          },{
             title: '操作',
             key: 'operation',
             align: 'center',

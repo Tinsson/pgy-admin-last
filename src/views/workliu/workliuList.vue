@@ -170,10 +170,10 @@
             }
           },{
             title: '类型',
-            key: 'type',
+            key: 'types',
             render: (h,params)=>{
               let text = '';
-              switch(params.row.type){
+              switch(params.row.types){
                 case 1:
                   text = '借款';
                   break;
@@ -190,7 +190,7 @@
             title: '操作',
             key: 'operation',
             align: 'center',
-            width: '250',
+            width: '320',
             render: (h, params)=>{
               return h('div',this.RenderBtn(h, params, this.BtnData));
             }
@@ -243,8 +243,8 @@
           const types = params.row.types,
                 status = params.row.status,
                 hktype = params.row.hktype;
-          console.log(val.name,types,status,hktype);
-          if((val.class === 'AddOpt' || val.class === 'RejectOpt') && types === 1){
+          console.log(val.class,types,status,hktype);
+          if((val.class === 'AddOpt' || val.class === 'RejectOpt') && status === 0 && types === 1){
             arr.push(btn);
           }else if((val.class === 'DelayOpt' || val.class === 'RejectOpt') && types === 2){
             arr.push(btn);

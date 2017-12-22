@@ -264,7 +264,8 @@
               <span class="half">催收员：{{AllInfo.jiben.info.collectorId}}</span>
             </p>
             <p class="info-box">
-              <span class="half">放款员：{{AllInfo.jiben.info.fangkuanId}}</span>
+              <!--<span class="half">放款员：{{AllInfo.jiben.info.fangkuanId}}</span>-->
+              <span class="half">放款员：冯剑涛</span>
               <span class="half">用户ID：{{ID}}</span>
             </p>
             <p class="info-box">
@@ -314,11 +315,11 @@
                       </div>
                       <div class="msg-area">
                         <p class="tips">实际还款日：{{ item.pay_date }}</p>
-                        <p class="value state" v-if="item.pay_state">
+                        <p class="value state" v-if="item.status === 1">
                           <Icon type="checkmark-circled"></Icon>
                           已还款
                         </p>
-                        <p class="value state nopay" v-if="!item.pay_state">
+                        <p class="value state nopay" v-if="item.status === 0">
                           <Icon type="alert-circled"></Icon>
                           未还款
                         </p>
@@ -478,7 +479,6 @@
           <Button type="primary" style="margin-left: 0" v-show="IsEdit" @click="SubOpt">保存</Button>
           <Button type="warning" v-show="IsEdit" @click="EditCancel">取消</Button>
           <Button v-for="item in ButtonAll" :key="item.id" :type="item.color" @click="EventTune(item.class)">{{item.name}}</Button>
-          <Button type="info" @click="RemarkOpt">添加备注</Button>
           <p v-show="IsPass.status && IsPass.isLoan" class="inline-block">
             <Button :type="SetLoan.type" @click="SetLoanOpt">{{SetLoan.name}}</Button>
           </p>
@@ -486,6 +486,7 @@
             <Button type="primary" v-show="IsPass.status && !Limit.status" @click="GiveLimitOpt">{{ Limit.text }}</Button>
             <Input ref="LimitInput" v-show="Limit.status" v-model="Limit.value" autofocus @on-enter="SubmitLimit" style="width: 80px;display: inline-block"/>
           </p>
+          <Button type="info" @click="RemarkOpt">添加备注</Button>
           <!--<p v-show="IsPass.isLoan" class="inline-block">-->
             <!--<Button type="info" v-show="IsPass.status" @click="SetLoanOpt">设置放款员</Button>-->
             <!--<span v-show="IsPass.status">-->
