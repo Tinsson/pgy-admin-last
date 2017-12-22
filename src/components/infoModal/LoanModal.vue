@@ -120,7 +120,7 @@
         }
       },
       ChangeAmount(){
-        if(this.LoanInfo.amount > this.LoanInfo.limit){
+        if(parseFloat(this.LoanInfo.amount) > parseFloat(this.LoanInfo.limit)){
           this.LoanInfo.amount = this.LoanInfo.limit;
         }
       }

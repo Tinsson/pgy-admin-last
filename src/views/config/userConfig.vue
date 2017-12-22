@@ -32,6 +32,9 @@
             <Radio label="女"></Radio>
           </RadioGroup>
         </FormItem>
+        <FormItem label="额度：">
+          <Input v-model="ModeModal.data.money_limit"/>
+        </FormItem>
         <FormItem label="借款天数：" prop="days">
           <Input v-model="ModeModal.data.days"/>
         </FormItem>
@@ -96,6 +99,9 @@
           },{
             title: '借款天数',
             key: 'days'
+          },{
+            title: '额度',
+            key: 'money_limit'
           },{
             title: '分数下限',
             key: 'between_start'
@@ -192,6 +198,7 @@
         this.ModeModal.data = {
           level: '',
           sex: '男',
+          money_limit: '',
           days: '',
           between_start: 0,
           between_end: 100,
@@ -224,6 +231,7 @@
         this.ModeModal.data = {
           level: row.level,
           sex: row.sex,
+          money_limit: row.money_limit,
           days: row.days,
           between_start: row.between_start,
           between_end: row.between_end,
