@@ -201,12 +201,13 @@
                   </Col>
                   <Col span="8">
                     <p class="label">出资人</p>
-                    <!--<p class="value">
-                      <span v-show="!IsEdit">{{ GetCollector }}</span>
-                      <Select v-show="IsEdit" v-model="EditData.info.collectorId" :style="{width: IptWidth}">
-                        <Option v-for="item in EditData.collector" :value="item.id" :key="item.id">{{item.admin_user}}</Option>
+                    <p class="value">
+                      <span v-show="!IsEdit">{{ GetOwner }}</span>
+                      <Select v-show="IsEdit" v-model="EditData.info.owner" :style="{width: IptWidth}">
+                        <Option :value="1">李义</Option>
+                        <Option :value="2">张晓成</Option>
                       </Select>
-                    </p>-->
+                    </p>
                   </Col>
                 </Row>
               </li>
@@ -602,7 +603,8 @@
             nation: '',
             birth: '',
             address: '',
-            remark: ''
+            remark: '',
+            owner: 1
           },
           lianxiren: [],
           auditor: [],
@@ -829,6 +831,9 @@
           }
         });
         return name;
+      },
+      GetOwner(){
+        return '李义';
       }
     },
     methods: {
