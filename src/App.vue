@@ -89,4 +89,19 @@ export default {
      background-size: cover;
    }
   }
+  .opt-box{
+    display: flex;
+    flex-direction: row;
+    .form-group{
+      display: flex;
+      flex-direction: row;
+      align-content: center;
+      padding-bottom: 10px;
+      .form-label{
+        width: 60px;
+        font-size: 12px;
+        line-height: 30px;
+      }
+    }
+  }
 </style>

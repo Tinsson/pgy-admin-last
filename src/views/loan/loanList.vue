@@ -15,45 +15,16 @@
             <Icon type="ios-pricetags-outline"></Icon>
             筛选查询
           </h3>
-          <div class="btn-box">
+          <!--<div class="btn-box">
             <Button type="ghost" icon="reply" @click="ResetScreen">重置筛选</Button>
             <Button type="success" icon="search" @click="SimpleSearch">查询结果</Button>
-          </div>
+          </div>-->
         </div>
         <div class="opt-box">
-          <Form :model="ScreenData" inline :label-width="85">
-            <FormItem label="用户名：">
-              <Input v-model="ScreenData.name" style="width: 120px"></Input>
-            </FormItem>
-            <FormItem label="用户手机号：">
-              <Input v-model="ScreenData.phone" style="width: 120px"></Input>
-            </FormItem>
-            <FormItem label="身份证号：">
-              <Input v-model="ScreenData.idcard"></Input>
-            </FormItem>
-            <!--<FormItem label="易宝流水号：">
-              <Input v-model="ScreenData.channel_id"></Input>
-            </FormItem>-->
-            <FormItem label="订单状态：">
-              <Select v-model="ScreenData.status" style="width:162px">
-                <Option value="0">待审核</Option>
-                <Option value="1">放款通过</Option>
-                <Option value="2">放款中</Option>
-                <Option value="3">还款中</Option>
-                <Option value="8">已还款</Option>
-                <Option value="9">拒绝</Option>
-              </Select>
-            </FormItem>
-            <FormItem label="时间：">
-              <DatePicker type="datetimerange"
-                          placeholder="选择日期和时间"
-                          format="yyyy-MM-dd HH:mm:ss"
-                          placement="bottom-end"
-                          :value="allTime"
-                          @on-change="PickDate"
-                          style="width: 280px"></DatePicker>
-            </FormItem>
-          </Form>
+          <div class="form-group">
+            <label class="form-label">检索：</label>
+            <Input v-model="ScreenData.key" style="width: 200px" @on-enter="SimpleSearch"></Input>
+          </div>
         </div>
       </Card>
     </div>
@@ -95,12 +66,7 @@
         allTime: [],
         //基础筛选数据
         ScreenData: {
-          name: '',
-          phone: '',
-          idcard: '',
-          status: '',
-          start_time: '',
-          end_time: '',
+          key: ''
         },
         UserCol: [
           {
@@ -113,12 +79,12 @@
             align: 'center',
             key: 'id'
           },{
-            title: '用户姓名',
+            title: '姓名',
             width: '100',
             align: 'center',
             key: 'name'
           },{
-            title: '用户手机号',
+            title: '手机号',
             width: '110',
             align: 'center',
             key: 'phone'
@@ -126,22 +92,22 @@
             title: '借款金额',
             key: 'amount'
           },{
-            title: '请求时间',
-            align: 'center',
-            key: 'request_date'
-          },{
-            title: '放款时间',
+            title: '借款时间',
             align: 'center',
             key: 'jk_date'
           },{
-            title: '合同还款时间',
+            title: '还款时间',
             align: 'center',
             key: 'hthk_date'
           },{
-            title: '订单状态',
+            title: '状态',
             width: '100',
             align: 'center',
             key: 'status'
+          },{
+            title: '请求时间',
+            align: 'center',
+            key: 'request_date'
           }
         ],
         UserData: [],     //表格数据
@@ -175,6 +141,7 @@
       },
       //查询结果
       SimpleSearch(){
+        this.ResetPageNum();
         let sinfo = this.RemoveObserve(this.ScreenData);
         if(this.allTime[0] !== ""){
           sinfo.start_time = this.allTime[0];
@@ -184,7 +151,7 @@
           sinfo.end_time = '';
         }
         this.InitData(sinfo).then(()=>{
-          this.$Message.success('筛选成功！')
+          this.$Message.success('筛选成功！');
         });
       },
       //初始化数据
@@ -196,6 +163,8 @@
           this.$post('/backend/Loan/loanList',params).then((d)=>{
             let res = d.data.list;
             this.Page.count = d.data.count;
+            this.Page.cur = 1;
+            this.Page.size = 20;
             this.RowUserData = res;
             this.UserData = this.TransText(res,'error_msg','无');
             that.loading = false;
@@ -218,6 +187,8 @@
       },
       //刷新列表
       RefreshList(){
+        this.ScreenData.key = '';
+        this.ResetPageNum();
         this.InitData().then(()=>{
           this.$Message.success('刷新成功');
         });
@@ -267,6 +238,12 @@
           this.Page.cur = 1;
           this.Page.size = size;
         })
+      },
+      ResetPageNum(){
+        this.Page.cur = 1;
+        this.Page.size = 20;
+        this.ScreenData.page = 1;
+        this.ScreenData.num = 20;
       }
     }
   }

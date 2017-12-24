@@ -257,7 +257,7 @@
         this.ModeModal.modal = false;
       },
       AssignSub(){
-        this.UploadData('',{}).then(()=>{
+        this.UploadData('/backend/config-vc/equal-collection',{}).then(()=>{
           this.InitData(this.apiUrl);
           this.ModeModal.modal = false;
         })

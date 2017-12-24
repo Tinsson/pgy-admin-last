@@ -2,9 +2,14 @@
   <div id="loan-panel">
     <h1 class="list-title">
       <span class="tit-text">{{ title }}</span>
+      <Button class="tit-btn"
+              type="info"
+              icon="ios-reload"
+              size="large"
+              @click="RefreshList">刷新列表</Button>
     </h1>
     <Row class="card-box">
-      <Col v-for="item in CountData" class="card-col" :span="6" :key="item.name">
+      <Col v-for="item in CountData" class="card-col" :span="24 / CountData.length" :key="item.name">
       <div class="sim-card" :class="{cur:item.cur}" @click="CountList(item.status)">
         <Icon class="icon" :type="item.icon"></Icon>
         <p class="title">{{ item.name }}</p>
@@ -21,20 +26,16 @@
             <Icon type="ios-pricetags-outline"></Icon>
             筛选查询
           </h3>
-          <div class="btn-box">
+          <!--<div class="btn-box">
             <Button type="ghost" icon="reply" @click="ResetScreen">重置筛选</Button>
             <Button type="success" icon="search" @click="SimpleSearch">查询结果</Button>
-          </div>
+          </div>-->
         </div>
         <div class="opt-box">
-          <Form :model="ScreenData" inline :label-width="85">
-            <FormItem label="姓名：">
-              <Input v-model="ScreenData.name" style="width: 120px"></Input>
-            </FormItem>
-            <FormItem label="手机号：">
-              <Input v-model="ScreenData.phone" style="width: 120px"></Input>
-            </FormItem>
-          </Form>
+          <div class="form-group">
+            <label class="form-label">检索：</label>
+            <Input v-model="ScreenData.search" style="width: 200px" @on-enter="SimpleSearchTest"></Input>
+          </div>
         </div>
       </Card>
     </div>
@@ -126,7 +127,7 @@
           second: false,
           status: 'potential_customers',
           cur: false
-        },{
+        }/*,{
           name: '放款总数',
           icon: 'ios-list',
           count: 0,
@@ -134,12 +135,13 @@
           second: false,
           status: 'fk_total_number',
           cur: false
-        }],
+        }*/],
         //基础筛选数据
         ScreenData: {
           type: 'fk_customers_ready',
           name: '',
-          phone: ''
+          phone: '',
+          search: ''
         },
         UserCol: [
           {
@@ -234,6 +236,14 @@
         this.ScreenData.name = '';
         this.ScreenData.phone = '';
       },
+      //刷新列表
+      RefreshList(){
+        this.loading = true;
+        this.ResetPageNum();
+        this.SimpleSearch(0).then(()=>{
+          this.$Message.success('刷新成功！');
+        });
+      },
       //多选打钩绑定数据
       SelectTable(data){
         let idarr = [];
@@ -284,9 +294,14 @@
           sinfo.start_time = '';
           sinfo.end_time = '';
         }
-        this.SecondData(sinfo).then(()=>{
-          this.$Message.success('筛选成功！');
-        });
+        return new Promise(resolve=>{
+          this.SecondData(sinfo).then(()=>{
+            if(sign){
+              this.$Message.success('筛选成功！');
+            }
+            resolve();
+          });
+        })
       },
       //初始化数据
       InitData(url,params = {}){
@@ -378,6 +393,13 @@
           this.Page.size = size;
         })
       },
+      //重置页码
+      ResetPageNum(){
+        this.Page.cur = 1;
+        this.Page.size = 20;
+        this.ScreenData.page = 1;
+        this.ScreenData.num = 20;
+      },
       GroupAppOpt(){
         this.Group.AppmsgModal = true;
       },
@@ -418,6 +440,9 @@
           }
         });
         return h('div',elmArr);
+      },
+      SimpleSearchTest(){
+        console.log(this.ScreenData);
       }
     }
   }

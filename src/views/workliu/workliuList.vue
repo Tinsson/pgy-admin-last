@@ -8,7 +8,7 @@
               size="large"
               @click="RefreshList">刷新列表</Button>
     </h1>
-    <div class="screen-area">
+    <!--<div class="screen-area">
       <Card>
         <div class="card-tit" slot="title">
           <h3>
@@ -37,17 +37,17 @@
                           @on-change="PickDate"
                           style="width: 280px"></DatePicker>
             </FormItem>
-            <!--<FormItem label="状态：">
+            <FormItem label="状态：">
               <Select v-model="ScreenData.status" style="width:162px">
                 <Option :value="0">未处理</Option>
                 <Option :value="1">已放款</Option>
                 <Option :value="-1">已拒绝</Option>
               </Select>
-            </FormItem>-->
+            </FormItem>
           </Form>
         </div>
       </Card>
-    </div>
+    </div>-->
     <div class="data-area">
       <Card :padding="0">
         <div class="card-tit" slot="title">
@@ -63,14 +63,14 @@
                :data="UserData"
                :loading="loading"
                @on-selection-change="SelectTable"></Table>
-        <div class="page-box">
+        <!--<div class="page-box">
           <Page :current="Page.cur"
                 :page-size="Page.size"
                 :total="Page.count"
                 placement="top"
                 @on-change="ChangePage"
                 @on-page-size-change="ChangeSize" show-sizer></Page>
-        </div>
+        </div>-->
       </Card>
     </div>
     <AuditModal :modalShow="Audit.modal"
@@ -417,7 +417,7 @@
           title: '提示',
           content: `<p class="confirm-text">确认销账成功吗？</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/Loan/payMentDone',{hid: row.id}).then(()=>{
+            this.UploadData('/backend/Loan/payMentDone',{jid: row.id}).then(()=>{
               this.SimpleSearch(0);
             });
           }
@@ -429,7 +429,7 @@
           title: '提示',
           content: `<p class="confirm-text">确认提前还款成功通过吗？</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/Loan/payMentDoneOk',{hid: row.id}).then(()=>{
+            this.UploadData('/backend/Loan/payMentDoneOk',{jid: row.id}).then(()=>{
               this.SimpleSearch(0);
             });
           }

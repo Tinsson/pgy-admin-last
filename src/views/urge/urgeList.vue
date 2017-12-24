@@ -23,27 +23,25 @@
             <Icon type="ios-pricetags-outline"></Icon>
             筛选查询
           </h3>
-          <div class="btn-box">
+          <!--<div class="btn-box">
             <Button type="ghost" icon="reply" @click="ResetScreen">重置筛选</Button>
             <Button type="success" icon="search" @click="SimpleSearch">查询结果</Button>
-          </div>
+          </div>-->
         </div>
         <div class="opt-box">
+          <div class="form-group">
+            <label class="form-label">检索：</label>
+            <Input v-model="ScreenData.key" style="width: 200px" @on-enter="SimpleSearch"></Input>
+          </div>
           <Form :model="ScreenData" inline :label-width="85">
-            <FormItem label="用户名：">
-              <Input v-model="ScreenData.name" style="width: 120px"></Input>
-            </FormItem>
-            <FormItem label="用户手机号：">
-              <Input v-model="ScreenData.phone" style="width: 120px"></Input>
-            </FormItem>
             <FormItem label="还款日：">
-              <DatePicker type="datetimerange"
-                          placeholder="选择日期和时间"
-                          format="yyyy-MM-dd HH:mm:ss"
+              <DatePicker type="daterange"
+                          placeholder="选择日期"
+                          format="yyyy-MM-dd"
                           placement="bottom-end"
                           :value="allTime"
                           @on-change="PickDate"
-                          style="width: 280px"></DatePicker>
+                          style="width: 200px"></DatePicker>
             </FormItem>
           </Form>
         </div>
@@ -64,7 +62,6 @@
         </div>
         <Table :columns="UserCol"
                :data="UserData"
-               :row-class-name="TagClassName"
                :loading="loading"
                @on-selection-change="SelectTable"></Table>
         <div class="page-box">
@@ -166,22 +163,22 @@
           type: 2,
           cur: false
         },{
+          name: '宽限日列表',
+          icon: 'ios-search-strong',
+          count: 0,
+          type: 3,
+          cur: false
+        },{
           name: '逾期列表',
           icon: 'android-time',
           count: 0,
           type: 1,
           cur: false
-        },{
-          name: '已还列表',
-          icon: 'ios-search-strong',
-          count: 0,
-          type: 3,
-          cur: false
         }],
         //基础筛选数据
         ScreenData: {
-          name: '',
-          phone: '',
+          key: '',
+          expro: 0,
           start_time: '',
           end_time: '',
           check: 0
@@ -356,9 +353,11 @@
       //选择时间
       PickDate(time){
           this.allTime = time;
+          this.SimpleSearch(1);
       },
       //统计列表
       CountList(num){
+        this.ResetPageNum();
         let sinfo = this.RemoveObserve(this.ScreenData);
         this.CountData.forEach(val=>{
             if(val.type === num){
@@ -406,9 +405,9 @@
             let res = d.data.list;
             if(isinit){
               this.CountData[0].count = d.data.today_count;
-              this.CountData[1].count = d.data.yuqi_count;
-              this.CountData[2].count = d.data.tomorrow_count;
-              this.CountData[3].count = d.data.alreadyhk_count;
+              this.CountData[1].count = d.data.tomorrow_count;
+              this.CountData[2].count = d.data.alreadyhk_count;
+              this.CountData[3].count = d.data.yuqi_count;
             }
             this.Page.count = d.data.count;
             this.UserData = this.SetRemarkState(res);
@@ -428,6 +427,7 @@
       },
       //刷新列表
       RefreshList(){
+        this.ResetPageNum();
         this.SimpleSearch(0);
       },
       //审核面板
@@ -608,6 +608,13 @@
           this.Page.cur = 1;
           this.Page.size = size;
         })
+      },
+      //重置页码
+      ResetPageNum(){
+        this.Page.cur = 1;
+        this.Page.size = 20;
+        this.ScreenData.page = 1;
+        this.ScreenData.num = 20;
       },
       //渲染备注功能
       SetRemarkState(arr){

@@ -20,48 +20,16 @@
               <Upload class="upload-btn" :before-upload="ImportData" action="http://api.pgyxwd.com/">
                 <Button type="primary" icon="upload">批量导入</Button>
               </Upload>
-              <Button type="ghost" icon="reply" @click="ResetScreen">重置筛选</Button>
-              <Button type="success" icon="search" @click="SimpleSearch">查询结果</Button>
+              <!--<Button type="ghost" icon="reply" @click="ResetScreen">重置筛选</Button>
+              <Button type="success" icon="search" @click="SimpleSearch">查询结果</Button>-->
               <Button type="warning" icon="clipboard" @click="SeniorShow">高级检索</Button>
             </div>
           </div>
           <div class="opt-box">
-            <Form :model="ScreenData" inline :label-width="85">
-              <FormItem label="用户手机号：">
-                <Input v-model="ScreenData.phone" placeholder="输入手机号码"></Input>
-              </FormItem>
-              <FormItem label="芝麻分范围：">
-                <Row style="width: 200px">
-                  <Col span="10">
-                    <Input v-model="ScreenData.start_zmop" placeholder="下限"></Input>
-                  </Col>
-                  <Col span="2" style="text-align: center">-</Col>
-                  <Col span="10">
-                    <Input v-model="ScreenData.end_zmop" placeholder="上限"></Input>
-                  </Col>
-                </Row>
-              </FormItem>
-              <!--<FormItem label="运营商：">
-                <RadioGroup v-model="ScreenData.rz_status">
-                  <Radio label="已认证"></Radio>
-                  <Radio label="未认证"></Radio>
-                </RadioGroup>
-              </FormItem>-->
-              <FormItem label="注册时间：">
-                <DatePicker type="datetimerange"
-                            placeholder="选择日期和时间"
-                            format="yyyy-MM-dd HH:mm:ss"
-                            :value="ScreenData.sim_time"
-                            @on-change="PickDate"
-                            style="width: 280px"></DatePicker>
-              </FormItem>
-              <!--<FormItem label="审核状态：">
-                <RadioGroup v-model="ScreenData.sh_status">
-                  <Radio label="已认证"></Radio>
-                  <Radio label="未认证"></Radio>
-                </RadioGroup>
-              </FormItem>-->
-            </Form>
+            <div class="form-group">
+              <label class="form-label">检索：</label>
+              <Input v-model="ScreenData.key" style="width: 200px" @on-enter="SimpleSearch"></Input>
+            </div>
           </div>
         </Card>
       </div>
@@ -249,12 +217,7 @@
         allTime: [],
         //基础筛选数据
         ScreenData: {
-          phone: '',
-          start_zmop: '',
-          end_zmop: '',
-          start_time: '',
-          end_time: '',
-          sim_time: []
+          key: ''
         },
         SeniorModal: false,
         LimitState: true,
@@ -290,11 +253,11 @@
             title: '用户ID',
             key: 'id'
           },{
-            title: '用户手机号',
-            key: 'phone'
-          },{
             title: '用户姓名',
             key: 'name'
+          },{
+            title: '用户手机号',
+            key: 'phone'
           },{
             title: '身份证号',
             width: '160',
@@ -314,9 +277,6 @@
             title: '来源渠道',
             align: 'center',
             key: 'qudao'
-          },{
-            title: '审核员',
-            key: 'auditorId'
           },{
             title: '操作',
             key: 'operation',

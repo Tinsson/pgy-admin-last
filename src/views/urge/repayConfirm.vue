@@ -8,36 +8,6 @@
               size="large"
               @click="RefreshList">刷新列表</Button>
     </h1>
-    <div class="screen-area">
-      <Card>
-        <div class="card-tit" slot="title">
-          <h3>
-            <Icon type="ios-pricetags-outline"></Icon>
-            筛选查询
-          </h3>
-          <div class="btn-box">
-            <Button type="ghost" icon="reply" @click="ResetScreen">重置筛选</Button>
-            <Button type="success" icon="search" @click="SimpleSearch">查询结果</Button>
-          </div>
-        </div>
-        <div class="opt-box">
-          <Form :model="ScreenData" inline :label-width="85">
-            <FormItem label="姓名：">
-              <Input v-model="ScreenData.name" style="width: 120px"></Input>
-            </FormItem>
-            <FormItem label="还款日：">
-              <DatePicker type="datetimerange"
-                          placeholder="选择日期和时间"
-                          format="yyyy-MM-dd HH:mm:ss"
-                          placement="bottom-end"
-                          :value="allTime"
-                          @on-change="PickDate"
-                          style="width: 280px"></DatePicker>
-            </FormItem>
-          </Form>
-        </div>
-      </Card>
-    </div>
     <div class="data-area">
       <Card :padding="0">
         <div class="card-tit" slot="title">
@@ -50,14 +20,6 @@
                   :data="SumData.data"
                   :loading="loading"
                   @repay="ConfirmRepay"/>
-        <div class="page-box">
-          <Page :current="Page.cur"
-                :page-size="Page.size"
-                :total="Page.count"
-                placement="top"
-                @on-change="ChangePage"
-                @on-page-size-change="ChangeSize" show-sizer></Page>
-        </div>
       </Card>
     </div>
   </div>
@@ -81,7 +43,7 @@
         allTime: [],
         //基础筛选数据
         ScreenData: {
-          name: '',
+          search: '',
           start_time: '',
           end_time: ''
         },

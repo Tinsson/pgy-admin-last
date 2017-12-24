@@ -15,29 +15,16 @@
             <Icon type="ios-pricetags-outline"></Icon>
             筛选查询
           </h3>
-          <div class="btn-box">
+          <!--<div class="btn-box">
             <Button type="ghost" icon="reply" @click="ResetScreen">重置筛选</Button>
             <Button type="success" icon="search" @click="SimpleSearch">查询结果</Button>
-          </div>
+          </div>-->
         </div>
         <div class="opt-box">
-          <Form :model="ScreenData" inline :label-width="85">
-            <FormItem label="用户名：">
-              <Input v-model="ScreenData.name" style="width: 120px"></Input>
-            </FormItem>
-            <FormItem label="用户手机号：">
-              <Input v-model="ScreenData.phone" style="width: 120px"></Input>
-            </FormItem>
-            <FormItem label="还款日：">
-              <DatePicker type="datetimerange"
-                          placeholder="选择日期和时间"
-                          format="yyyy-MM-dd HH:mm:ss"
-                          placement="bottom-end"
-                          :value="allTime"
-                          @on-change="PickDate"
-                          style="width: 280px"></DatePicker>
-            </FormItem>
-          </Form>
+          <div class="form-group">
+            <label class="form-label">检索：</label>
+            <Input v-model="ScreenData.search" style="width: 200px" @on-enter="SimpleSearch"></Input>
+          </div>
         </div>
       </Card>
     </div>
@@ -51,12 +38,12 @@
           <div class="btn-box">
             <!--<Button type="warning" size="large" icon="chatbubble" @click="GroupSmsOpt">群发短信</Button>
             <Button type="info" size="large" icon="chatbox" @click="GroupAppOpt">群发APP消息</Button>-->
+            <Button type="warning" size="large" icon="wrench" @click="SetOverTime">设置逾期天数</Button>
             <Button type="primary" size="large" icon="archive" @click="ExportData">导出数据</Button>
           </div>
         </div>
         <Table :columns="UserCol"
                :data="UserData"
-               :row-class-name="TagClassName"
                :loading="loading"
                @on-selection-change="SelectTable"></Table>
         <div class="page-box">
@@ -70,21 +57,21 @@
       </Card>
     </div>
     <Modal
-      v-model="Remark.modal"
-      @on-ok="SubRemark">
-      <h2 slot="header">备注信息</h2>
-      <Input v-model="Remark.remark" type="textarea" :rows="4" placeholder="请输入备注信息"></Input>
+      v-model="OverTime.modal"
+      @on-ok="SubOverTime">
+      <h2 slot="header">逾期天数设置</h2>
+      <Form :label-width="120">
+        <FormItem label="逾期天数：">
+          <Input v-model="ScreenData.overtime" style="width: 250px;" />
+        </FormItem>
+      </Form>
     </Modal>
-    <GroupSms title="群发短信"
-              :modalShow="Group.SmsModal"
-              :InitData="SelectData"
-              @CloseModal="CloseSms"
-              @UpOver="SmsOpt"></GroupSms>
-    <PushApp :modalShow="Group.AppmsgModal"
-             :InitData="SelectData"
-             :Count="Page.count"
-             @CloseModal="CloseApp"
-             @UpOver="AppOpt"></PushApp>
+    <AuditModal :modalShow="Audit.modal"
+                :InitId="Audit.id"
+                :BtnId="Audit.btn"
+                :UniqueId="Audit.unique"
+                :AllId="Audit.allId"
+                @CloseModal="AuditCancel"></AuditModal>
   </div>
 </template>
 
@@ -92,30 +79,37 @@
   import { getLocal } from '@/util/util'
   import GroupSms from '@/components/groupModal/GroupSms'
   import PushApp from '@/components/groupModal/PushApp'
+  import AuditModal from '@/components/infoModal/AuditModal'
 
   export default {
     name: 'badDebtList',
     components:{
       GroupSms,
-      PushApp
+      PushApp,
+      AuditModal
     },
     data () {
       return {
         title: '坏账列表',
+        apiUrl: '/backend/Collection/overdueList',
         auth_id: '',
         loading: true,
-        Remark: {
+        OverTime: {
           modal: false,
-          loan_id: '',
-          remark: ''
         },
         allTime: [],
         //基础筛选数据
         ScreenData: {
-          name: '',
-          phone: '',
-          start_time: '',
-          end_time: ''
+          key: '',
+          overtime: 30
+        },
+        //审核面板
+        Audit:{
+          modal: false,
+          id: '',
+          unique: '',
+          allId: '',
+          btn: ''
         },
         UserCol: [
           {
@@ -155,12 +149,13 @@
             align: 'center',
             width: '330',
             render: (h, params)=>{
-              return h('div',this.RenderBtn(h, params, this.BtnData));
+              return h('div',this.$renderBtn(h, params, this.BtnData));
             }
           }
         ],
         UserData: [],     //表格数据
         RowUserData: [],  //获取的原始数据
+        BtnData: [],
         //群选打钩后操作
         SelectData: [],
         Group: {
@@ -177,52 +172,9 @@
     },
     created(){
       this.auth_id = getLocal('auth_id');
-      this.InitData('/backend/Collection/overdueList');
+      this.InitData(this.apiUrl);
     },
     methods: {
-      //循环渲染按钮
-      RenderBtn(h,params,bdata){
-        let res = [];
-        bdata.forEach((val)=>{
-          let btn = '';
-          if(val.class === 'MarkOpt'){
-            let name = params.row.marking?'取消标记':'标记';
-            let color = params.row.marking?'default': val.color;
-            btn = h('Button',{
-              props: {
-                type: color
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: ()=>{
-                  this[val.class](params.row)
-                }
-              },
-            },name);
-          }else{
-            btn = h('Button',{
-              props: {
-                type: val.color
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: ()=>{
-                  this[val.class](params.row)
-                }
-              },
-            },val.name);
-          }
-          if(this.CountData[3].cur && val.class === 'DelayOpt'){
-          }else{
-            res.push(btn);
-          }
-        });
-        return res;
-      },
       //去除data数据里绑定的监视器
       RemoveObserve(rowdata){
         return JSON.parse(JSON.stringify(rowdata));
@@ -250,6 +202,7 @@
       },
       //查询结果
       SimpleSearch(sign = 1){
+        this.ResetPageNum();
         let sinfo = this.RemoveObserve(this.ScreenData);
         if(this.allTime[0] !== ""){
           sinfo.start_time = this.allTime[0];
@@ -258,7 +211,7 @@
           sinfo.start_time = '';
           sinfo.end_time = '';
         }
-        this.InitData('/backend/Collection/collectionListInfo',sinfo).then(()=>{
+        this.InitData(this.apiUrl,sinfo).then(()=>{
           if(sign){
             this.$Message.success('筛选成功！')
           }
@@ -295,9 +248,23 @@
       },
       //刷新列表
       RefreshList(){
-        this.InitData('/backend/Collection/CollectionList').then(()=>{
+        this.InitData(this.apiUrl).then(()=>{
           this.$Message.success('刷新成功');
         });
+      },
+      //审核面板
+      AuditPanel(row){
+        this.Audit.modal = true;
+        this.Audit.id = row.id;
+        this.Audit.unique = row.loan_id;
+        let idArr = [];
+        this.RowUserData.forEach(val=>{
+          idArr.push(val.loan_id);
+        });
+        this.Audit.allId = idArr;
+      },
+      AuditCancel(){
+        this.Audit.modal = false;
       },
       //标记记录
       TagClassName(row){
@@ -383,9 +350,16 @@
       ExportData(){
         let sinfo = this.RemoveObserve(this.ScreenData);
         sinfo.expro = 1;
-        this.UploadData('/backend/Collection/overdueList',sinfo).then((url)=>{
+        this.UploadData(this.apiUrl,sinfo).then((url)=>{
           //window.location.href = url;
         });
+      },
+      //设置逾期时间
+      SetOverTime(){
+        this.OverTime.modal = true;
+      },
+      SubOverTime(){
+        this.SimpleSearch(0);
       },
       //改变页数
       ChangePage(curpage){
@@ -393,7 +367,7 @@
           page: curpage,
           num: this.Page.size
         });
-        this.InitData('/backend/Collection/overdueList',sinfo).then(()=>{
+        this.InitData(this.apiUrl,sinfo).then(()=>{
           this.Page.cur = curpage;
         })
       },
@@ -403,10 +377,16 @@
           page: 1,
           num: size
         });
-        this.InitData('/backend/Collection/overdueList',sinfo).then(()=>{
+        this.InitData(this.apiUrl,sinfo).then(()=>{
           this.Page.cur = 1;
           this.Page.size = size;
         })
+      },
+      ResetPageNum(){
+        this.Page.cur = 1;
+        this.Page.size = 20;
+        this.ScreenData.page = 1;
+        this.ScreenData.num = 20;
       }
     }
   }

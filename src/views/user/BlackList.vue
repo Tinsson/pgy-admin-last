@@ -15,29 +15,16 @@
             <Icon type="ios-pricetags-outline"></Icon>
             筛选查询
           </h3>
-          <div class="btn-box">
+          <!--<div class="btn-box">
             <Button type="ghost" icon="reply" @click="ResetScreen">重置筛选</Button>
             <Button type="success" icon="search" @click="SimpleSearch">查询结果</Button>
-          </div>
+          </div>-->
         </div>
         <div class="opt-box">
-          <Form :model="ScreenData" inline :label-width="85">
-            <FormItem label="用户名：">
-              <Input v-model="ScreenData.name" style="width: 120px"></Input>
-            </FormItem>
-            <FormItem label="用户手机号：">
-              <Input v-model="ScreenData.phone" style="width: 120px"></Input>
-            </FormItem>
-            <FormItem label="还款日：">
-              <DatePicker type="datetimerange"
-                          placeholder="选择日期和时间"
-                          format="yyyy-MM-dd HH:mm:ss"
-                          placement="bottom-end"
-                          :value="allTime"
-                          @on-change="PickDate"
-                          style="width: 280px"></DatePicker>
-            </FormItem>
-          </Form>
+          <div class="form-group">
+            <label class="form-label">检索：</label>
+            <Input v-model="ScreenData.key" style="width: 200px" @on-enter="SimpleSearch"></Input>
+          </div>
         </div>
       </Card>
     </div>
@@ -121,10 +108,7 @@
         allTime: [],
         //基础筛选数据
         ScreenData: {
-          name: '',
-          phone: '',
-          start_time: '',
-          end_time: ''
+          key: ''
         },
         UserCol: [
           {

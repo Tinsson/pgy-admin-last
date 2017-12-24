@@ -15,35 +15,16 @@
             <Icon type="ios-pricetags-outline"></Icon>
             筛选查询
           </h3>
-          <div class="btn-box">
+          <!--<div class="btn-box">
             <Button type="ghost" icon="reply" @click="ResetScreen">重置筛选</Button>
             <Button type="success" icon="search" @click="SimpleSearch">查询结果</Button>
-          </div>
+          </div>-->
         </div>
         <div class="opt-box">
-          <Form :model="ScreenData" inline :label-width="85">
-            <FormItem label="用户名：">
-              <Input v-model="ScreenData.name" style="width: 120px"></Input>
-            </FormItem>
-            <FormItem label="用户手机号：">
-              <Input v-model="ScreenData.phone" style="width: 120px"></Input>
-            </FormItem>
-            <FormItem label="身份证号：">
-              <Input v-model="ScreenData.idcard"></Input>
-            </FormItem>
-            <!--<FormItem label="易宝流水号：">
-              <Input v-model="ScreenData.channel_id"></Input>
-            </FormItem>-->
-            <FormItem label="时间：">
-              <DatePicker type="datetimerange"
-                          placeholder="选择日期和时间"
-                          format="yyyy-MM-dd HH:mm:ss"
-                          placement="bottom-end"
-                          :value="allTime"
-                          @on-change="PickDate"
-                          style="width: 280px"></DatePicker>
-            </FormItem>
-          </Form>
+          <div class="form-group">
+            <label class="form-label">检索：</label>
+            <Input v-model="ScreenData.key" style="width: 200px" @on-enter="SimpleSearch"></Input>
+          </div>
         </div>
       </Card>
     </div>
@@ -85,11 +66,7 @@
         allTime: [],
         //基础筛选数据
         ScreenData: {
-          name: '',
-          phone: '',
-          idcard: '',
-          start_time: '',
-          end_time: '',
+          key: ''
         },
         UserCol: [
           {
@@ -102,37 +79,38 @@
             align: 'center',
             key: 'id'
           },{
-            title: '用户姓名',
+            title: '姓名',
             width: '100',
             align: 'center',
             key: 'name'
           },{
-            title: '用户手机号',
+            title: '手机号',
             width: '110',
             align: 'center',
             key: 'phone'
           },{
-            title: '借款金额（元）',
+            title: '借款金额',
             key: 'amount'
           },{
-            title: '平台费用（元）',
-            key: 'fee'
-          },{
-            title: '违约金（元）',
-            key: 'wy_amount'
-          },{
-            title: '还款总金额（元）',
+            title: '还款金额',
             width: '150',
             align: 'center',
             key: 'order_amount'
           },{
-            title: '是否全额还款',
+            title: '剩余金额',
+            align: 'center',
+            key: 'weihuan'
+          },{
+            title: '违约金',
+            key: 'wy_amount'
+          },{
+            title: '状态',
             align: 'center',
             key: 'is_quane'
           },{
-            title: '剩余未还金额',
+            title: '还款时间',
             align: 'center',
-            key: 'weihuan'
+            key: 'repay_time'
           }
         ],
         UserData: [],     //表格数据
@@ -166,6 +144,7 @@
       },
       //查询结果
       SimpleSearch(){
+        this.ResetPageNum();
         let sinfo = this.RemoveObserve(this.ScreenData);
         if(this.allTime[0] !== ""){
           sinfo.start_time = this.allTime[0];
@@ -209,6 +188,8 @@
       },
       //刷新列表
       RefreshList(){
+        this.ScreenData.key = '';
+        this.ResetPageNum();
         this.InitData().then(()=>{
           this.$Message.success('刷新成功');
         });
@@ -258,6 +239,12 @@
           this.Page.cur = 1;
           this.Page.size = size;
         })
+      },
+      ResetPageNum(){
+        this.Page.cur = 1;
+        this.Page.size = 20;
+        this.ScreenData.page = 1;
+        this.ScreenData.num = 20;
       }
     }
   }
