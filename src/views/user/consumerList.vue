@@ -253,10 +253,10 @@
             title: '用户ID',
             key: 'id'
           },{
-            title: '用户姓名',
+            title: '姓名',
             key: 'name'
           },{
-            title: '用户手机号',
+            title: '手机号',
             key: 'phone'
           },{
             title: '身份证号',
@@ -267,9 +267,6 @@
             align: 'center',
             key: 'zmop'
           },{
-            title: '注册时间',
-            key: 'create_at'
-          },{
             title: '客户类型',
             align: 'center',
             key: 'type'
@@ -277,6 +274,9 @@
             title: '来源渠道',
             align: 'center',
             key: 'qudao'
+          },{
+            title: '注册时间',
+            key: 'create_at'
           },{
             title: '操作',
             key: 'operation',
@@ -431,6 +431,7 @@
       },
       //刷新列表
       RefreshList(){
+        this.ResetPageNum();
         this.InitData().then(()=>{
           this.$Message.success('刷新成功');
         });
@@ -605,6 +606,12 @@
           this.Page.cur = 1;
           this.Page.size = size;
         })
+      },
+      ResetPageNum(){
+        this.Page.cur = 1;
+        this.Page.size = 20;
+        this.ScreenData.page = 1;
+        this.ScreenData.num = 20;
       }
     }
   }

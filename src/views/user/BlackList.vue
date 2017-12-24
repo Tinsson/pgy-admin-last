@@ -121,12 +121,12 @@
             align: 'center',
             key: 'id'
           },{
-            title: '用户姓名',
+            title: '姓名',
             width: '100',
             align: 'center',
             key: 'name'
           },{
-            title: '用户手机号',
+            title: '手机号',
             width: '150',
             align: 'center',
             key: 'phone'
@@ -136,9 +136,6 @@
           },{
             title: '黑名单类型',
             key: 'black'
-          },{
-            title: '时间',
-            key: 'create_at'
           },{
             title: '操作',
             key: 'operation',

@@ -189,7 +189,7 @@
             width: 55,
             align: 'center'
           },{
-            title: '用户姓名',
+            title: '姓名',
             align: 'center',
             key: 'name',
             render: (h, params)=>{
@@ -207,7 +207,7 @@
               }, params.row.name);
             }
           },{
-            title: '用户手机号',
+            title: '手机号',
             align: 'center',
             key: 'phone',
             render: (h, params)=>{
@@ -228,11 +228,11 @@
             title: '金额',
             key: 'amount'
           },{
-            title: '还款日期',
-            key: 'hk_date'
-          },{
             title: '逾期天数',
             key: 'overdue_day'
+          },{
+            title: '还款日期',
+            key: 'hk_date'
           },{
             title: '备注',
             width: '250',
@@ -242,12 +242,9 @@
               return this.RenderRemark(h, params);
             }
           },{
-            title: '类型',
-            key: 'type'
-          },{
             title: '操作',
             key: 'operation',
-            width: '220',
+            width: '200',
             align: 'center',
             render: (h, params)=>{
               let rule = {};
@@ -636,12 +633,18 @@
           display = 'block';
           spanShow = 'none';
         }
+        let remark = '';
+        if(params.row.remark === ''){
+          remark = '　　　　　　';
+        }else{
+          remark = params.row.remark;
+        }
         const span = h('span',{
           style: {
             color: '#f00',
             display: spanShow
           },
-        },params.row.remark);
+        },remark);
         const input = h('textarea',{
           class:['table-input'],
           style:{
@@ -662,6 +665,8 @@
               this.UserData.forEach(val=>{
                 if(val.loan_id === params.row.loan_id){
                   val.remark_state = true;
+                }else{
+                  val.remark_state = false;
                 }
               })
             }

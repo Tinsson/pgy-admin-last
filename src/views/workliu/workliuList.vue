@@ -119,12 +119,12 @@
             align: 'center',
             key: 'id'
           },{
-            title: '用户姓名',
+            title: '姓名',
             width: '100',
             align: 'center',
             key: 'name'
           },{
-            title: '用户手机号',
+            title: '手机号',
             width: '150',
             align: 'center',
             key: 'phone'
@@ -136,11 +136,22 @@
               return h('span', text);
             }
           },{
-            title: '申请时间',
-            key: 'req_date',
+            title: '类型',
+            key: 'types',
             render: (h,params)=>{
-              let text = (params.row.zqid > 0)?params.row.zq_request_date:params.row.jk_request_date;
-              return h('span', text);
+              let text = '';
+              switch(params.row.types){
+                case 1:
+                  text = '借款';
+                  break;
+                case 2:
+                  text = '展期';
+                  break;
+                case 3:
+                  text = '还款';
+                  break;
+              }
+              return h('span',text);
             }
           },{
             title: '状态',
@@ -166,25 +177,18 @@
                 default:
                   text = '未知'
               }
-              return h('span',text);
+              return h('span',{
+                style: {
+                  color: '#f00'
+                }
+              },text);
             }
           },{
-            title: '类型',
-            key: 'types',
+            title: '申请时间',
+            key: 'req_date',
             render: (h,params)=>{
-              let text = '';
-              switch(params.row.types){
-                case 1:
-                  text = '借款';
-                  break;
-                case 2:
-                  text = '展期';
-                  break;
-                case 3:
-                  text = '还款';
-                  break;
-              }
-              return h('span',text);
+              let text = (params.row.zqid > 0)?params.row.zq_request_date:params.row.jk_request_date;
+              return h('span', text);
             }
           },{
             title: '操作',
@@ -360,8 +364,8 @@
       },
       //审核通过
       AddOpt(row){
-        let url = row.type === 0?'/backend/Loan/payDelayOk':'/backend/Loan/jkAuditOk';
-        let type = row.type === 0?'展期':'放款审核';
+        let url = row.types === 0?'/backend/Loan/payDelayOk':'/backend/Loan/jkAuditOk';
+        let type = row.types === 0?'展期':'放款审核';
         this.$Modal.confirm({
           title: '提示',
           content: `<p class="confirm-text">确认通过该用户的${type}？</p>`,
@@ -374,7 +378,7 @@
       },
       //确认服务费
       DetailsOpt(row){
-        let url = row.type === 0?'/backend/Loan/zqWaiterOk':'/backend/Loan/jkWaiterOk';
+        let url = row.types === 0?'/backend/Loan/zqWaiterOk':'/backend/Loan/jkWaiterOk';
         this.$Modal.confirm({
           title: '提示',
           content: `<p class="confirm-text">确认当前服务费</p>`,
@@ -387,8 +391,8 @@
       },
       //放款操作
       LoanOpt(row){
-        let url = row.type === 0?'/backend/Loan/payDelayOk':'/backend/Loan/payLoanOk';
-        let tips = row.type === 0?'确认通过该展期吗？':'确认通过该借款吗？';
+        let url = row.types === 0?'/backend/Loan/payDelayOk':'/backend/Loan/payLoanOk';
+        let tips = row.types === 0?'确认通过该展期吗？':'确认通过该借款吗？';
         this.$Modal.confirm({
           title: '提示',
           content: `<p class="confirm-text">${tips}</p>`,
@@ -417,7 +421,7 @@
           title: '提示',
           content: `<p class="confirm-text">确认销账成功吗？</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/Loan/payMentDone',{jid: row.id}).then(()=>{
+            this.UploadData('/backend/Loan/payMentDoneOk',{jid: row.id}).then(()=>{
               this.SimpleSearch(0);
             });
           }
@@ -439,7 +443,7 @@
       RejectOpt(row){
         let url = '',
             tips = '';
-        switch(row.type){
+        switch(row.types){
           case 1:
             url = '/backend/Loan/jkAuditOk';
             tips = '确认拒绝该借款吗？';
@@ -449,7 +453,7 @@
             tips = '确认拒绝该展期吗？';
             break;
           case 3:
-            url = '';
+            url = '/backend/Loan/hkDeTo';
             tips = '确认拒绝该还款吗？';
             break;
         }

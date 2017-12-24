@@ -49,7 +49,7 @@
         },
         SumData:{
           head: [{
-            title: '统计标题',
+            title: '还款客户',
             key: 'title'
           },{
             title: '姓名',

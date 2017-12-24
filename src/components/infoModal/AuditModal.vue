@@ -264,53 +264,59 @@
           <div class="nav-box">
             <a class="nav-block" :class="{cur: NavData.baseInfo.cur}" @click="NavChange('baseInfo')" href="javascript:;">基本信息</a>
             <a class="nav-block" :class="{cur: NavData.tradeRecord.cur}" @click="NavChange('tradeRecord')" href="javascript:;">交易记录</a>
-            <a class="nav-block" :class="{cur: NavData.optRecord.cur}" @click="NavChange('optRecord')" href="javascript:;">操作记录</a>
+            <a class="nav-block" :class="{cur: NavData.optRecord.cur}" @click="NavChange('optRecord')" href="javascript:;">备注记录</a>
           </div>
           <div class="base-info" v-show="NavData.baseInfo.cur">
-            <p class="info-box">
-              <span class="half">审核员：{{AllInfo.jiben.info.auditorId}}</span>
-              <span class="half">催收员：{{AllInfo.jiben.info.collectorId}}</span>
-            </p>
-            <p class="info-box">
-              <!--<span class="half">放款员：{{AllInfo.jiben.info.fangkuanId}}</span>-->
-              <span class="half">放款员：冯剑涛</span>
-              <span class="half">用户ID：{{ID}}</span>
-            </p>
-            <p class="info-box">
-              <span class="half">审核状态：{{ReviewStatus}}</span>
-              <span class="half">借款用途：{{AllInfo.jiben.info.money_use_to}}</span>
-            </p>
-            <p v-for="item in AllInfo.jiben.renz" class="info-box">
-              {{item.type + '时间'}}：{{item.create_at}}
-            </p>
-            <div>
-              <h3 class="user-title">备注:</h3>
-              <Table :columns="NavData.baseInfo.remark_col"
-                     :data="NavData.baseInfo.remark"
-                     style="margin-bottom: 10px;"
-                     size="large"></Table>
-              <!--<p v-show="NavData.baseInfo.IsRemark">
-                <Input type="textarea"
-                       class="value textarea"
-                       v-model="NavData.baseInfo.remark_ipt"/>
-              </p>-->
-            </div>
+            <Tabs>
+              <TabPane label="基本信息">
+                <p class="info-box">
+                  <span class="half">审核员：{{AllInfo.jiben.info.auditorId}}</span>
+                  <span class="half">催收员：{{AllInfo.jiben.info.collectorId}}</span>
+                </p>
+                <p class="info-box">
+                  <!--<span class="half">放款员：{{AllInfo.jiben.info.fangkuanId}}</span>-->
+                  <span class="half">放款员：冯剑涛</span>
+                  <span class="half">用户ID：{{ID}}</span>
+                </p>
+                <p class="info-box">
+                  <span class="half">审核状态：{{ReviewStatus}}</span>
+                  <span class="half">借款用途：{{AllInfo.jiben.info.money_use_to}}</span>
+                </p>
+                <Card class="card-area">
+                  <h2 class="user-title">认证数据</h2>
+                  <Table :columns="Authorize.Col"
+                         :data="Authorize.Data"
+                         size="large"></Table>
+                </Card>
+              </TabPane>
+              <TabPane label="操作日志">
+                <Card>
+                  <ul>
+                    <li class="opt-log" v-for="item in AllInfo.operation.log.system">
+                      <p class="line">{{item.content}}</p>
+                      <p class="line">操作员：{{item.nickname}}</p>
+                      <p class="line">操作时间：{{item.addtime}}</p>
+                    </li>
+                  </ul>
+                </Card>
+              </TabPane>
+            </Tabs>
           </div>
           <div class="trade-record" v-show="NavData.tradeRecord.cur">
             <Tabs>
               <TabPane label="放款">
                 <div class="count-box">
                   <p class="count-line">
-                    <span class="title">累计笔数</span>
-                    <span class="value">{{ AllInfo.loan.jk_count }}</span>
+                    <span class="title">总笔数：<em class="num">{{ AllInfo.loan.jk_count }}</em></span>
+                    <span class="value">已收违约金：<em class="num">{{ AllInfo.loan.hk_all_wyamount }}</em></span>
                   </p>
                   <p class="count-line">
-                    <span class="title">当前金额（元）</span>
-                    <span class="value">{{ AllInfo.loan.jk_this_amount }}</span>
+                    <span class="title">未还金额：<em class="num">{{ AllInfo.loan.jk_this_amount }}</em></span>
+                    <span class="value">展期费总额：<em class="num">{{ AllInfo.loan.zq_all_amount }}</em></span>
                   </p>
                   <p class="count-line">
-                    <span class="title">借款总额（元）</span>
-                    <span class="value">{{ AllInfo.loan.jk_all_amount }}</span>
+                    <span class="title">借款总额：<em class="num">{{ AllInfo.loan.jk_all_amount }}</em></span>
+                    <span class="value">展期总额：<em class="num">{{ AllInfo.loan.zq_all_amount }}</em></span>
                   </p>
                 </div>
                 <Card class="card-area" v-for="item in AllInfo.loan.jk_list" :key="item.id">
@@ -353,16 +359,8 @@
               <TabPane label="展期">
                 <div class="count-box">
                   <p class="count-line">
-                    <span class="title">累计笔数</span>
-                    <span class="value">{{ AllInfo.loan.zq_count }}</span>
-                  </p>
-                  <p class="count-line">
-                    <span class="title">当前展期订单金额（元）</span>
-                    <span class="value">{{ AllInfo.loan.zq_this_amount }}</span>
-                  </p>
-                  <p class="count-line">
-                    <span class="title">展期总金额（元）</span>
-                    <span class="value">{{ AllInfo.loan.zq_all_amount }}</span>
+                    <span class="title">总笔数：<em class="num">{{ AllInfo.loan.zq_count }}</em></span>
+                    <span class="value">当前金额：<em class="num">{{ AllInfo.loan.zq_this_amount }}</em></span>
                   </p>
                 </div>
                 <Card class="card-area" v-for="item in AllInfo.loan.zq_list" :key="item.id">
@@ -387,20 +385,8 @@
               <TabPane label="还款">
                 <div class="count-box">
                   <p class="count-line">
-                    <span class="title">累计笔数</span>
-                    <span class="value">{{ AllInfo.loan.hk_count }}</span>
-                  </p>
-                  <p class="count-line">
-                    <span class="title">当前金额（元）</span>
-                    <span class="value">{{ AllInfo.loan.hk_this_amount.amount }}</span>
-                  </p>
-                  <p class="count-line">
-                    <span class="title">应还金额（元）</span>
-                    <span class="value">{{ AllInfo.loan.hk_all_yhamount }}</span>
-                  </p>
-                  <p class="count-line">
-                    <span class="title">违约金（元）</span>
-                    <span class="value">{{ AllInfo.loan.hk_all_wyamount }}</span>
+                    <span class="title">总笔数：</span>
+                    <span class="value"><em class="num">{{ AllInfo.loan.hk_count }}</em></span>
                   </p>
                 </div>
                 <Card class="card-area" v-for="item in AllInfo.loan.hk_list" :key="item.id">
@@ -435,14 +421,8 @@
             </Tabs>
           </div>
           <div class="opt-record" v-show="NavData.optRecord.cur">
-            <Tabs>
+            <!--<Tabs>
               <TabPane label="用户记录">
-                <Card class="card-area">
-                  <h2 class="user-title">认证数据</h2>
-                  <Table :columns="Authorize.Col"
-                         :data="Authorize.Data"
-                         size="large"></Table>
-                </Card>
                 <Card class="card-area">
                   <h2 class="user-title">审核数据</h2>
                   <Table :columns="Audit.Col"
@@ -457,27 +437,25 @@
                          :data="Urge.Data"
                          size="large"></Table>
                 </Card>
-                <!--<p v-show="Urge.status" class="urge-add">
+                <p v-show="Urge.status" class="urge-add">
                   <span class="label">记录：</span>
                   <Input type="textarea" v-model="Urge.content"></Input>
                 </p>
                 <p v-show="Urge.auth">
                   <Button v-show="!Urge.status" type="primary" @click="RecordAddOpt" size="large">添加记录</Button>
                   <Button v-show="Urge.status" type="warning" @click="UrgeAddOver" size="large">保存</Button>
-                </p>-->
+                </p>
               </TabPane>
               <TabPane label="操作日志">
-                <Card>
-                  <ul>
-                    <li class="opt-log" v-for="item in AllInfo.operation.log.system">
-                      <p class="line">{{item.content}}</p>
-                      <p class="line">操作员：{{item.nickname}}</p>
-                      <p class="line">操作时间：{{item.addtime}}</p>
-                    </li>
-                  </ul>
-                </Card>
+
               </TabPane>
-            </Tabs>
+            </Tabs>-->
+            <div>
+              <Table :columns="NavData.baseInfo.remark_col"
+                     :data="NavData.baseInfo.remark"
+                     style="margin-bottom: 10px;"
+                     size="large"></Table>
+            </div>
           </div>
         </Col>
       </Row>
@@ -665,10 +643,16 @@
             IsRemark: false,
             remark_col: [{
               title: '内容',
-              key: 'content'
+              key: 'content',
+              ellipsis: false
+            },{
+              title: '角色',
+              key: 'nickname',
+              ellipsis: false
             },{
               title: '添加时间',
-              key: 'addtime'
+              key: 'addtime',
+              ellipsis: false
             }],
             remark: [],
             remark_ipt: ''
@@ -1130,18 +1114,17 @@
         this.NavData.baseInfo.IsRemark = true;
       },
       RemarkOver(){
-        if(this.Urge.auth){
+        /*if(this.Urge.auth){
           this.UrgeAddOver();
-        }else{
-          const data = {
-            uid: this.ID,
-            remark: this.NavData.baseInfo.remark_ipt
-          };
-          this.UploadData('/backend/User/remark',data).then(()=>{
-            this.NavData.baseInfo.IsRemark = false;
-            this.InitData(this.ID);
-          });
-        }
+        }*/
+        const data = {
+          uid: this.ID,
+          remark: this.NavData.baseInfo.remark_ipt
+        };
+        this.UploadData('/backend/User/remark',data).then(()=>{
+          this.NavData.baseInfo.IsRemark = false;
+          this.InitData(this.ID);
+        });
       },
       RemarkCancel(){
         this.NavData.baseInfo.IsRemark = false;
@@ -1515,16 +1498,19 @@
     background: #FFF;
     .count-line{
       border-top: 1px solid #666;
-      padding: 5px 0;
       #towardsLeft;
       .title,.value{
+        padding: 5px 0;
         width: 50%;
         text-align: center;
         display: inline-block;
+        .num{
+          color: #f77249;
+          font-size: 16px;
+        }
       }
-      .value{
-        color: #f77249;
-        font-size: 16px;
+      .title{
+        border-right: 1px solid #666;
       }
       &:nth-child(1){
         border: none;

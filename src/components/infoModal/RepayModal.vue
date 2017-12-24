@@ -23,9 +23,9 @@
       <FormItem label="实际还款金额：">
         <Input class="unit-width" v-model="RepayInfo.yh_amountn"/>
       </FormItem>
-      <FormItem label="违约金：">
+      <!--<FormItem label="违约金：">
         <Input class="unit-width" v-model="RepayInfo.wy_amount"/>
-      </FormItem>
+      </FormItem>-->
     </Form>
     <div slot="footer">
       <Button type="error" @click="CloseBtn">关闭</Button>
