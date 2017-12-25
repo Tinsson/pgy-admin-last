@@ -24,9 +24,9 @@
                 <p class="title">同盾</p>
               </li>
               <li class="res-box">
-                <div class="simple" :class="'type'+AllInfo.jiben.info.huabei.status">
-                  <span>{{AllInfo.jiben.info.huabei.info}}</span>
-
+                <div class="simple" @click="HuabeiEdit" :class="'type'+AllInfo.jiben.info.huabei.status">
+                  <span v-show="!Huabei.modal">{{AllInfo.jiben.info.huabei.info}}</span>
+                  <Input v-show="Huabei.modal" size="small" class="head-input" v-modal="Huabei.data.value" @on-enter="HuabeiSub"/>
                 </div>
                 <p class="title">花呗额度</p>
               </li>
@@ -745,6 +745,13 @@
             amount: ''
           }
         },
+        Huabei:{
+          modal: false,
+          data: {
+            uid: '',
+            value: ''
+          }
+        },
         //按钮集合
         ButtonAll:[]
       }
@@ -849,10 +856,6 @@
         let amount = '';
         if(this.AllInfo.loan.jk_list.length > 0){
           const last_jk = this.ArrLast(this.AllInfo.loan.jk_list);
-          if(last_jk.status === 0){
-            this.$Message.error('该用户已放款！');
-            return false;
-          }
           amount = last_jk.amount;
         }else{
           amount = this.Limit.value;
@@ -1328,6 +1331,13 @@
       },
       ArrLast(arr){
         return arr[arr.length - 1];
+      },
+      //花呗编辑
+      HuabeiEdit(){
+        this.Huabei.modal = true;
+      },
+      HuabeiSub(){
+        this.Huabei.modal = false;
       }
     }
   }
@@ -1621,5 +1631,9 @@
   }
   .clipBtn{
     display: none;
+  }
+  .head-input{
+    width: 80px;
+    min-height: 30px;
   }
 </style>
