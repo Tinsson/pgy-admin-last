@@ -8,17 +8,14 @@
               size="large"
               @click="RefreshList">刷新列表</Button>
     </h1>
-    <Row class="card-box">
-      <Col v-for="item in CountData" class="card-col" :span="24 / CountData.length" :key="item.name">
-      <div class="sim-card" :class="{cur:item.cur}" @click="CountList(item.status)">
+    <div class="card-box">
+      <div v-for="item in CountData" class="sim-card" :class="{cur:item.cur}" @click="CountList(item.status)">
         <Icon class="icon" :type="item.icon"></Icon>
         <p class="title">{{ item.name }}</p>
-        <p class="value"><span class="num">{{item.count}}</span><span>{{item.cunit}}</span><span class="num" v-show="item.second">/</span><span class="num">{{item.other}}</span><span>{{item.ounit}}</span>
-        </p>
+        <p class="value"><span class="num">{{item.count}}</span>人</p>
         <span class="tips">点击查看</span>
       </div>
-      </Col>
-    </Row>
+    </div>
     <div class="screen-area">
       <Card>
         <div class="card-tit" slot="title">
@@ -47,7 +44,7 @@
             用户列表
           </h3>
           <div class="btn-box">
-            <Button type="primary" icon="android-chat" @click="GroupAppOpt" style="margin-right: 12px;">推送本页</Button>
+            <Button type="info" size="large" icon="chatbox" @click="GroupAppOpt" style="margin-right: 12px;">群发消息</Button>
             <span>资金账号：
             <Select v-model="Owner" @on-change="ChoseOwner" style="display: inline-block;width: 80px;">
               <Option :value="1">李义</Option>
@@ -261,6 +258,10 @@
       RefreshList(){
         this.loading = true;
         this.ResetPageNum();
+        if(this.ScreenData.type === 'all'){
+          this.CountData[0].cur = true;
+          this.ScreenData.type = 'fk_customers_ready';
+        }
         this.ScreenData.key = '';
         this.SimpleSearch(0).then(()=>{
           this.$Message.success('刷新成功！');
@@ -310,7 +311,7 @@
       //查询结果
       SimpleSearch(sign = 1){
         if(sign){
-          this.ScreenData.type = '';
+          this.ScreenData.type = 'all';
           this.CountData.forEach(val=>{
             val.cur = false;
           })
@@ -534,29 +535,25 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    justify-content: space-between;
     padding-bottom: 20px;
-    .card-col{
-      padding: 0 8px;
-    }
     .sim-card{
       position: relative;
-      width: 100%;
+      width: 32.5%;
       padding: 15px;
       color: #FFF;
       overflow: hidden;
       cursor: pointer;
       border-radius: 5px;
       background-color: #c3c3c3;
-      margin-bottom: 10px;
       .title{
         font-size: 16px;
       }
       .value{
-        padding-top: 10px;
+        padding: 5px 0;
         font-size: 18px;
         .num{
-          font-size: 32px;
+          font-size: 40px;
         }
       }
       .tips{
@@ -573,8 +570,8 @@
       }
       .icon{
         position: absolute;
-        right: 10px;
-        top: 5px;
+        right: 20px;
+        top: 20px;
         font-size: 60px;
       }
       &.cur{

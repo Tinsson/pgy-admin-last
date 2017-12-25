@@ -102,7 +102,7 @@
         this.ClacRes('hk');
       },
       GetTotalCount(){
-        this.$post('/backend/Tocalculate/LoanTocal',{N:this.LoanInfo.amount,T:this.LoanInfo.jk_days}).then(d=>{
+        this.$post('/backend/Tocalculate/LoanTocal',{n:this.LoanInfo.amount,T:this.LoanInfo.jk_days}).then(d=>{
           this.LoanInfo.ht_amount = d.data;
         })
       },

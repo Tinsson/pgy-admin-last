@@ -55,7 +55,7 @@
             数据列表
           </h3>
           <div class="btn-box">
-            <Button type="info" size="large" icon="chatbox" @click="GroupAppOpt">群发短信</Button>
+            <Button type="info" size="large" icon="chatbox" @click="GroupAppOpt">群发消息</Button>
             <Button type="warning" size="large" icon="archive" @click="OpenReport">导出催收报告</Button>
             <Button type="primary" size="large" icon="archive" @click="ExportData">导出数据</Button>
           </div>
@@ -76,9 +76,15 @@
     </div>
     <Modal
       v-model="Remark.modal"
+      @on-cancel="RemarkCancel"
+      class="all-modal remark-modal"
       @on-ok="SubRemark">
       <h2 slot="header">备注信息</h2>
-      <Input v-model="Remark.remark" type="textarea" :rows="4" placeholder="请输入备注信息"></Input>
+      <div class="remark-box">
+        <Input v-model="Remark.remark" ref="OutRemark" autofocus type="textarea" :rows="4" @on-enter="SubRemark" placeholder="请输入备注信息"></Input>
+      </div>
+      <div slot="footer">
+      </div>
     </Modal>
     <Modal v-model="Report.modal"
            @on-ok="ExportReport">
@@ -154,7 +160,7 @@
           name: '今日还款',
           icon: 'calendar',
           count: 0,
-          type: 0,
+          type: 4,
           cur: true
         },{
           name: '明天还款',
@@ -181,7 +187,7 @@
           expro: 0,
           start_time: '',
           end_time: '',
-          check: 0
+          check: 4
         },
         UserCol: [
           {
@@ -235,7 +241,7 @@
             key: 'hk_date'
           },{
             title: '备注',
-            width: '250',
+            width: '200',
             align: 'center',
             key: 'remark',
             render: (h,params)=>{
@@ -244,7 +250,7 @@
           },{
             title: '操作',
             key: 'operation',
-            width: '200',
+            width: '150',
             align: 'center',
             render: (h, params)=>{
               let rule = {};
@@ -355,6 +361,7 @@
       //统计列表
       CountList(num){
         this.ResetPageNum();
+        console.log(num);
         this.ScreenData.key = '';
         this.allTime = [];
         this.ScreenData.start_time = '';
@@ -373,9 +380,6 @@
       },
       //查询结果
       SimpleSearch(sign = 1){
-        this.CountData.forEach(val=>{
-          val.cur = false;
-        });
         if(this.allTime[0] !== ""){
           this.ScreenData.start_time = this.allTime[0];
           this.ScreenData.end_time = this.allTime[1];
@@ -383,20 +387,27 @@
           this.ScreenData.start_time = '';
           this.ScreenData.end_time = '';
         }
-        this.ScreenData.check = '';
-        if(this.ScreenData.key === '' && (this.ScreenData.start_time === '' || !'start_time' in this.ScreenData) && (this.ScreenData.end_time === '' || !'end_time' in this.ScreenData)){
-          this.ScreenData.check = 0;
-          console.log(111);
+        if(sign){
           this.CountData.forEach(val=>{
-            if(val.type === 0){
-              val.cur = true;
-            }
+            val.cur = false;
           });
-        }
-        this.InitData(this.apiUrl,this.ScreenData).then(()=>{
-          if(sign){
-            this.$Message.success('筛选成功！')
+          this.ScreenData.check = '';
+          if(this.ScreenData.key === '' && (this.ScreenData.start_time === '' || !'start_time' in this.ScreenData) && (this.ScreenData.end_time === '' || !'end_time' in this.ScreenData)){
+            this.ScreenData.check = 0;
+            this.CountData.forEach(val=>{
+              if(val.type === 4){
+                val.cur = true;
+              }
+            });
           }
+        }
+        return new Promise((resolve)=>{
+          this.InitData(this.apiUrl,this.ScreenData).then(()=>{
+            if(sign){
+              this.$Message.success('筛选成功！')
+            }
+            resolve();
+          });
         });
       },
       //初始化数据
@@ -423,7 +434,7 @@
               this.CountData[3].count = d.data.yuqi_count;
             }
             this.Page.count = d.data.count;
-            this.UserData = this.SetRemarkState(res);
+            this.UserData = res;
             that.loading = false;
             resolve();
           })
@@ -441,6 +452,13 @@
       //刷新列表
       RefreshList(){
         this.ResetPageNum();
+        if(this.ScreenData.check === ''){
+          this.ScreenData.check = 0;
+          this.CountData[0].cur = true;
+        }
+        this.ScreenData.key = '';
+        this.ScreenData.start_time = '';
+        this.ScreenData.end_time = '';
         this.SimpleSearch(0);
       },
       //审核面板
@@ -470,10 +488,13 @@
         this.Remark.loan_id = row.loan_id;
         this.Remark.remark = row.remark;
         this.Remark.modal = true;
+        this.$nextTick(()=>{
+          this.$refs['OutRemark'].focus();
+        })
       },
       //提交备注
-      SubRemark(event){
-        if(event.keyCode === 13){
+      SubRemark(){
+        /*if(event.keyCode === 13){
           const data = {
             loan_id: this.Remark.loan_id,
             remark: this.Remark.remark
@@ -486,7 +507,18 @@
               }
             });
           });
-        }
+        }*/
+        this.UploadData('/backend/Collection/remark',this.Remark).then(()=>{
+          this.UserData.forEach(val=>{
+            if(val.loan_id === this.Remark.loan_id){
+              val.remark = this.Remark.remark;
+            }
+          })
+          this.Remark.modal = false;
+        })
+      },
+      RemarkCancel(){
+        this.Remark.modal = false;
       },
       //展期功能
       DelayOpt(row){
@@ -544,7 +576,7 @@
           })
         })
       },
-      //群发短信
+      //群发消息
       GroupSmsOpt(){
         this.Group.SmsModal = true;
       },
@@ -643,51 +675,17 @@
         console.log(id);
       },
       RenderRemark(h,params){
-        let display = 'none',
-            spanShow = 'block';
-        if(params.row.remark_state){
-          display = 'block';
-          spanShow = 'none';
-        }
-        let remark = '';
-        if(params.row.remark === ''){
-          remark = '　　　　　　';
-        }else{
-          remark = params.row.remark;
-        }
-        const span = h('span',{
-          style: {
-            color: '#f00',
-            display: spanShow
-          },
-        },remark);
-        const input = h('textarea',{
-          class:['table-input'],
-          style:{
-            display
-          },
-          domProps: {
-            value: params.row.remark
-          },
-          on: {
-            input: this.SetRemark,
-            keyup: this.SubRemark
-          }
-        },params.row.remark);
         return h('div',{
+          style:{
+            width: '164px',
+            'min-height': '30px'
+          },
           on: {
             click: ()=>{
-              this.Remark.loan_id = params.row.loan_id;
-              this.UserData.forEach(val=>{
-                if(val.loan_id === params.row.loan_id){
-                  val.remark_state = true;
-                }else{
-                  val.remark_state = false;
-                }
-              })
+              this.RemarkOpt(params.row);
             }
           }
-        },[span,input]);
+        },params.row.remark);
       }
     }
   }

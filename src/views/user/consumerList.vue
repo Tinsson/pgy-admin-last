@@ -200,6 +200,7 @@
 
 <script>
   import { getLocal } from '@/util/util'
+  import Clipboard from 'clipboard'
   import PushApp from '@/components/groupModal/PushApp'
   import AuditModal from '@/components/infoModal/AuditModal'
 
@@ -254,10 +255,38 @@
             key: 'id'
           },{
             title: '姓名',
-            key: 'name'
+            key: 'name',
+            render: (h, params)=>{
+              return h('div',{
+                'class': {
+                  clipBtn : true
+                },
+                style:{
+                  cursor: 'pointer',
+                  color: '#0f76c7'
+                },
+                attrs:{
+                  src: params.row.name
+                }
+              }, params.row.name);
+            }
           },{
             title: '手机号',
-            key: 'phone'
+            key: 'phone',
+            render: (h, params)=>{
+              return h('div',{
+                'class': {
+                  clipBtn : true
+                },
+                style:{
+                  cursor: 'pointer',
+                  color: '#0f76c7'
+                },
+                attrs:{
+                  src: params.row.phone
+                }
+              }, params.row.phone);
+            }
           },{
             title: '身份证号',
             width: '160',
@@ -312,6 +341,20 @@
     created(){
       this.auth_id = getLocal('auth_id');
       this.InitData();
+    },
+    mounted(){
+      //剪切板功能
+      this.ClipBoard = new Clipboard('.clipBtn',{
+        text: function(elm){
+          return elm.getAttribute('src');
+        }
+      });
+      this.ClipBoard.on('success',(e)=>{
+        this.$Message.success('复制成功！');
+      })
+    },
+    destroyed() {
+      this.ClipBoard.destroy();
     },
     watch:{
       RenzTypeB(val){

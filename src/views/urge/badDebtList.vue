@@ -66,6 +66,18 @@
         </FormItem>
       </Form>
     </Modal>
+    <Modal
+      v-model="Remark.modal"
+      @on-cancel="RemarkCancel"
+      class="all-modal remark-modal"
+      @on-ok="SubRemark">
+      <h2 slot="header">备注信息</h2>
+      <div class="remark-box">
+        <Input v-model="Remark.remark" ref="OutRemark" autofocus type="textarea" :rows="4" @on-enter="SubRemark" placeholder="请输入备注信息"></Input>
+      </div>
+      <div slot="footer">
+      </div>
+    </Modal>
     <AuditModal :modalShow="Audit.modal"
                 :InitId="Audit.id"
                 :BtnId="Audit.btn"
@@ -184,7 +196,7 @@
             title: '操作',
             key: 'operation',
             align: 'center',
-            width: '330',
+            width: '150',
             render: (h, params)=>{
               return h('div',this.$renderBtn(h, params, this.BtnData));
             }
@@ -282,7 +294,7 @@
             let res = d.data.list;
             this.Page.count = d.data.count;
             this.RowUserData = res;
-            this.UserData = this.SetRemarkState(res);
+            this.UserData = res;
             that.loading = false;
             resolve();
           })
@@ -331,6 +343,9 @@
         this.Remark.loan_id = row.loan_id;
         this.Remark.remark = row.remark;
         this.Remark.modal = true;
+        this.$nextTick(()=>{
+          this.$refs['OutRemark'].focus();
+        })
       },
       //展期功能
       DelayOpt(row){
@@ -397,7 +412,7 @@
         let sinfo = this.RemoveObserve(this.ScreenData);
         sinfo.expro = 1;
         this.UploadData(this.apiUrl,sinfo).then((url)=>{
-          //window.location.href = url;
+          window.location.href = url;
         });
       },
       //设置逾期时间
@@ -434,6 +449,21 @@
         this.ScreenData.page = 1;
         this.ScreenData.num = 20;
       },
+      //提交备注
+      SubRemark(){
+        this.UploadData('/backend/Collection/remark',this.Remark).then(()=>{
+          this.UserData.forEach(val=>{
+            if(val.loan_id === this.Remark.loan_id){
+              val.remark = this.Remark.remark;
+            }
+          });
+          console.log(1111);
+          this.Remark.modal = false;
+        })
+      },
+      RemarkCancel(){
+        this.Remark.modal = false;
+      },
       //渲染备注功能
       SetRemarkState(arr){
         arr.forEach(val=>{
@@ -444,69 +474,18 @@
       SetRemark(event){
         this.Remark.remark = event.target.value;
       },
-      //提交备注
-      SubRemark(event){
-        if(event.keyCode === 13){
-          const data = {
-            loan_id: this.Remark.loan_id,
-            remark: this.Remark.remark
-          }
-          this.UploadData('/backend/Collection/remark',data).then(()=>{
-            this.UserData.forEach(val=>{
-              val.remark_state = false;
-              if(val.loan_id === this.Remark.loan_id){
-                val.remark = this.Remark.remark;
-              }
-            });
-          });
-        }
-      },
       RenderRemark(h,params){
-        let display = 'none',
-          spanShow = 'block';
-        if(params.row.remark_state){
-          display = 'block';
-          spanShow = 'none';
-        }
-        let remark = '';
-        if(params.row.remark === ''){
-          remark = '　　　　　　';
-        }else{
-          remark = params.row.remark;
-        }
-        const span = h('span',{
-          style: {
-            color: '#f00',
-            display: spanShow
-          },
-        },remark);
-        const input = h('textarea',{
-          class:['table-input'],
-          style:{
-            display
-          },
-          domProps: {
-            value: params.row.remark
-          },
-          on: {
-            input: this.SetRemark,
-            keyup: this.SubRemark
-          }
-        },params.row.remark);
         return h('div',{
+          style:{
+            width: '164px',
+            'min-height': '30px'
+          },
           on: {
             click: ()=>{
-              this.Remark.loan_id = params.row.loan_id;
-              this.UserData.forEach(val=>{
-                if(val.loan_id === params.row.loan_id){
-                  val.remark_state = true;
-                }else{
-                  val.remark_state = false;
-                }
-              })
+              this.RemarkOpt(params.row);
             }
           }
-        },[span,input]);
+        },params.row.remark);
       }
     }
   }

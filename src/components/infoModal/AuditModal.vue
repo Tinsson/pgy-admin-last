@@ -45,7 +45,41 @@
             <ul>
               <li class="single-line">
                 <Row>
-                  <Col span="8">
+                  <Col span="6">
+                    <p class="label">姓名</p>
+                    <p class="value">
+                      <span v-show="!IsEdit">{{EditData.info.name}}</span>
+                      <Input v-show="IsEdit" v-model="EditData.info.name" :style="{width: IptWidth}"></Input>
+                    </p>
+                  </Col>
+                  <Col span="6">
+                    <p class="label">手机号</p>
+                    <p class="value">
+                      <span v-show="!IsEdit">{{EditData.info.phone}}</span>
+                      <Input v-show="IsEdit" v-model="EditData.info.phone" :style="{width: IptWidth}"></Input>
+                    </p>
+                  </Col>
+                  <Col span="6">
+                  <p class="label">身份证号</p>
+                  <p class="value">
+                    <span v-show="!IsEdit">{{EditData.info.idcard}}</span>
+                    <Input v-show="IsEdit" v-model="EditData.info.idcard" :style="{width: IptWidth}"></Input>
+                  </p>
+                  </Col>
+                  <Col span="6">
+                    <p class="label">客户类型</p>
+                    <p class="value">
+                      <span v-show="!IsEdit">{{EditData.info.type}}</span>
+                      <Select v-show="IsEdit" v-model="EditData.info.type" placeholder="请选择会员等级" :style="{width: IptWidth}">
+                        <Option v-for="item in NewType" :key="item.level" :value="item.level">{{item.level}}</Option>
+                      </Select>
+                    </p>
+                  </Col>
+                </Row>
+              </li>
+              <li class="single-line">
+                <Row>
+                  <Col span="6">
                     <p class="label">性别</p>
                     <p class="value">
                       <span v-show="!IsEdit">{{EditData.info.sex}}</span>
@@ -55,58 +89,13 @@
                       </RadioGroup>
                     </p>
                   </Col>
-                  <Col span="8">
-                    <p class="label">姓名</p>
+                  <Col span="6">
+                    <p class="label">年龄</p>
                     <p class="value">
-                      <span v-show="!IsEdit">{{EditData.info.name}}</span>
-                      <Input v-show="IsEdit" v-model="EditData.info.name" :style="{width: IptWidth}"></Input>
+                      <span>{{EditData.info.age}}</span>
                     </p>
                   </Col>
-                  <Col span="8">
-                    <p class="label">手机号</p>
-                    <p class="value">
-                      <span v-show="!IsEdit">{{EditData.info.phone}}</span>
-                      <Input v-show="IsEdit" v-model="EditData.info.phone" :style="{width: IptWidth}"></Input>
-                    </p>
-                  </Col>
-                </Row>
-              </li>
-              <li class="single-line">
-                <Row>
-                  <Col span="8">
-                    <p class="label">身份证号</p>
-                    <p class="value">
-                      <span v-show="!IsEdit">{{EditData.info.idcard}}</span>
-                      <Input v-show="IsEdit" v-model="EditData.info.idcard" :style="{width: IptWidth}"></Input>
-                    </p>
-                  </Col>
-                  <Col span="8">
-                    <p class="label">客户类型</p>
-                    <p class="value">
-                      <span v-show="!IsEdit">{{EditData.info.type}}</span>
-                      <Select v-show="IsEdit" v-model="EditData.info.type" placeholder="请选择会员等级" :style="{width: IptWidth}">
-                        <Option v-for="item in NewType" :key="item.level" :value="item.level">{{item.level}}</Option>
-                      </Select>
-                    </p>
-                  </Col>
-                  <Col span="8">
-                    <p class="label">生日</p>
-                    <p class="value">
-                      <span v-show="!IsEdit">{{EditData.info.birth}}</span>
-                      <DatePicker type="date"
-                                  placeholder="选择日期"
-                                  format="yyyy/MM/dd"
-                                  v-show="IsEdit"
-                                  :value="EditData.info.birth"
-                                  @on-change="PickDate"
-                                  :style="{width: IptWidth}"></DatePicker>
-                    </p>
-                  </Col>
-                </Row>
-              </li>
-              <li class="single-line">
-                <Row>
-                  <Col :span="8">
+                  <Col span="6">
                     <p class="label">学历</p>
                     <p class="value">
                       <span v-show="!IsEdit">{{TextArr.edu[EditData.info.education - 1]}}</span>
@@ -121,19 +110,17 @@
                       </Select>
                     </p>
                   </Col>
-                  <Col :span="16">
-                    <p class="label">联系人</p>
-                    <p class="value long">
-                      <Row v-for="item in EditData.lianxiren" :key="item.name">
-                        <Col class="lxr-line" :span="12">
-                          姓名：<span v-show="!IsEdit">{{item.name}}</span>
-                          <Input v-show="IsEdit" v-model="item.name" :style="{width: IptWidth}"/>
-                        </Col>
-                        <Col class="lxr-line" :span="12">
-                          手机号：<span v-show="!IsEdit">{{item.phone}}</span>
-                          <Input v-show="IsEdit" v-model="item.phone" :style="{width: IptWidth}"/>
-                        </Col>
-                      </Row>
+                  <Col span="6">
+                    <p class="label">生日</p>
+                    <p class="value">
+                      <span v-show="!IsEdit">{{EditData.info.birth}}</span>
+                      <DatePicker type="date"
+                                  placeholder="选择日期"
+                                  format="yyyy/MM/dd"
+                                  v-show="IsEdit"
+                                  :value="EditData.info.birth"
+                                  @on-change="PickDate"
+                                  :style="{width: IptWidth}"></DatePicker>
                     </p>
                   </Col>
                 </Row>
@@ -161,6 +148,47 @@
                 </Row>
               </li>
               <li class="single-line">
+                <Row>
+                  <Col span="8">
+                  <p class="label">审核员</p>
+                  <p class="value">
+                    <span v-show="!IsEdit">{{ GetAuditor }}</span>
+                    <Select v-show="IsEdit" v-model="EditData.info.auditorId" :style="{width: IptWidth}">
+                      <Option v-for="item in EditData.auditor" :value="item.id" :key="item.id">{{item.admin_user}}</Option>
+                    </Select>
+                  </p>
+                  </Col>
+                  <Col span="8">
+                  <p class="label">催收员</p>
+                  <p class="value">
+                    <span v-show="!IsEdit">{{ GetCollector }}</span>
+                    <Select v-show="IsEdit" v-model="EditData.info.collectorId" :style="{width: IptWidth}">
+                      <Option v-for="item in EditData.collector" :value="item.id" :key="item.id">{{item.admin_user}}</Option>
+                    </Select>
+                  </p>
+                  </Col>
+                </Row>
+              </li>
+              <li class="single-line">
+                <Row>
+                  <Col :span="16">
+                    <p class="label">联系人</p>
+                    <p class="value long">
+                      <Row v-for="item in EditData.lianxiren" :key="item.name">
+                        <Col class="lxr-line" :span="12">
+                          姓名：<span v-show="!IsEdit">{{item.name}}</span>
+                          <Input v-show="IsEdit" v-model="item.name" :style="{width: IptWidth}"/>
+                        </Col>
+                        <Col class="lxr-line" :span="12">
+                          手机号：<span v-show="!IsEdit">{{item.phone}}</span>
+                          <Input v-show="IsEdit" v-model="item.phone" :style="{width: IptWidth}"/>
+                        </Col>
+                      </Row>
+                    </p>
+                  </Col>
+                </Row>
+              </li>
+              <li class="single-line">
                 <p class="label">最近常用联系号码</p>
                 <div class="value long">
                   <Row>
@@ -173,28 +201,6 @@
                 <div class="value long">
                   <p class="line" v-for="item in AllInfo.moxie.tb" :key="item.address">{{`${item.address} ${item.name} ${item.phone}`}}</p>
                 </div>
-              </li>
-              <li class="single-line">
-                <Row>
-                  <Col span="8">
-                    <p class="label">审核员</p>
-                    <p class="value">
-                      <span v-show="!IsEdit">{{ GetAuditor }}</span>
-                      <Select v-show="IsEdit" v-model="EditData.info.auditorId" :style="{width: IptWidth}">
-                        <Option v-for="item in EditData.auditor" :value="item.id" :key="item.id">{{item.admin_user}}</Option>
-                      </Select>
-                    </p>
-                  </Col>
-                  <Col span="8">
-                    <p class="label">催收员</p>
-                    <p class="value">
-                      <span v-show="!IsEdit">{{ GetCollector }}</span>
-                      <Select v-show="IsEdit" v-model="EditData.info.collectorId" :style="{width: IptWidth}">
-                        <Option v-for="item in EditData.collector" :value="item.id" :key="item.id">{{item.admin_user}}</Option>
-                      </Select>
-                    </p>
-                  </Col>
-                </Row>
               </li>
               <li class="single-line">
                 <p class="label">户籍地址</p>
@@ -262,10 +268,6 @@
                 <p class="info-box">
                   <!--<span class="half">放款员：{{AllInfo.jiben.info.fangkuanId}}</span>-->
                   <span class="half">放款员：冯剑涛</span>
-                  <span class="half">用户ID：{{ID}}</span>
-                </p>
-                <p class="info-box">
-                  <span class="half">审核状态：{{ReviewStatus}}</span>
                   <span class="half">借款用途：{{AllInfo.jiben.info.money_use_to}}</span>
                 </p>
                 <Card class="card-area">
@@ -459,6 +461,7 @@
             <Input ref="LimitInput" v-show="Limit.status" v-model="Limit.value" autofocus @on-enter="SubmitLimit" style="width: 80px;display: inline-block"/>
           </p>
           <Button type="info" @click="RemarkOpt">添加备注</Button>
+          <p id="clipBtn" class="clipBtn" ref="ClipBox" :src="LoanCopyInfo"></p>
           <!--<p v-show="IsPass.isLoan" class="inline-block">-->
             <!--<Button type="info" v-show="IsPass.status" @click="SetLoanOpt">设置放款员</Button>-->
             <!--<span v-show="IsPass.status">-->
@@ -480,9 +483,13 @@
     </Modal>
     <Modal v-model="NavData.baseInfo.IsRemark"
            @on-ok="RemarkOver"
+           class="all-modal remark-modal"
            style="z-index: 10">
       <h2 slot="header">备注信息</h2>
-      <Input v-model="NavData.baseInfo.remark_ipt" ref="RemarkInput" type="textarea" :rows="4" @on-enter="RemarkOver" autofocus placeholder="请输入备注信息"></Input>
+      <div class="remark-box">
+        <Input v-model="NavData.baseInfo.remark_ipt" ref="RemarkInput" type="textarea" :rows="4" @on-enter="RemarkOver" autofocus placeholder="请输入备注信息"></Input>
+      </div>
+      <div slot="footer"></div>
     </Modal>
     <BigPic :modalShow="BigPic.modal"
             :InitData="BigPic.img"
@@ -505,6 +512,7 @@
 
 <script>
   import Area from '@/util/area.json'
+  import Clipboard from 'clipboard'
   import BigPic from '@/components/infoModal/BigPic'
   import DelayModal from '@/components/infoModal/DelayModal'
   import RepayModal from '@/components/infoModal/RepayModal'
@@ -640,6 +648,7 @@
             },{
               title: '添加时间',
               key: 'addtime',
+              width: '100',
               ellipsis: false
             }],
             remark: [],
@@ -772,6 +781,19 @@
         this.AddressBack();
       }
     },
+    mounted(){
+      this.ClipBoard = new Clipboard('#clipBtn',{
+        text: function(elm){
+          return elm.getAttribute('src');
+        }
+      });
+      this.ClipBoard.on('success',(e)=>{
+        this.$Message.success('复制成功！');
+      })
+    },
+    destroyed(){
+      this.ClipBoard.destroy();
+    },
     computed:{
       CurrentPage(){
         let cur = 0;
@@ -818,8 +840,21 @@
         });
         return name;
       },
-      GetOwner(){
-        return '李义';
+      LoanCopyInfo(){
+        let amount = '';
+        if(this.AllInfo.loan.jk_list.length > 0){
+          const last_jk = this.ArrLast(this.AllInfo.loan.jk_list);
+          if(last_jk.status === 0){
+            this.$Message.error('该用户已放款！');
+            return false;
+          }
+          amount = last_jk.amount;
+        }else{
+          amount = this.Limit.value;
+        }
+        const start = new Date(),
+              end = new Date(start.getTime() + 1000 * 60 * 60 * 24 * this.AllInfo.jiben.info.days);
+        return `金额：${amount} 利率：24% 还款时间：${end.getFullYear()}-${end.getMonth()+1}-${end.getDate(0)}`;
       }
     },
     methods: {
@@ -971,6 +1006,9 @@
           }
         })
       },
+      CopyInfoOpt(){
+        this.$refs.ClipBox.click();
+      },
       HangOpt(){
         /*const tips = this.IsHang.status?'确认要取消该用户挂起状态吗？':'确认挂起该用户吗？';
         this.$Modal.confirm({
@@ -987,8 +1025,9 @@
       },
       GiveLimitOpt(){
         this.Limit.status = true;
-        console.log(this.$refs['LimitInput']);
-        this.$refs['LimitInput'].focus();
+        this.$nextTick(() => {
+          this.$refs.LimitInput.focus();
+        });
       },
       SubmitLimit(){
         const data = {
@@ -1068,7 +1107,6 @@
         const jk_list = this.AllInfo.loan.jk_list;
         if(jk_list.length > 0){
           const jk_data = jk_list[jk_list.length - 1];
-          console.log(jk_data);
           const data = {
             uid: this.ID,
             id: jk_data.id,
@@ -1575,5 +1613,8 @@
   }
   .inline-block{
     display: inline-block;
+  }
+  .clipBtn{
+    display: none;
   }
 </style>

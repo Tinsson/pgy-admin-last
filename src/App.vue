@@ -62,6 +62,13 @@ export default {
     position: absolute!important;
     top: 32px!important;
   }
+  .remark-modal .ivu-modal-footer{
+    border: none;
+    padding: 0;
+  }
+  .remark-modal .remark-box{
+    padding: 15px;
+  }
   .table-input{
     color: #333;
     width: 230px;

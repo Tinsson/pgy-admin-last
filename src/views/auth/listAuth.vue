@@ -170,6 +170,9 @@
           name: '销账按钮',
           value: 'WriteOffOpt'
         },{
+          name: '复制信息按钮',
+          value: 'CopyInfoOpt'
+        },{
           name: '提前还款按钮',
           value: 'PreRepayOpt'
         },{

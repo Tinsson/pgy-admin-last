@@ -8,17 +8,14 @@
               size="large"
               @click="RefreshList">刷新列表</Button>
     </h1>
-    <Row class="card-box">
-      <Col v-for="item in CountData" class="card-col" :span="24 / CountData.length" :key="item.name">
-        <div class="sim-card" :class="{cur:item.cur}" @click="CountList(item.status)">
-          <Icon class="icon" :type="item.icon"></Icon>
-          <p class="title">{{ item.name }}</p>
-          <p class="value"><span class="num">{{item.count}}</span><span>{{item.cunit}}</span><span class="num" v-show="item.second">/</span><span class="num">{{item.other}}</span><span>{{item.ounit}}</span>
-          </p>
-          <span class="tips">点击查看</span>
-        </div>
-      </Col>
-    </Row>
+    <div class="card-box">
+      <div v-for="item in CountData" class="sim-card" :class="{cur:item.cur}" @click="CountList(item.status)">
+        <Icon class="icon" :type="item.icon"></Icon>
+        <p class="title">{{ item.name }}</p>
+        <p class="value"><span class="num">{{item.count}}</span>人</p>
+        <span class="tips">点击查看</span>
+      </div>
+    </div>
     <div class="screen-area">
       <Card>
         <div class="card-tit" slot="title">
@@ -293,6 +290,10 @@
       RefreshList(){
         this.loading = true;
         this.ResetPageNum();
+        if(this.ScreenData.type === 'all'){
+          this.CountData[0].cur = true;
+          this.ScreenData.type = 'check_waiting';
+        }
         this.ScreenData.key = '';
         this.SimpleSearch(0).then(()=>{
           this.$Message.success('刷新成功！');
@@ -327,22 +328,20 @@
       },
       //查询结果
       SimpleSearch(sign = 1,isPage = 0){
-        let sinfo = this.RemoveObserve(this.ScreenData);
+        if(sign){
+          this.ScreenData.type = 'all';
+          this.CountData.forEach(val=>{
+            val.cur = false;
+          })
+        }
         if(isPage){
-          sinfo = Object.assign(sinfo,{
+          this.ScreenData = Object.assign(this.ScreenData,{
             page: this.Page.cur,
             num: this.Page.size
           })
         }
-        if(this.allTime[0] !== ""){
-          sinfo.start_time = this.allTime[0];
-          sinfo.end_time = this.allTime[1];
-        }else{
-          sinfo.start_time = '';
-          sinfo.end_time = '';
-        }
         return new Promise((resolve)=>{
-          this.SecondData(sinfo).then(()=>{
+          this.SecondData(this.ScreenData).then(()=>{
             if(sign){
               this.$Message.success('筛选成功！');
             }
@@ -491,30 +490,25 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
-    flex-wrap: wrap;
+    justify-content: space-between;
     padding-bottom: 20px;
-    .card-col{
-      padding: 0 8px;
-    }
     .sim-card{
       position: relative;
-      width: 100%;
+      width: 24%;
       padding: 15px;
       color: #FFF;
       overflow: hidden;
       cursor: pointer;
       border-radius: 5px;
       background-color: #c3c3c3;
-      margin-bottom: 10px;
       .title{
         font-size: 16px;
       }
       .value{
-        padding-top: 10px;
+        padding: 5px 0;
         font-size: 18px;
         .num{
-          font-size: 32px;
+          font-size: 40px;
         }
       }
       .tips{
@@ -531,8 +525,8 @@
       }
       .icon{
         position: absolute;
-        right: 10px;
-        top: 5px;
+        right: 20px;
+        top: 20px;
         font-size: 60px;
       }
       &.cur{
