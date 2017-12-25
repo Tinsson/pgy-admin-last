@@ -34,7 +34,7 @@
         <div class="opt-box">
           <div class="form-group">
             <label class="form-label">检索：</label>
-            <Input v-model="ScreenData.search" style="width: 200px" @on-enter="SimpleSearch"></Input>
+            <Input v-model="ScreenData.key" style="width: 200px" @on-enter="SimpleSearch"></Input>
           </div>
         </div>
       </Card>
@@ -129,9 +129,7 @@
         //基础筛选数据
         ScreenData: {
           type: 'check_waiting',
-          name: '',
-          phone: '',
-          search: '',
+          key: '',
           is_hang: -1
         },
         UserCol: [
@@ -140,7 +138,7 @@
             width: 55,
             align: 'center'
           },{
-            title: '客户ID',
+            title: 'ID',
             width: '80',
             align: 'center',
             key: 'id'
@@ -164,9 +162,6 @@
               }, params.row.name);
             }
           },{
-            title: '性别',
-            key: 'sex'
-          },{
             title: '手机',
             key: 'phone',
             render: (h, params)=>{
@@ -184,11 +179,8 @@
               }, params.row.phone);
             }
           },{
-            title: '身份证',
-            key: 'idcard'
-          },{
-            title: '系统建议',
-            key: 'advise'
+            title: '性别',
+            key: 'sex'
           },{
             title: '状态',
             key: 'status'
@@ -301,6 +293,7 @@
       RefreshList(){
         this.loading = true;
         this.ResetPageNum();
+        this.ScreenData.key = '';
         this.SimpleSearch(0).then(()=>{
           this.$Message.success('刷新成功！');
         });

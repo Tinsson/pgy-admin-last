@@ -432,6 +432,8 @@
       //刷新列表
       RefreshList(){
         this.ResetPageNum();
+        this.ScreenData.key = '';
+        this.SeniorData.key = '';
         this.InitData().then(()=>{
           this.$Message.success('刷新成功');
         });

@@ -81,16 +81,11 @@
                     </p>
                   </Col>
                   <Col span="8">
-                    <p class="label">会员等级</p>
+                    <p class="label">客户类型</p>
                     <p class="value">
                       <span v-show="!IsEdit">{{EditData.info.type}}</span>
                       <Select v-show="IsEdit" v-model="EditData.info.type" placeholder="请选择会员等级" :style="{width: IptWidth}">
-                        <Option value="A">A</Option>
-                        <Option value="B">B</Option>
-                        <Option value="C">C</Option>
-                        <Option value="D">D</Option>
-                        <Option value="E">E</Option>
-                        <Option value="W">W</Option>
+                        <Option v-for="item in NewType" :key="item.level" :value="item.level">{{item.level}}</Option>
                       </Select>
                     </p>
                   </Col>
@@ -196,16 +191,6 @@
                       <span v-show="!IsEdit">{{ GetCollector }}</span>
                       <Select v-show="IsEdit" v-model="EditData.info.collectorId" :style="{width: IptWidth}">
                         <Option v-for="item in EditData.collector" :value="item.id" :key="item.id">{{item.admin_user}}</Option>
-                      </Select>
-                    </p>
-                  </Col>
-                  <Col span="8">
-                    <p class="label">出资人</p>
-                    <p class="value">
-                      <span v-show="!IsEdit">{{ GetOwner }}</span>
-                      <Select v-show="IsEdit" v-model="EditData.info.owner" :style="{width: IptWidth}">
-                        <Option :value="1">李义</Option>
-                        <Option :value="2">张晓成</Option>
                       </Select>
                     </p>
                   </Col>
@@ -369,17 +354,17 @@
                     <p class="yq_state">{{item.yq_status}}</p>
                     <div class="text-line">
                       <div class="msg-area">
-                        <p class="tips">延期金额（元）</p>
+                        <p class="tips">展期金额（元）</p>
                         <p class="value num">{{ item.amount }}</p>
                       </div>
                     </div>
                     <div class="text-line">
-                      <span class="msg-area">延期费用：{{ item.fee }}元</span>
-                      <span class="msg-area">延期时间：{{ item.days }}天</span>
+                      <span class="msg-area">展期费用：{{ item.fee }}元</span>
+                      <span class="msg-area">展期时间：{{ item.days }}天</span>
                     </div>
-                    <div class="text-line">延期开始日：{{ item.start_date }}</div>
-                    <div class="text-line">延期结束日：{{ item.hk_date }}</div>
-                    <div class="text-line">延期操作日：{{ item.create_at }}</div>
+                    <div class="text-line">展期开始日：{{ item.start_date }}</div>
+                    <div class="text-line">展期结束日：{{ item.hk_date }}</div>
+                    <div class="text-line">展期操作日：{{ item.create_at }}</div>
                   </div>
                 </Card>
               </TabPane>
@@ -497,7 +482,7 @@
            @on-ok="RemarkOver"
            style="z-index: 10">
       <h2 slot="header">备注信息</h2>
-      <Input v-model="NavData.baseInfo.remark_ipt" type="textarea" :rows="4" placeholder="请输入备注信息"></Input>
+      <Input v-model="NavData.baseInfo.remark_ipt" ref="RemarkInput" type="textarea" :rows="4" @on-enter="RemarkOver" autofocus placeholder="请输入备注信息"></Input>
     </Modal>
     <BigPic :modalShow="BigPic.modal"
             :InitData="BigPic.img"
@@ -544,6 +529,7 @@
         TextArr: {
           edu:['初中','高中','大专','本科','硕士','博士','博士后']
         },
+        NewType: [],
         AllAreaData: Area, //全国省市区信息集合
         AllInfo:{
           jiben:{
@@ -913,18 +899,18 @@
             }
           });
           this.$fetch('/backend/User/editUser',{uid: id}).then(edit=>{
+            this.EditData = edit.data;
+            this.EditData.uid = this.ID;
+            this.EditData.info.uid = this.ID;
+            this.Limit.value = edit.data.info.credit_limit;
+            this.Limit.text = edit.data.info.credit_limit;
+            this.NewType = edit.data.info.newtype;
+            this.NavData.baseInfo.remark = edit.data.info.remark;
+            this.ChoseCompany = this.StdArea(edit.data.info.address_company);
+            this.ChoseLive = this.StdArea(edit.data.info.address_live);
+            this.DetailsCompany = edit.data.info.address_company[edit.data.info.address_company.length - 1];
+
             this.$fetch('/backend/User/getInfo',{uid: id}).then(info=>{
-              this.EditData = edit.data;
-              this.EditData.uid = this.ID;
-              this.EditData.info.uid = this.ID;
-              this.Limit.value = edit.data.info.credit_limit;
-              this.Limit.text = edit.data.info.credit_limit;
-              this.NavData.baseInfo.remark = edit.data.info.remark;
-              this.ChoseCompany = this.StdArea(edit.data.info.address_company);
-              this.ChoseLive = this.StdArea(edit.data.info.address_live);
-              this.DetailsCompany = edit.data.info.address_company[edit.data.info.address_company.length - 1];
-
-
               this.AllInfo = info.data;
               this.IsPass.status = (info.data.jiben.info.status === 2)?true:false;
               this.IsPass.type = this.IsPass.status?'ghost':'success';
@@ -1117,6 +1103,9 @@
       RemarkOpt(){
         this.NavData.baseInfo.remark_ipt = '';
         this.NavData.baseInfo.IsRemark = true;
+        this.$nextTick(() => {
+          this.$refs.RemarkInput.focus()
+        })
       },
       RemarkOver(){
         /*if(this.Urge.auth){

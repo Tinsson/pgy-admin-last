@@ -121,7 +121,7 @@
 
 <script>
   import { getLocal } from '@/util/util'
-  import Clipboard from 'clipboard';
+  import Clipboard from 'clipboard'
   import GroupSms from '@/components/groupModal/GroupSms'
   import PushApp from '@/components/groupModal/PushApp'
   import AuditModal from '@/components/infoModal/AuditModal'
@@ -355,6 +355,10 @@
       //统计列表
       CountList(num){
         this.ResetPageNum();
+        this.ScreenData.key = '';
+        this.allTime = [];
+        this.ScreenData.start_time = '';
+        this.ScreenData.end_time = '';
         let sinfo = this.RemoveObserve(this.ScreenData);
         this.CountData.forEach(val=>{
             if(val.type === num){
@@ -369,15 +373,27 @@
       },
       //查询结果
       SimpleSearch(sign = 1){
-        let sinfo = this.RemoveObserve(this.ScreenData);
+        this.CountData.forEach(val=>{
+          val.cur = false;
+        });
         if(this.allTime[0] !== ""){
-          sinfo.start_time = this.allTime[0];
-          sinfo.end_time = this.allTime[1];
+          this.ScreenData.start_time = this.allTime[0];
+          this.ScreenData.end_time = this.allTime[1];
         }else{
-          sinfo.start_time = '';
-          sinfo.end_time = '';
+          this.ScreenData.start_time = '';
+          this.ScreenData.end_time = '';
         }
-        this.InitData(this.apiUrl,sinfo).then(()=>{
+        this.ScreenData.check = '';
+        if(this.ScreenData.key === '' && (this.ScreenData.start_time === '' || !'start_time' in this.ScreenData) && (this.ScreenData.end_time === '' || !'end_time' in this.ScreenData)){
+          this.ScreenData.check = 0;
+          console.log(111);
+          this.CountData.forEach(val=>{
+            if(val.type === 0){
+              val.cur = true;
+            }
+          });
+        }
+        this.InitData(this.apiUrl,this.ScreenData).then(()=>{
           if(sign){
             this.$Message.success('筛选成功！')
           }

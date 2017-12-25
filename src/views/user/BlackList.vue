@@ -267,6 +267,7 @@
       },
       //刷新列表
       RefreshList(){
+        this.ScreenData.key = '';
         this.InitData(this.apiUrl).then(()=>{
           this.$Message.success('刷新成功');
         });

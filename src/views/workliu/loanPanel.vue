@@ -34,7 +34,7 @@
         <div class="opt-box">
           <div class="form-group">
             <label class="form-label">检索：</label>
-            <Input v-model="ScreenData.search" style="width: 200px" @on-enter="SimpleSearchTest"></Input>
+            <Input v-model="ScreenData.key" style="width: 200px" @on-enter="SimpleSearch"></Input>
           </div>
         </div>
       </Card>
@@ -85,6 +85,7 @@
 
 <script>
   import { getLocal,saveLocal } from '@/util/util'
+  import Clipboard from 'clipboard'
   import AuditModal from '@/components/infoModal/AuditModal'
   import PushApp from '@/components/groupModal/PushApp'
 
@@ -139,9 +140,7 @@
         //基础筛选数据
         ScreenData: {
           type: 'fk_customers_ready',
-          name: '',
-          phone: '',
-          search: ''
+          key: ''
         },
         UserCol: [
           {
@@ -155,18 +154,28 @@
             key: 'id'
           },{
             title: '姓名',
-            width: '100',
+            align: 'center'
+          },{
+            title: '手机号',
             align: 'center',
-            key: 'name'
+            key: 'phone',
+            render: (h, params)=>{
+              return h('div',{
+                'class': {
+                  clipBtn : true
+                },
+                style:{
+                  cursor: 'pointer',
+                  color: '#0f76c7'
+                },
+                attrs:{
+                  src: params.row.phone
+                }
+              }, params.row.phone);
+            }
           },{
             title: '性别',
             key: 'sex'
-          },{
-            title: '手机',
-            key: 'phone'
-          },{
-            title: '身份证',
-            key: 'idcard'
           },{
             title: '状态',
             key: 'status'
@@ -214,13 +223,25 @@
       this.auth_id = getLocal('auth_id');
       this.InitData(this.apiUrl,{type: 'fk_customers_ready'});
     },
-    computed: {
-
+    mounted(){
+      //剪切板功能
+      this.ClipBoard = new Clipboard('.clipBtn',{
+        text: function(elm){
+          return elm.getAttribute('src');
+        }
+      });
+      this.ClipBoard.on('success',(e)=>{
+        this.$Message.success('复制成功！');
+      })
+    },
+    destroyed() {
+      this.ClipBoard.destroy();
     },
     watch:{
       UserCol(col){
         col.forEach(val=>{
           if(val.key === "auth_status"){
+            val.align = 'right';
             val.render = this.AuthIcon;
           }
         });
@@ -240,6 +261,7 @@
       RefreshList(){
         this.loading = true;
         this.ResetPageNum();
+        this.ScreenData.key = '';
         this.SimpleSearch(0).then(()=>{
           this.$Message.success('刷新成功！');
         });
@@ -272,6 +294,7 @@
       },
       //统计列表
       CountList(status){
+        this.ScreenData.key = '';
         this.loading = true;
         this.ScreenData.type = status;
         let sinfo = this.RemoveObserve(this.ScreenData);
@@ -286,16 +309,14 @@
       },
       //查询结果
       SimpleSearch(sign = 1){
-        let sinfo = this.RemoveObserve(this.ScreenData);
-        if(this.allTime[0] !== ""){
-          sinfo.start_time = this.allTime[0];
-          sinfo.end_time = this.allTime[1];
-        }else{
-          sinfo.start_time = '';
-          sinfo.end_time = '';
+        if(sign){
+          this.ScreenData.type = '';
+          this.CountData.forEach(val=>{
+            val.cur = false;
+          })
         }
         return new Promise(resolve=>{
-          this.SecondData(sinfo).then(()=>{
+          this.SecondData(this.ScreenData).then(()=>{
             if(sign){
               this.$Message.success('筛选成功！');
             }
@@ -336,6 +357,13 @@
       //统一标签
       GetField(filed){
         let res = filed;
+        res.forEach(val=>{
+          if(val.key === 'name'){
+            val.render = this.ClipName;
+          }else if(val.key === 'phone'){
+            val.render = this.ClipPhone;
+          }
+        })
         res.push({
           title: '操作',
           key: 'operation',
@@ -439,10 +467,39 @@
             elmArr.push(elm);
           }
         });
-        return h('div',elmArr);
+        return h('div',{
+          style:{
+            width: '125px'
+          }
+        },elmArr);
       },
-      SimpleSearchTest(){
-        console.log(this.ScreenData);
+      ClipName(h, params){
+        return h('div',{
+          'class': {
+            clipBtn : true
+          },
+          style:{
+            cursor: 'pointer',
+            color: '#0f76c7'
+          },
+          attrs:{
+            src: params.row.name
+          }
+        }, params.row.name);
+      },
+      ClipPhone(h, params){
+        return h('div',{
+          'class': {
+            clipBtn : true
+          },
+          style:{
+            cursor: 'pointer',
+            color: '#0f76c7'
+          },
+          attrs:{
+            src: params.row.phone
+          }
+        }, params.row.phone);
       }
     }
   }

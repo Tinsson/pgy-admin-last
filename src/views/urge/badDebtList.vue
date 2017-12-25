@@ -23,7 +23,7 @@
         <div class="opt-box">
           <div class="form-group">
             <label class="form-label">检索：</label>
-            <Input v-model="ScreenData.search" style="width: 200px" @on-enter="SimpleSearch"></Input>
+            <Input v-model="ScreenData.key" style="width: 200px" @on-enter="SimpleSearch"></Input>
           </div>
         </div>
       </Card>
@@ -77,6 +77,7 @@
 
 <script>
   import { getLocal } from '@/util/util'
+  import Clipboard from 'clipboard'
   import GroupSms from '@/components/groupModal/GroupSms'
   import PushApp from '@/components/groupModal/PushApp'
   import AuditModal from '@/components/infoModal/AuditModal'
@@ -96,6 +97,11 @@
         loading: true,
         OverTime: {
           modal: false,
+        },
+        Remark: {
+          modal: false,
+          loan_id: '',
+          remark: ''
         },
         allTime: [],
         //基础筛选数据
@@ -125,12 +131,38 @@
             title: '姓名',
             width: '100',
             align: 'center',
-            key: 'name'
+            key: 'name',
+            render: (h, params)=>{
+              return h('div',{
+                'class': {
+                  clipBtn : true
+                },
+                style:{
+                  cursor: 'pointer',
+                  color: '#0f76c7'
+                },
+                attrs:{
+                  src: params.row.name
+                }
+              }, params.row.name);
+            }
           },{
-            title: '手机号',
-            width: '150',
-            align: 'center',
-            key: 'phone'
+            title: '手机',
+            key: 'phone',
+            render: (h, params)=>{
+              return h('div',{
+                'class': {
+                  clipBtn : true
+                },
+                style:{
+                  cursor: 'pointer',
+                  color: '#0f76c7'
+                },
+                attrs:{
+                  src: params.row.phone
+                }
+              }, params.row.phone);
+            }
           },{
             title: '金额',
             key: 'amount'
@@ -138,11 +170,16 @@
             title: '逾期天数',
             key: 'overdue_day'
           },{
-            title: '备注',
-            key: 'remark'
-          },{
             title: '类型',
             key: 'type'
+          },{
+            title: '备注',
+            width: '200',
+            align: 'center',
+            key: 'remark',
+            render: (h,params)=>{
+              return this.RenderRemark(h, params);
+            }
           },{
             title: '操作',
             key: 'operation',
@@ -173,6 +210,20 @@
     created(){
       this.auth_id = getLocal('auth_id');
       this.InitData(this.apiUrl);
+    },
+    mounted(){
+      //剪切板功能
+      this.ClipBoard = new Clipboard('.clipBtn',{
+        text: function(elm){
+          return elm.getAttribute('src');
+        }
+      });
+      this.ClipBoard.on('success',(e)=>{
+        this.$Message.success('复制成功！');
+      })
+    },
+    destroyed() {
+      this.ClipBoard.destroy();
     },
     methods: {
       //去除data数据里绑定的监视器
@@ -231,7 +282,7 @@
             let res = d.data.list;
             this.Page.count = d.data.count;
             this.RowUserData = res;
-            this.UserData = this.TransText(res,'error_msg','无');
+            this.UserData = this.SetRemarkState(res);
             that.loading = false;
             resolve();
           })
@@ -248,6 +299,7 @@
       },
       //刷新列表
       RefreshList(){
+        this.ScreenData.key = '';
         this.InitData(this.apiUrl).then(()=>{
           this.$Message.success('刷新成功');
         });
@@ -279,12 +331,6 @@
         this.Remark.loan_id = row.loan_id;
         this.Remark.remark = row.remark;
         this.Remark.modal = true;
-      },
-      //提交备注
-      SubRemark(){
-        this.UploadData('/backend/Collection/remark',this.Remark).then(()=>{
-          this.SimpleSearch(0);
-        });
       },
       //展期功能
       DelayOpt(row){
@@ -387,6 +433,80 @@
         this.Page.size = 20;
         this.ScreenData.page = 1;
         this.ScreenData.num = 20;
+      },
+      //渲染备注功能
+      SetRemarkState(arr){
+        arr.forEach(val=>{
+          val.remark_state = false;
+        });
+        return arr;
+      },
+      SetRemark(event){
+        this.Remark.remark = event.target.value;
+      },
+      //提交备注
+      SubRemark(event){
+        if(event.keyCode === 13){
+          const data = {
+            loan_id: this.Remark.loan_id,
+            remark: this.Remark.remark
+          }
+          this.UploadData('/backend/Collection/remark',data).then(()=>{
+            this.UserData.forEach(val=>{
+              val.remark_state = false;
+              if(val.loan_id === this.Remark.loan_id){
+                val.remark = this.Remark.remark;
+              }
+            });
+          });
+        }
+      },
+      RenderRemark(h,params){
+        let display = 'none',
+          spanShow = 'block';
+        if(params.row.remark_state){
+          display = 'block';
+          spanShow = 'none';
+        }
+        let remark = '';
+        if(params.row.remark === ''){
+          remark = '　　　　　　';
+        }else{
+          remark = params.row.remark;
+        }
+        const span = h('span',{
+          style: {
+            color: '#f00',
+            display: spanShow
+          },
+        },remark);
+        const input = h('textarea',{
+          class:['table-input'],
+          style:{
+            display
+          },
+          domProps: {
+            value: params.row.remark
+          },
+          on: {
+            input: this.SetRemark,
+            keyup: this.SubRemark
+          }
+        },params.row.remark);
+        return h('div',{
+          on: {
+            click: ()=>{
+              this.Remark.loan_id = params.row.loan_id;
+              this.UserData.forEach(val=>{
+                if(val.loan_id === params.row.loan_id){
+                  val.remark_state = true;
+                }else{
+                  val.remark_state = false;
+                }
+              })
+            }
+          }
+        },[span,input]);
       }
     }
   }
