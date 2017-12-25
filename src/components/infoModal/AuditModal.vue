@@ -24,7 +24,10 @@
                 <p class="title">同盾</p>
               </li>
               <li class="res-box">
-                <p class="simple" :class="'type'+AllInfo.jiben.info.huabei.status">{{AllInfo.jiben.info.huabei.info}}</p>
+                <div class="simple" :class="'type'+AllInfo.jiben.info.huabei.status">
+                  <span>{{AllInfo.jiben.info.huabei.info}}</span>
+
+                </div>
                 <p class="title">花呗额度</p>
               </li>
               <li class="res-box">
@@ -559,6 +562,7 @@
             jk_count: '',
             jk_this_amount: '',
             jk_all_amount: '',
+            jk_list: [],
             zq_count: '',
             zq_this_amount: '',
             zq_all_amount: '',
@@ -648,7 +652,7 @@
             },{
               title: '添加时间',
               key: 'addtime',
-              width: '100',
+              width: '120',
               ellipsis: false
             }],
             remark: [],
@@ -679,6 +683,7 @@
             key: 'status'
           },{
             title: '生成时间',
+            width: '120',
             key: 'create_at'
           }],
           Data: []

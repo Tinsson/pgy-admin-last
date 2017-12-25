@@ -267,6 +267,7 @@
           }
         ],
         UserData: [],     //表格数据
+        BtnData: [],
         RowUserData: [],  //获取的原始数据
         //群选打钩后操作
         SelectData: [],
@@ -326,7 +327,7 @@
       });
       this.ClipBoard.on('success',(e)=>{
         this.$Message.success('复制成功！');
-      })
+      });
     },
     destroyed() {
       this.ClipBoard.destroy();
@@ -412,7 +413,6 @@
       },
       //初始化数据
       InitData(url,params = {},isinit = 0){
-        const that = this;
         this.loading = true;
         //获取按钮信息
         this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
@@ -435,7 +435,7 @@
             }
             this.Page.count = d.data.count;
             this.UserData = res;
-            that.loading = false;
+            this.loading = false;
             resolve();
           })
         })

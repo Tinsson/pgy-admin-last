@@ -238,7 +238,8 @@
       UserCol(col){
         col.forEach(val=>{
           if(val.key === "auth_status"){
-            val.align = 'right';
+            val.align = 'center';
+            val.width = '160';
             val.render = this.AuthIcon;
           }
         });

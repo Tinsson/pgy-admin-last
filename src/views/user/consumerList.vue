@@ -333,7 +333,7 @@
         Audit:{
           modal: false,
           id: '',
-          allId: '',
+          allId: [],
           btn: ''
         }
       }

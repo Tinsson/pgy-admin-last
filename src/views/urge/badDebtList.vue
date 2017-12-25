@@ -287,6 +287,11 @@
         //获取按钮信息
         this.$fetch('/backend/Menuauth/listAuthGet',{auth_id: this.auth_id}).then((d)=>{
           this.BtnData = d.data.operation;
+          this.BtnData.forEach(val=>{
+            if(val.class === "AuditPanel"){
+              this.Audit.btn = val.id;
+            }
+          })
         });
         //列表数据获取
         return new Promise((resolve)=>{
