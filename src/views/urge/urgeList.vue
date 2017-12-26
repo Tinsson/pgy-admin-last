@@ -468,10 +468,11 @@
         this.Audit.id = row.id;
         this.Audit.unique = row.loan_id;
         let idArr = [];
-        this.RowUserData.forEach(val=>{
+        this.UserData.forEach(val=>{
           idArr.push(val.loan_id);
         });
         this.Audit.allId = idArr;
+        console.log(idArr);
       },
       AuditCancel(){
         this.Audit.modal = false;

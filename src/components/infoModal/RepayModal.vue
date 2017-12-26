@@ -18,10 +18,10 @@
         <Input class="unit-width" v-model="RepayInfo.amountn" readonly/>
       </FormItem>
       <FormItem label="实际还款本金：">
-        <Input class="unit-width" v-model="RepayInfo.yh_amount" @on-keyup="LimitAmount"/>
+        <Input class="unit-width" v-model="RepayInfo.yh_amount" readonly/>
       </FormItem>
       <FormItem label="实际还款金额：">
-        <Input class="unit-width" v-model="RepayInfo.yh_amountn" @on-keyup="LimitAmountn"/>
+        <Input class="unit-width" v-model="RepayInfo.yh_amountn" @on-keyup="LimitAmountn" @on-blur="GetYhamount"/>
       </FormItem>
       <!--<FormItem label="违约金：">
         <Input class="unit-width" v-model="RepayInfo.wy_amount"/>
@@ -83,16 +83,19 @@
           this.RepayInfo.yh_amountn = this.RepayInfo.amountn;
         }
       },
-      LimitAmount(){
-        console.log(parseFloat(this.RepayInfo.yh_amount));
-        if(parseFloat(this.RepayInfo.yh_amount) > parseFloat(this.RepayInfo.amount)){
-          this.RepayInfo.yh_amount = this.RepayInfo.amount;
-        }
-      },
       LimitAmountn(){
         if(parseFloat(this.RepayInfo.yh_amountn) > parseFloat(this.RepayInfo.amountn)){
           this.RepayInfo.yh_amountn = this.RepayInfo.amountn;
         }
+      },
+      GetYhamount(){
+        const data = {
+          uid: this.RepayInfo.uid,
+          amount: this.RepayInfo.yh_amountn
+        };
+        this.$post('/backend/Tocalculate/getBamount', data).then(d=>{
+          this.RepayInfo.yh_amount = d;
+        })
       }
     }
   }
