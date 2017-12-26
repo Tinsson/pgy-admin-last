@@ -316,7 +316,7 @@
     },
     created(){
       this.auth_id = getLocal('auth_id');
-      this.InitData('/backend/Collection/CollectionList',{},1);
+      this.InitData('/backend/Collection/CollectionList',{check: 4},1);
     },
     mounted(){
       //剪切板功能
@@ -374,13 +374,14 @@
             }else{
                 val.cur = false;
             }
-        })
+        });
         this.ScreenData.check = num;
         sinfo.check = num;
         this.InitData(this.apiUrl,sinfo);
       },
       //查询结果
       SimpleSearch(sign = 1){
+        this.ResetPageNum();
         if(this.allTime[0] !== ""){
           this.ScreenData.start_time = this.allTime[0];
           this.ScreenData.end_time = this.allTime[1];

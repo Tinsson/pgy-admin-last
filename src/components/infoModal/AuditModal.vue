@@ -24,9 +24,8 @@
                 <p class="title">同盾</p>
               </li>
               <li class="res-box">
-                <div class="simple" @click="HuabeiEdit" :class="'type'+AllInfo.jiben.info.huabei.status">
-                  <span v-show="!Huabei.modal">{{AllInfo.jiben.info.huabei.info}}</span>
-                  <Input v-show="Huabei.modal" size="small" class="head-input" v-modal="Huabei.data.value" @on-enter="HuabeiSub"/>
+                <div class="simple" :class="'type'+AllInfo.jiben.info.huabei.status">
+                  <span>{{AllInfo.jiben.info.huabei.info}}</span>
                 </div>
                 <p class="title">花呗额度</p>
               </li>
@@ -39,7 +38,10 @@
                 <p class="title active" @click="ReportTaobao">淘宝</p>
               </li>
               <li class="res-box">
-                <p class="simple" :class="'type'+AllInfo.jiben.info.zhimafen.status">{{AllInfo.jiben.info.zhimafen.info}}</p>
+                <div class="simple" @click="ZmfEdit" :class="'type'+AllInfo.jiben.info.zhimafen.sinfo">
+                  <span v-show="!Zhimafen.modal">{{AllInfo.jiben.info.zhimafen.info}}</span>
+                  <input v-show="Zhimafen.modal" class="head-input" v-model="Zhimafen.data.zmop" @keyup.enter="ZmfSub"/>
+                </div>
                 <p class="title">芝麻分</p>
               </li>
             </ul>
@@ -294,58 +296,125 @@
             </Tabs>
           </div>
           <div class="trade-record" v-show="NavData.tradeRecord.cur">
-            <Tabs>
-              <TabPane label="放款">
-                <div class="count-box">
-                  <p class="count-line">
-                    <span class="title">总笔数：<em class="num">{{ AllInfo.loan.jk_count }}</em></span>
-                    <span class="value">已收违约金：<em class="num">{{ AllInfo.loan.hk_all_wyamount }}</em></span>
-                  </p>
-                  <p class="count-line">
-                    <span class="title">未还金额：<em class="num">{{ AllInfo.loan.jk_this_amount }}</em></span>
-                    <span class="value">展期费总额：<em class="num">{{ AllInfo.loan.zq_all_amount }}</em></span>
-                  </p>
-                  <p class="count-line">
-                    <span class="title">借款总额：<em class="num">{{ AllInfo.loan.jk_all_amount }}</em></span>
-                    <span class="value">展期总额：<em class="num">{{ AllInfo.loan.zq_all_amount }}</em></span>
+            <div class="count-box">
+              <p class="count-line">
+                <span class="title">借款总笔数：<em class="num">{{ AllInfo.loan.jk_count }}</em></span>
+                <span class="value">展期总笔数：<em class="num">{{ AllInfo.loan.zq_count }}</em></span>
+              </p>
+              <p class="count-line">
+                <span class="title">借款总额：<em class="num">{{ AllInfo.loan.jk_all_amount }}</em></span>
+                <span class="value">展期总额：<em class="num">{{ AllInfo.loan.zq_all_amount }}</em></span>
+              </p>
+              <p class="count-line">
+                <span class="title">已收违约金：<em class="num">{{ AllInfo.loan.hk_all_wyamount }}</em></span>
+                <span class="value">展期费总额：<em class="num">{{ AllInfo.loan.zq_all_amount }}</em></span>
+              </p>
+              <p class="count-line">
+                <span class="title">未还金额：<em class="num">{{ AllInfo.loan.jk_this_amount }}</em></span>
+                <span class="value"></span>
+              </p>
+            </div>
+            <Card class="card-area" v-for="item in AllInfo.loan.jk_list" :key="item.id">
+              <div class="lend-info row">
+                <!--<p class="yq_state">{{ item.yq_status }}</p>-->
+                <div class="main-part">
+                  <p class="text-line">{{JudgeAmtTip(item.status)}}金额：<i class="price_num">{{ item.yh_amount }}</i></p>
+                  <p class="text-line">应还日：{{ item.hthk_date }}</p>
+                  <p class="text-line">实际日：{{ item.hk_date }}</p>
+                  <p class="text-line">还款记录：</p>
+                </div>
+                <div class="side-part">
+                  <div class="text-line">
+                    状态：<span class="status" :style="{color: item.color}">{{item.status}}</span>
+                  </div>
+                  <p class="text-line">违约金：{{item.wy_amount}}</p>
+                  <p class="text-line">
+                    <span>出资人：</span>
+                    <span v-show="!Captical.modal" @click="CapticalEdit(item.id,item.capital_account)">{{ item.capital_account }}</span>
+                    <Select class="CapSelect" size="small" v-show="Captical.modal" v-model="Captical.data.ren" @on-change="CapticalSub">
+                      <Option :value="1">李义</Option>
+                      <Option :value="2">张晓成</Option>
+                    </Select>
                   </p>
                 </div>
-                <Card class="card-area" v-for="item in AllInfo.loan.jk_list" :key="item.id">
-                  <div class="lend-info">
-                    <p class="yq_state">{{ item.yq_status }}</p>
-                    <div class="text-line">
-                      <div class="msg-area">
-                        <p class="tips">金额（元）</p>
-                        <p class="value num">{{ item.amount }}</p>
-                      </div>
-                      <div class="msg-area">
-                        <p class="tips">实际还款日：{{ item.pay_date }}</p>
-                        <p class="value state" v-if="item.status === 1">
-                          <Icon type="checkmark-circled"></Icon>
-                          已还款
-                        </p>
-                        <p class="value state nopay" v-if="item.status === 0">
-                          <Icon type="alert-circled"></Icon>
-                          未还款
-                        </p>
-                      </div>
-                    </div>
-                    <div class="text-line">
-                      <span class="msg-area">{{JudgeAmtTip(item.status)}}金额：<i class="price_num">{{ item.yh_amount }}</i></span>
-                      <span class="msg-area">借款天数：{{ item.jk_days }}</span>
-                    </div>
-                    <div class="text-line">
-                      <span class="msg-area">违约金：{{ item.wy_amount }}</span>
-                      <span class="msg-area">借款日期：{{ item.jk_date }}</span>
-                    </div>
-                    <div class="text-line">
-                      <span class="msg-area">出资人：{{ item.capital_account }}</span>
-                    </div>
-                    <div class="text-line">
-                      合同还款日：{{ item.hthk_date }}
-                    </div>
+                <!--<div class="text-line">
+                  <div class="msg-area">
+                    <p class="tips">金额（元）</p>
+                    <p class="value num">{{ item.amount }}</p>
                   </div>
-                </Card>
+                  <div class="msg-area">
+                    <p class="tips">实际还款日：{{ item.pay_date }}</p>
+                    <p class="value state" v-if="item.status === 1">
+                      <Icon type="checkmark-circled"></Icon>
+                      已还款
+                    </p>
+                    <p class="value state nopay" v-if="item.status === 0">
+                      <Icon type="alert-circled"></Icon>
+                      未还款
+                    </p>
+                  </div>
+                </div>-->
+                <!--<div class="text-line">
+                  <span class="msg-area"></span>
+                  <span class="msg-area">借款天数：{{ item.jk_days }}</span>
+                </div>
+                <div class="text-line">
+                  <span class="msg-area">违约金：{{ item.wy_amount }}</span>
+                  <span class="msg-area">借款日期：{{ item.jk_date }}</span>
+                </div>
+                <div class="text-line">
+                  <span>出资人：</span>
+                  <span v-show="!Captical.modal" @click="CapticalEdit(item.id,item.capital_account)">{{ item.capital_account }}</span>
+                  <Select class="CapSelect" size="small" v-show="Captical.modal" v-model="Captical.data.ren" @on-change="CapticalSub">
+                    <Option :value="1">李义</Option>
+                    <Option :value="2">张晓成</Option>
+                  </Select>
+                </div>
+                <div class="text-line">
+                  合同还款日：{{ item.hthk_date }}
+                </div>-->
+              </div>
+              <div class="lend-info child">
+                <h2 class="part-title loan">借款</h2>
+                <div class="row-box">
+                  <div class="main-part">
+                    <p class="text-line">本金：{{item.amount}}</p>
+                    <p class="text-line">借出日：{{item.jk_date}}</p>
+                  </div>
+                  <div class="side-part">
+                    <p class="text-line">天数：{{item.jk_days}}</p>
+                    <p class="text-line">到期日：{{item.hthk_date}}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="lend-info child" v-if="item.zqlist.length > 0" v-for="zqitem in item.zqlist">
+                <h2 class="part-title delay">展期</h2>
+                <div class="row-box">
+                  <div class="main-part">
+                    <div class="text-line">开始日：{{zqitem.start_date}}</div>
+                    <div class="text-line">天数：{{zqitem.days}}</div>
+                  </div>
+                  <div class="side-part">
+                    <div class="text-line">结束日：{{zqitem.end_date}}</div>
+                    <div class="text-line">展期费：{{zqitem.fee}}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="lend-info child" v-if="item.hklist.length > 0" v-for="hkitem in item.hklist">
+                <h2 class="part-title repay">还款</h2>
+                <div class="row-box">
+                  <div class="main-part">
+                    <div class="text-line">金额：{{hkitem.amount}}</div>
+                    <div class="text-line">还款日：{{hkitem.create_at}}</div>
+                  </div>
+                  <div class="side-part">
+                    <div class="text-line">类型：{{hkitem.type}}</div>
+                  </div>
+                </div>
+              </div>
+            </Card>
+            <!--<Tabs>
+              <TabPane label="放款">
               </TabPane>
               <TabPane label="展期">
                 <div class="count-box">
@@ -409,7 +478,7 @@
                   </div>
                 </Card>
               </TabPane>
-            </Tabs>
+            </Tabs>-->
           </div>
           <div class="opt-record" v-show="NavData.optRecord.cur">
             <!--<Tabs>
@@ -455,7 +524,7 @@
           <Button type="info" v-show="!IsEdit" @click="EditInfo">修改</Button>
           <Button type="primary" style="margin-left: 0" v-show="IsEdit" @click="SubOpt">保存</Button>
           <Button type="warning" v-show="IsEdit" @click="EditCancel">取消</Button>
-          <Button v-for="item in ButtonAll" :key="item.id" :type="item.color" @click="EventTune(item.class)">{{item.name}}</Button>
+          <Button v-for="item in ButtonAll" :disabled="PassBtnStatus(item.class)" :key="item.id" :type="item.color" @click="EventTune(item.class)">{{item.name}}</Button>
           <p v-show="IsPass.status && IsPass.isLoan" class="inline-block">
             <Button :type="SetLoan.type" @click="SetLoanOpt">{{SetLoan.name}}</Button>
           </p>
@@ -752,6 +821,20 @@
             value: ''
           }
         },
+        Zhimafen:{
+          modal: false,
+          data:{
+            uid: '',
+            zmop: ''
+          }
+        },
+        Captical:{
+          modal: false,
+          data:{
+            jid: '',
+            ren: ''
+          }
+        },
         //按钮集合
         ButtonAll:[]
       }
@@ -961,7 +1044,6 @@
               this.IsHang.status = (info.data.jiben.info.is_hangup === 1)?true:false;
               this.JudgeHang(this.IsHang.status);
               this.StateText(this.AllInfo.loan.jk_list);
-              this.StateText(this.AllInfo.loan.hk_list);
               this.Authorize.Data = this.AllInfo.operation.user.authorize;
               this.Audit.Data = this.AllInfo.operation.user.audit;
               this.Urge.Data = this.AllInfo.operation.collection.inputlist;
@@ -1323,7 +1405,7 @@
         })
       },
       JudgeAmtTip(status){
-        if(status === 1){
+        if(status === '已还款'){
           return '已还';
         }else{
           return '应还';
@@ -1338,6 +1420,38 @@
       },
       HuabeiSub(){
         this.Huabei.modal = false;
+      },
+      //芝麻分修改
+      ZmfEdit(){
+        this.Zhimafen.modal = true;
+        this.Zhimafen.data.uid = this.ID;
+      },
+      ZmfSub(){
+        console.log(this.Zhimafen);
+        this.UploadData('/backend/User/editZmop',this.Zhimafen.data).then(()=>{
+          this.Zhimafen.modal = false;
+        });
+      },
+      //出资人修改
+      CapticalEdit(id){
+        this.Captical.modal = true;
+        this.Captical.data.jid = id;
+      },
+      CapticalSub(){
+        console.log(this.Captical.data);
+        this.Captical.modal = false;
+        /*this.UploadData('/backend/User/editChuziren',this.Captical.data).then(()=>{
+          this.Captical.modal = false;
+        });*/
+      },
+      PassBtnStatus(name){
+        if(name === 'PassOpt' && this.AllInfo.jiben.info.status === 2){
+          return true;
+        }else if(name === 'RejectOpt' && this.AllInfo.jiben.info.status === 3){
+          return true;
+        }else{
+          return false;
+        }
       }
     }
   }
@@ -1404,6 +1518,9 @@
           color: #fff;
           border-radius: 5px;
           background-color: #919191;
+          &.edit-auth{
+            padding: 6px 3px;
+          }
           &.type1{
             background-color: #00a854;
           }
@@ -1523,7 +1640,7 @@
     padding-bottom: 10px;
   }
   .limit-input{
-    padding-left: 10px;
+    padding-left: 5px;
   }
   .base-info{
     position: relative;
@@ -1533,7 +1650,7 @@
     }
   }
   .trade-record,.opt-record{
-    padding: 5px 10px 15px;
+    padding: 10px 10px 15px;
   }
   .urge-add{
     padding-bottom: 10px;
@@ -1548,11 +1665,12 @@
       #towardsLeft;
       .title,.value{
         padding: 5px 0;
+        padding-left: 10px;
         width: 50%;
-        text-align: center;
+        text-align: left;
         display: inline-block;
         .num{
-          color: #f77249;
+          color: #333;
           font-size: 16px;
         }
       }
@@ -1573,6 +1691,34 @@
   }
   .lend-info{
     position: relative;
+    .row-box ,&.row{
+      display: flex;
+      flex-direction: row;
+    }
+    &.child{
+      border-top: 1px solid #e3e3e3;
+    }
+    .part-title{
+      font-size: 18px;
+      display: block;
+      padding: 6px 0;
+      &.loan{
+        color: #40a9ff;
+      }
+      &.delay{
+        color: #ff4d4f;
+      }
+      &.repay{
+        color: #47b717;
+      }
+    }
+    .main-part{
+      width: 50%;
+    }
+    .side-part{
+      width: 50%;
+      padding-left: 10px;
+    }
     .yq_state{
       position: absolute;
       right: -8px;
@@ -1582,32 +1728,29 @@
     }
     .text-line{
       width: 100%;
-      padding-top: 15px;
+      padding-bottom: 5px;
       display: flex;
       flex-direction: row;
-      .msg-area{
-        display: inline-block;
-        width: 50%;
+      .status{
+        font-weight: bold;
+      }
+      .price_num{
+        color: #F00;
+      }
+      &.remark{
+        width: 100%;
+        padding-bottom: 20px;
+      }
+      .value{
+        color: #f74c17;
         font-size: 14px;
-        .price_num{
-          color: #F00;
+        &.num{
+          font-size: 22px;
         }
-        &.remark{
-          width: 100%;
-          padding-bottom: 20px;
-        }
-        .value{
-          color: #f74c17;
-          font-size: 16px;
-          &.num{
-            font-size: 22px;
-          }
-          &.state{
-            color: #19be6b;
-            padding-top: 5px;
-            &.nopay{
-              color: #f74c17;
-            }
+        &.state{
+          color: #19be6b;
+          &.nopay{
+            color: #f7830c;
           }
         }
       }
@@ -1634,6 +1777,9 @@
   }
   .head-input{
     width: 80px;
-    min-height: 30px;
+  }
+  .CapSelect{
+    display: inline-block;
+    width: 80px;
   }
 </style>
