@@ -6,7 +6,7 @@
     @on-cancel="CloseBtn">
     <Form :model="LoanInfo" :label-width="120">
       <FormItem label="借款金额：">
-        <Input class="unit-width" v-model="LoanInfo.amount" @on-change="ChangeAmount"/>
+        <Input class="unit-width" v-model="LoanInfo.amount" @on-keyup="ChangeAmount"/>
       </FormItem>
       <!--<FormItem label="合同还款金额：">
         <Input class="unit-width" v-model="LoanInfo.ht_amount"/>

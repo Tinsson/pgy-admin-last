@@ -40,7 +40,7 @@
               <li class="res-box">
                 <div class="simple edit-part" @click="ZmfEdit" :class="'type'+AllInfo.jiben.info.zhimafen.status">
                   <span v-show="!Zhimafen.modal">{{AllInfo.jiben.info.zhimafen.info}}</span>
-                  <input v-show="Zhimafen.modal" class="head-input" v-model="Zhimafen.data.zmop" @keyup.enter="ZmfSub"/>
+                  <input v-show="Zhimafen.modal" ref="ZmfIpt" class="head-input" :class="'type'+AllInfo.jiben.info.zhimafen.status" v-model="Zhimafen.data.zmop" @keyup.enter="ZmfSub"/>
                 </div>
                 <p class="title">芝麻分</p>
               </li>
@@ -1284,7 +1284,7 @@
         let amount = '';
         if(this.AllInfo.loan.jk_list.length > 0){
           const last_jk = this.ArrLast(this.AllInfo.loan.jk_list);
-          if(last_jk.hklist.length === 0){
+          if(this.AllInfo.jiben.info.yuE > 0){
             this.$Message.error('该用户已放款！');
             return false;
           }
@@ -1426,10 +1426,15 @@
       ZmfEdit(){
         this.Zhimafen.modal = true;
         this.Zhimafen.data.uid = this.ID;
+        this.$nextTick(()=>{
+          this.$refs.ZmfIpt.focus();
+        })
       },
       ZmfSub(){
-        console.log(this.Zhimafen);
         this.UploadData('/backend/User/editZmop',this.Zhimafen.data).then(()=>{
+          this.AllInfo.jiben.info.zhimafen.info = this.Zhimafen.data.zmop;
+          this.AllInfo.jiben.info.zhimafen.status = 1;
+          this.AllInfo.jiben.info.zmop = this.Zhimafen.data.zmop;
           this.Zhimafen.modal = false;
         });
       },
@@ -1807,6 +1812,15 @@
   .head-input{
     width: 80px;
     border: none;
+    text-align: center;
+    color: #fff;
+    background-color: #919191;
+    &.type1{
+      background-color: #00a854;
+    }
+    &.type2{
+      background-color: #d73435;
+    }
   }
   .cap-select{
     display: inline-block;
