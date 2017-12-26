@@ -38,7 +38,7 @@
                 <p class="title active" @click="ReportTaobao">淘宝</p>
               </li>
               <li class="res-box">
-                <div class="simple" @click="ZmfEdit" :class="'type'+AllInfo.jiben.info.zhimafen.sinfo">
+                <div class="simple edit-part" @click="ZmfEdit" :class="'type'+AllInfo.jiben.info.zhimafen.sinfo">
                   <span v-show="!Zhimafen.modal">{{AllInfo.jiben.info.zhimafen.info}}</span>
                   <input v-show="Zhimafen.modal" class="head-input" v-model="Zhimafen.data.zmop" @keyup.enter="ZmfSub"/>
                 </div>
@@ -319,22 +319,22 @@
                 <!--<p class="yq_state">{{ item.yq_status }}</p>-->
                 <div class="main-part">
                   <p class="text-line">{{JudgeAmtTip(item.status)}}金额：<i class="price_num">{{ item.yh_amount }}</i></p>
+                  <p class="text-line">违约金：{{item.wy_amount}}</p>
                   <p class="text-line">应还日：{{ item.hk_date }}</p>
-                  <p class="text-line">实际日：{{ item.pay_date }}</p>
                 </div>
                 <div class="side-part">
                   <div class="text-line">
                     状态：<span class="status" :style="{color: item.color}">{{item.status}}</span>
                   </div>
-                  <p class="text-line">违约金：{{item.wy_amount}}</p>
                   <p class="text-line">
                     <span>出资人：</span>
-                    <span v-show="!item.captital_modal" @click="CapticalEdit(item.id,item.capital_account)">{{ item.capital_account }}</span>
-                    <Select class="CapSelect" size="small" v-show="item.captital_modal" v-model="Captical.data.ren" @on-change="CapticalSub">
-                      <Option :value="1">李义</Option>
-                      <Option :value="2">张晓成</Option>
+                    <span class="czr-text" v-if="!item.capital_modal" @click="CapitalEdit(item.id)">{{ item.capital_account }}</span>
+                    <Select class="cap-select" size="small" v-if="item.capital_modal" v-model="Capital.data.ren" @on-change="CapitalSub">
+                      <Option :value="1">L</Option>
+                      <Option :value="2">Z</Option>
                     </Select>
                   </p>
+                  <p class="text-line">实际日：{{ item.pay_date }}</p>
                 </div>
                 <!--<div class="text-line">
                   <div class="msg-area">
@@ -363,8 +363,8 @@
                 </div>
                 <div class="text-line">
                   <span>出资人：</span>
-                  <span v-show="!Captical.modal" @click="CapticalEdit(item.id,item.capital_account)">{{ item.capital_account }}</span>
-                  <Select class="CapSelect" size="small" v-show="Captical.modal" v-model="Captical.data.ren" @on-change="CapticalSub">
+                  <span v-show="!Capital.modal" @click="CapitalEdit(item.id,item.capital_account)">{{ item.capital_account }}</span>
+                  <Select class="cap-select" size="small" v-show="Capital.modal" v-model="Capital.data.ren" @on-change="CapitalSub">
                     <Option :value="1">李义</Option>
                     <Option :value="2">张晓成</Option>
                   </Select>
@@ -390,12 +390,12 @@
                 <h2 class="part-title delay">展期</h2>
                 <div class="row-box">
                   <div class="main-part">
+                    <div class="text-line">展期费：{{zqitem.fee}}</div>
                     <div class="text-line">开始日：{{zqitem.start_date}}</div>
-                    <div class="text-line">天数：{{zqitem.days}}</div>
                   </div>
                   <div class="side-part">
+                    <div class="text-line">天数：{{zqitem.days}}</div>
                     <div class="text-line">结束日：{{zqitem.end_date}}</div>
-                    <div class="text-line">展期费：{{zqitem.fee}}</div>
                   </div>
                 </div>
               </div>
@@ -630,7 +630,7 @@
             jk_count: '',
             jk_this_amount: '',
             jk_all_amount: '',
-            jk_list: [],
+            jk_list: [{capital_modal: false}],
             zq_count: '',
             zq_this_amount: '',
             zq_all_amount: '',
@@ -827,7 +827,7 @@
             zmop: ''
           }
         },
-        Captical:{
+        Capital:{
           modal: false,
           data:{
             jid: '',
@@ -1194,6 +1194,9 @@
       //开通展期
       DelayOpt(){
         const jk_list = this.AllInfo.loan.jk_list;
+        if(this.AllInfo.jiben.info.yuE <= 0){
+          this.$Message.error('没法展期！');
+        }
         if(jk_list.length > 0){
           const jk_data = jk_list[jk_list.length - 1];
           const data = {
@@ -1289,6 +1292,10 @@
         }else{
           amount = this.Limit.value;
         }
+        if(amount <= 0){
+          this.$Message.error('请先给用户授予额度！');
+          return;
+        }
         this.Loan.data = {
           uid: this.ID,
           amount,
@@ -1311,7 +1318,7 @@
       StateText(arr){
         if(arr !== false && arr.length > 0){
           arr.forEach(val=>{
-            val.captital_modal = false;
+            val.capital_modal = false;
           })
         }
       },
@@ -1427,26 +1434,46 @@
         });
       },
       //出资人修改
-      CapticalEdit(id, value){
-        console.log(this.AllInfo.loan.jk_list);
-        this.AllInfo.loan.jk_list.forEach(val=>{
-          if(id === val.id){
-            val.captical_modal = true;
-          }
-        })
-        this.Captical.data.jid = id;
+      CapitalEdit(id){
+        let jk_list = this.AllInfo.loan.jk_list,ren = '';
+        if(jk_list.length > 0) {
+          jk_list.forEach((val,index) => {
+            if (id === val.id) {
+              this.$set(this.AllInfo.loan.jk_list,index, Object.assign(val,{capital_modal: true}));
+              ren = val.capital_account;
+            }else{
+              this.$set(this.AllInfo.loan.jk_list,index, Object.assign(val,{capital_modal: false}));
+            }
+          });
+        }
+        this.Capital.data.ren = ren;
+        this.Capital.data.jid = id;
       },
-      CapticalSub(){
-        console.log(this.Captical.data);
-        this.Captical.modal = false;
-        /*this.UploadData('/backend/User/editChuziren',this.Captical.data).then(()=>{
-          this.Captical.modal = false;
-        });*/
+      CapitalSub(value){
+        this.Capital.data.ren = value;
+        this.UploadData('/backend/User/editChuziren',this.Capital.data).then(()=>{
+          let jk_list = this.AllInfo.loan.jk_list;
+          jk_list.forEach((val,index)=>{
+            let capital_account = '';
+            if(val.id === this.Capital.data.jid){
+              capital_account = this.Capital.data.ren === 1?'L':'Z';
+            }else{
+              capital_account = val.capital_account;
+            }
+            let newData = {
+              capital_modal: false,
+              capital_account
+            }
+            this.$set(this.AllInfo.loan.jk_list,index, Object.assign(val,newData));
+          });
+        });
       },
       PassBtnStatus(name){
         if(name === 'PassOpt' && this.AllInfo.jiben.info.status === 2){
           return true;
         }else if(name === 'RejectOpt' && this.AllInfo.jiben.info.status === 3){
+          return true;
+        }else if((name === 'DelayOpt' || name === 'RepayOpt') && this.AllInfo.jiben.info.yuE <= 0){
           return true;
         }else{
           return false;
@@ -1517,6 +1544,9 @@
           color: #fff;
           border-radius: 5px;
           background-color: #919191;
+          &.edit-part{
+            cursor: pointer;
+          }
           &.edit-auth{
             padding: 6px 3px;
           }
@@ -1777,8 +1807,11 @@
   .head-input{
     width: 80px;
   }
-  .CapSelect{
+  .cap-select{
     display: inline-block;
     width: 80px;
+  }
+  .czr-text{
+    cursor: pointer;
   }
 </style>
