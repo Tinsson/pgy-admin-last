@@ -307,10 +307,10 @@
               </p>
               <p class="count-line">
                 <span class="title">已收违约金：<em class="num">{{ AllInfo.loan.hk_all_wyamount }}</em></span>
-                <span class="value">展期费总额：<em class="num">{{ AllInfo.loan.zq_all_amount }}</em></span>
+                <span class="value">展期费总额：<em class="num">{{ AllInfo.loan.zq_all_fee }}</em></span>
               </p>
               <p class="count-line">
-                <span class="title">未还金额：<em class="num">{{ AllInfo.loan.jk_this_amount }}</em></span>
+                <span class="title">未还本金：<em class="num">{{ AllInfo.jiben.info.yuE }}</em></span>
                 <span class="value"></span>
               </p>
             </div>
@@ -319,9 +319,8 @@
                 <!--<p class="yq_state">{{ item.yq_status }}</p>-->
                 <div class="main-part">
                   <p class="text-line">{{JudgeAmtTip(item.status)}}金额：<i class="price_num">{{ item.yh_amount }}</i></p>
-                  <p class="text-line">应还日：{{ item.hthk_date }}</p>
-                  <p class="text-line">实际日：{{ item.hk_date }}</p>
-                  <p class="text-line">还款记录：</p>
+                  <p class="text-line">应还日：{{ item.hk_date }}</p>
+                  <p class="text-line">实际日：{{ item.pay_date }}</p>
                 </div>
                 <div class="side-part">
                   <div class="text-line">
@@ -330,8 +329,8 @@
                   <p class="text-line">违约金：{{item.wy_amount}}</p>
                   <p class="text-line">
                     <span>出资人：</span>
-                    <span v-show="!Captical.modal" @click="CapticalEdit(item.id,item.capital_account)">{{ item.capital_account }}</span>
-                    <Select class="CapSelect" size="small" v-show="Captical.modal" v-model="Captical.data.ren" @on-change="CapticalSub">
+                    <span v-show="!item.captital_modal" @click="CapticalEdit(item.id,item.capital_account)">{{ item.capital_account }}</span>
+                    <Select class="CapSelect" size="small" v-show="item.captital_modal" v-model="Captical.data.ren" @on-change="CapticalSub">
                       <Option :value="1">李义</Option>
                       <Option :value="2">张晓成</Option>
                     </Select>
@@ -1312,12 +1311,7 @@
       StateText(arr){
         if(arr !== false && arr.length > 0){
           arr.forEach(val=>{
-            if(val.pay_date === null){
-              val.pay_state = 0;
-              val.pay_date = '无';
-            }else{
-              val.pay_state = 1;
-            }
+            val.captital_modal = false;
           })
         }
       },
@@ -1433,8 +1427,13 @@
         });
       },
       //出资人修改
-      CapticalEdit(id){
-        this.Captical.modal = true;
+      CapticalEdit(id, value){
+        console.log(this.AllInfo.loan.jk_list);
+        this.AllInfo.loan.jk_list.forEach(val=>{
+          if(id === val.id){
+            val.captical_modal = true;
+          }
+        })
         this.Captical.data.jid = id;
       },
       CapticalSub(){
