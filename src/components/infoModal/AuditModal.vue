@@ -38,7 +38,7 @@
                 <p class="title active" @click="ReportTaobao">淘宝</p>
               </li>
               <li class="res-box">
-                <div class="simple edit-part" @click="ZmfEdit" :class="'type'+AllInfo.jiben.info.zhimafen.sinfo">
+                <div class="simple edit-part" @click="ZmfEdit" :class="'type'+AllInfo.jiben.info.zhimafen.status">
                   <span v-show="!Zhimafen.modal">{{AllInfo.jiben.info.zhimafen.info}}</span>
                   <input v-show="Zhimafen.modal" class="head-input" v-model="Zhimafen.data.zmop" @keyup.enter="ZmfSub"/>
                 </div>
@@ -1284,7 +1284,7 @@
         let amount = '';
         if(this.AllInfo.loan.jk_list.length > 0){
           const last_jk = this.ArrLast(this.AllInfo.loan.jk_list);
-          if(last_jk.status === 0){
+          if(last_jk.hklist.length === 0){
             this.$Message.error('该用户已放款！');
             return false;
           }
@@ -1413,7 +1413,7 @@
         }
       },
       ArrLast(arr){
-        return arr[arr.length - 1];
+        return arr[0];
       },
       //花呗编辑
       HuabeiEdit(){
@@ -1806,6 +1806,7 @@
   }
   .head-input{
     width: 80px;
+    border: none;
   }
   .cap-select{
     display: inline-block;

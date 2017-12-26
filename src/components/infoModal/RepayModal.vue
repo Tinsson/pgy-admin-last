@@ -18,10 +18,10 @@
         <Input class="unit-width" v-model="RepayInfo.amountn" readonly/>
       </FormItem>
       <FormItem label="实际还款本金：">
-        <Input class="unit-width" v-model="RepayInfo.yh_amount"/>
+        <Input class="unit-width" v-model="RepayInfo.yh_amount" @on-change="LimitAmount"/>
       </FormItem>
       <FormItem label="实际还款金额：">
-        <Input class="unit-width" v-model="RepayInfo.yh_amountn"/>
+        <Input class="unit-width" v-model="RepayInfo.yh_amountn" @on-change="LimitAmountn"/>
       </FormItem>
       <!--<FormItem label="违约金：">
         <Input class="unit-width" v-model="RepayInfo.wy_amount"/>
@@ -80,6 +80,16 @@
       ChangeType(type){
         if(type === 2){
           this.RepayInfo.yh_amount = this.RepayInfo.amount;
+          this.RepayInfo.yh_amountn = this.RepayInfo.amountn;
+        }
+      },
+      LimitAmount(){
+        if(parseFloat(this.RepayInfo.yh_amount) > parseFloat(this.RepayInfo.amount)){
+          this.RepayInfo.yh_amount = this.RepayInfo.amount;
+        }
+      },
+      LimitAmountn(){
+        if(parseFloat(this.RepayInfo.yh_amountn) > parseFloat(this.RepayInfo.amountn)){
           this.RepayInfo.yh_amountn = this.RepayInfo.amountn;
         }
       }
