@@ -1203,7 +1203,7 @@
             uid: this.ID,
             id: jk_data.id,
             days: this.AllInfo.jiben.info.days,
-            amount: jk_data.amount,
+            amount: this.AllInfo.jiben.info.yuE,
             hk_date: jk_data.hk_date,
             name: this.AllInfo.jiben.info.name,
             type: this.AllInfo.jiben.info.type

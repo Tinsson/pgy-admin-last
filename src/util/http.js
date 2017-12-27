@@ -9,12 +9,15 @@ axios.defaults.timeout = 30000;
 
 const IsProd = process.env.NODE_ENV === 'production'?true:false;
 const IsDev = process.env.NODE_ENV === 'development'?true:false;
+const IsTest = process.env.NODE_ENV === 'testing'?true:false;
 const IsZZ = 0;
 
 if(IsDev){
   axios.defaults.baseURL = '';
+}else if(IsTest){
+  axios.defaults.baseURL = 'http://apitest.pgyxwd.com'
 }else if(IsProd){
-  axios.defaults.baseURL = 'http://apitest.pgyxwd.com';
+  axios.defaults.baseURL = 'http://apinew.pgyxwd.com';
 };
 
 // http request 拦截器
@@ -22,7 +25,6 @@ axios.interceptors.request.use(
   config => {
     const token = getLocal('token');
     const path = getLocal('path');
-
     config.headers.common['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
     //判断token是否存在
     if (token) {
