@@ -27,7 +27,7 @@
               <p class="value fee">126</p>
             </div>-->
           </div>
-          <p class="status-block">
+          <p class="status-block" :class="`type${item.types}`">
             {{JudgeType(item.types)}}
           </p>
         </div>
@@ -103,26 +103,32 @@
         this.Swiper(id, false);
       },
       RejectOpt(row){
-        let url = '';
+        let url = '',
+            tips = '';
         switch(row.types){
           case 1:
             url = '/backend/Loan/jkAuditOk';
+            tips = '确认拒绝该借款吗？';
             break;
           case 2:
             url = '/backend/Loan/zqAuditOk';
+            tips = '确认拒绝该展期吗？';
             break;
           case 3:
             url = '/backend/Loan/hkDeTo';
+            tips = '确认拒绝该还款吗？';
             break;
         }
-        this.$post(url,{jid: row.id,status: -1}).then((d)=>{
-          if(d.status === 1){
-            this.$Message.success(d.message);
-            this.InitData();
-          }else{
-            this.$Message.error(d.message);
-          }
-        });
+        if(confirm(tips)){
+          this.$post(url,{jid: row.id,status: -1}).then((d)=>{
+            if(d.status === 1){
+              this.$Message.success(d.message);
+              this.InitData();
+            }else{
+              this.$Message.error(d.message);
+            }
+          });
+        }
       },
       Swiper(id,sign = true){
         this.Record.forEach((val,index)=>{
@@ -203,10 +209,10 @@
         text-align: center;
         color: #FFF;
         background: #096dd9;
-        &.lime{
+        &.type2{
           background: #7cb305;
         }
-        &.gold{
+        &.type3{
           background: #d48806;
         }
       }

@@ -232,6 +232,9 @@
               }, params.row.phone);
             }
           },{
+            title: '客户类型',
+            key: 'type'
+          },{
             title: '金额',
             key: 'amount'
           },{
