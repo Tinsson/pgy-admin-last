@@ -47,7 +47,7 @@
       return{
         AppPushState: this.modalShow,
         Result: {
-          regid: this.InitData,
+          regid: [],
           type: 'notall',
           tmplid: 0,
           all: false
@@ -98,7 +98,11 @@
       EditOver(){
         this.$refs['Result'].validate(valid=>{
           if(valid){
-            this.$emit('UpOver',this.Result);
+            if(this.Result.type === 'notall' && this.Result.regid){
+              this.$Message.error('请先勾选用户！');
+            }else{
+              this.$emit('UpOver',this.Result);
+            }
           }
         })
       },

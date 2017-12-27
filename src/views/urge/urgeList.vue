@@ -68,6 +68,7 @@
           <Page :current="Page.cur"
                 :page-size="Page.size"
                 :total="Page.count"
+                :page-size-opts="[20,30,40,50]"
                 placement="top"
                 @on-change="ChangePage"
                 @on-page-size-change="ChangeSize" show-sizer></Page>

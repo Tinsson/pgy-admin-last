@@ -52,9 +52,18 @@
       }
     },
     created(){
-      document.title = '工作信息流手机操作平台';
-      document.body.style.background = 'rgb(235,234,241)';
-      this.InitData();
+      const url = this.$route.query.admin_url;
+      const token = this.$getLocal('token');
+      if(url){
+        if(token){
+          document.title = '工作信息流手机操作平台';
+          document.body.style.background = 'rgb(235,234,241)';
+          this.InitData();
+        }else{
+          const params = this.$route.query;
+          router.push({path: '/login',query: params});
+        }
+      }
     },
     methods:{
       InitData(){

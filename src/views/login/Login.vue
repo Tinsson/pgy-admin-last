@@ -50,6 +50,7 @@
     },
     created(){
       this.dingding = this.$route.query;
+      console.log(this.dingding);
     },
     methods:{
       signIn(){
@@ -113,6 +114,7 @@
       },
       dingTrans(){
         const params = this.dingding;
+        console.log(this.dingding.admin_url);
         if(this.dingding.admin_url === '/workliumob'){
           router.push({path: '/workliumob'});
         }else{

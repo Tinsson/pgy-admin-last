@@ -18,7 +18,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/': {
-        target: 'http://apitest.pgyxwd.com',
+        target: url,
         changeOrigin: true,
       }
     },
