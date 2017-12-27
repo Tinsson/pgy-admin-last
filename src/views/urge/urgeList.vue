@@ -285,7 +285,7 @@
         Page: {
           count: 0,
           cur: 1,
-          size: 20,
+          size: 50,
         },
         //审核面板
         Audit:{
@@ -660,9 +660,9 @@
       //重置页码
       ResetPageNum(){
         this.Page.cur = 1;
-        this.Page.size = 20;
+        this.Page.size = 50;
         this.ScreenData.page = 1;
-        this.ScreenData.num = 20;
+        this.ScreenData.num = 50;
       },
       //渲染备注功能
       SetRemarkState(arr){

@@ -20,7 +20,7 @@
           <td>{{iitem.jk_date}}</td>
           <td>{{iitem.hk_date}}</td>
           <td>
-            <Button type="primary" @click="Confirm(iitem.id)">确认还款</Button>
+            <Button type="primary" @click="Confirm(iitem.uid, item.amount)">确认还款</Button>
           </td>
         </tr>
       </tbody>
@@ -46,8 +46,11 @@
       CloseBtn(){
         this.$emit('CloseModal',this.modalState);
       },
-      Confirm(id){
-        this.$emit('repay',id);
+      Confirm(uid,amount){
+        const data = {
+          uid,amount
+        };
+        this.$emit('repay',data);
       }
     }
   }

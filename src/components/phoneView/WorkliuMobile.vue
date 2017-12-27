@@ -11,7 +11,7 @@
           <h3 class="head-title">
             <span class="part">{{item.name}}</span>
             <span class="part">{{item.phone}}</span>
-            <span class="part">{{item.jk_request_date}}</span>
+            <span class="part">{{CalcJkdate(item)}}</span>
           </h3>
           <div class="sub-data">
             <div class="box">
@@ -132,6 +132,9 @@
             this.$set(this.Record, index, Object.assign(val,{active: false}));
           }
         });
+      },
+      CalcJkdate(row){
+        return (row.zqid > 0)?row.zq_request_date:row.jk_request_date;
       }
     }
   }
