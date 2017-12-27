@@ -3,34 +3,35 @@
     <ul>
       <li v-for="item in Record"
           :key="item.id"
-          :dataID="item.id"
           class="record-li"
-          @touchmove="TouchMove"
-          @touchstart="TouchStart"
-          @click="HideRecord(item)">
-        <h3 class="head-title">
-          <span class="part">{{item.name}}</span>
-          <span class="part">{{item.phone}}</span>
-          <span class="part">{{item.jk_request_date}}</span>
-        </h3>
-        <div class="sub-data">
-          <div class="box">
-            <p class="title">{{JudgeType(item.types)}}金额(元)</p>
-            <P class="value amount">{{item.jk_amount}}</P>
+          :class="{active: item.active}"
+          @touchmove="TouchMove(item.id, $event)"
+          @touchstart="TouchStart">
+        <div class="out-box" @click="HideRecord(item.id)">
+          <h3 class="head-title">
+            <span class="part">{{item.name}}</span>
+            <span class="part">{{item.phone}}</span>
+            <span class="part">{{item.jk_request_date}}</span>
+          </h3>
+          <div class="sub-data">
+            <div class="box">
+              <p class="title">{{JudgeType(item.types)}}金额(元)</p>
+              <P class="value amount">{{item.jk_amount}}</P>
+            </div>
+            <div class="box">
+              <p class="title">时间(天)</p>
+              <p class="value time">7</p>
+            </div>
+            <div class="box">
+              <p class="title">展期费用(元)</p>
+              <p class="value fee">126</p>
+            </div>
           </div>
-          <div class="box">
-            <p class="title">时间(天)</p>
-            <p class="value time">7</p>
-          </div>
-          <div class="box">
-            <p class="title">展期费用(元)</p>
-            <p class="value fee">126</p>
-          </div>
+          <p class="status-block">
+            {{JudgeType(item.types)}}
+          </p>
         </div>
-        <p class="status-block">
-          {{JudgeType(item.types)}}
-        </p>
-        <div class="delete-btn" @click="RejectOpt(item.id)">拒绝</div>
+        <div class="delete-btn" @click="RejectOpt(item)">拒绝</div>
       </li>
     </ul>
   </div>
@@ -44,7 +45,13 @@
     data () {
       return{
         PageX: 0,
-        Record:[]
+        Record:[{
+          id: 1,
+          name: 22,
+          jk_amount: 333,
+          types: 1,
+          jk_request_date: 2222
+        }]
       }
     },
     created(){
@@ -55,7 +62,10 @@
     methods:{
       InitData(){
         this.$post('/backend/Workliu/workliuList').then(d=>{
-          this.Record = d.data.list;
+          //this.Record = d.data.list;
+          this.Record.forEach(val=>{
+            val.active = false;
+          })
         })
       },
       JudgeType(types){
@@ -73,24 +83,49 @@
         }
         return text;
       },
-      TouchMove(event){
+      TouchMove(id,event){
         const moveX = event.changedTouches[0].pageX;
         const absX = moveX - this.PageX;
-
+        if(absX < -50){
+          this.Swiper(id);
+        }
       },
       TouchStart(event){
-        console.log(event);
         this.PageX = event.changedTouches[0].pageX;
       },
-      HideRecord(event){
-        console.log(event);
-        return this.GetItem;
+      HideRecord(id){
+        this.Swiper(id, false);
       },
-      GetItem(item){
-        console.log(item);
+      RejectOpt(row){
+        let url = '';
+        switch(row.types){
+          case 1:
+            url = '/backend/Loan/jkAuditOk';
+            break;
+          case 2:
+            url = '/backend/Loan/zqAuditOk';
+            break;
+          case 3:
+            url = '/backend/Loan/hkDeTo';
+            break;
+        }
+        this.$post(url,{jid: row.id,status: -1}).then((d)=>{
+          if(d.status === 1){
+            this.$Message.success(d.message);
+            this.InitData();
+          }else{
+            this.$Message.error(d.message);
+          }
+        });
       },
-      RejectOpt(){
-
+      Swiper(id,sign = true){
+        this.Record.forEach((val,index)=>{
+          if(val.id === id){
+            this.$set(this.Record, index, Object.assign(val,{active: sign}));
+          }else{
+            this.$set(this.Record, index, Object.assign(val,{active: false}));
+          }
+        });
       }
     }
   }
@@ -109,7 +144,7 @@
       background: #FFF;
       border-top: 1px solid #e3e3e3;
       border-bottom: 1px solid #e3e3e3;
-      transition: 0.3s all linear;
+      transition: 0.3s all ease-in-out;
       &.active{
         margin-left: -80px;
       }

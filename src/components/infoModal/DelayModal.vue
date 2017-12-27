@@ -6,26 +6,28 @@
     @on-cancel="CloseBtn">
     <Form :model="DelayInfo" :label-width="120">
       <FormItem label="展期金额：">
-        <Input class="unit-width" v-model="DelayInfo.amount" @on-blur="ResetCalc"/>
+        <Input class="unit-width" readonly v-model="DelayInfo.amount" @on-blur="ResetCalc"/>
       </FormItem>
       <FormItem label="展期开始日：">
         <DatePicker type="date"
                     placeholder="选择日期"
                     class="unit-width"
                     format="yyyy-MM-dd"
+                    readonly
                     placement="bottom-end"
                     :value="DelayInfo.start_date"
                     @on-change="ChoseStart"
                     style="width: 280px"></DatePicker>
       </FormItem>
       <FormItem label="展期天数：">
-        <Input class="unit-width" v-model="DelayInfo.days" @on-blur="ResetCalc"/>
+        <Input class="unit-width" v-model="DelayInfo.days" @on-keyup="ResetCalc"/>
       </FormItem>
       <FormItem label="展期至：">
         <DatePicker type="date"
                     placeholder="选择日期"
                     format="yyyy-MM-dd"
                     class="unit-width"
+                    readonly
                     placement="bottom-end"
                     :value="DelayInfo.end_date"
                     @on-change="ChoseEnd"

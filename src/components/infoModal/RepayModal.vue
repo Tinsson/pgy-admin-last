@@ -1,16 +1,15 @@
 <template>
   <Modal
     v-model="State"
-    :title="`还款操作（${initData.name}）`"
+    :title="`${Title}（${initData.name}）`"
     :styles="{top: '30px',zIndex: '10'}"
     @on-cancel="CloseBtn">
     <Form :model="RepayInfo" :label-width="120">
-      <FormItem label="还款类型：">
+      <!--<FormItem label="还款类型：">
         <Select v-model="RepayInfo.type" style="width:280px" @on-change="ChangeType">
-          <Option :value="2">提前还款</Option>
-          <Option :value="3">销账还款</Option>
+          <Option v-for="item in RepayType" :key="item.value" :value="item.value">{{item.name}}</Option>
         </Select>
-      </FormItem>
+      </FormItem>-->
       <FormItem label="当前未还本金">
         <Input class="unit-width" v-model="RepayInfo.amount" readonly/>
       </FormItem>
@@ -40,6 +39,14 @@
     data () {
       return{
         State: false,
+        Title: '还款操作',
+        RepayType: [{
+          value: 2,
+          name: '提前还款'
+        },{
+          value: 3,
+          name: '销账还款'
+        }],
         RepayInfo:{
           uid: '',
           jid: '',
@@ -61,6 +68,18 @@
       },
       initData(val){
         this.RepayInfo = Object.assign(this.RepayInfo, val);
+        switch(val.hk_status){
+          case 1:
+            this.RepayInfo.type = 2;
+            this.Title = '提前还款';
+            break;
+          case 2:
+            this.RepayInfo.type = 3;
+            this.Title = '销账还款';
+            break;
+          case 3:
+            break;
+        }
         this.GetTotalCount();
       }
     },
@@ -87,6 +106,7 @@
         if(parseFloat(this.RepayInfo.yh_amountn) > parseFloat(this.RepayInfo.amountn)){
           this.RepayInfo.yh_amountn = this.RepayInfo.amountn;
         }
+        this.GetYhamount();
       },
       GetYhamount(){
         const data = {

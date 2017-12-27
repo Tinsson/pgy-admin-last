@@ -1262,7 +1262,8 @@
             uid: this.ID,
             jid: jk_data.id,
             amount: this.AllInfo.jiben.info.yuE,
-            name: this.AllInfo.jiben.info.name
+            name: this.AllInfo.jiben.info.name,
+            hk_status: this.AllInfo.jiben.info.hk_status
           };
           this.Repay.modal = true;
           this.Repay.data = data;
@@ -1478,6 +1479,8 @@
         }else if(name === 'RejectOpt' && this.AllInfo.jiben.info.status === 3){
           return true;
         }else if((name === 'DelayOpt' || name === 'RepayOpt') && this.AllInfo.jiben.info.yuE <= 0){
+          return true;
+        }else if(name === 'RepayOpt' && this.AllInfo.jiben.info.hk_status === 0){
           return true;
         }else{
           return false;
