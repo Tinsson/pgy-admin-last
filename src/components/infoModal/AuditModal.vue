@@ -214,7 +214,7 @@
                   <Input v-show="IsEdit" v-model="EditData.info.address" :style="{width: IptWidth}"></Input>
                 </p>
               </li>
-              <li class="single-line">
+              <!--<li class="single-line">
                 <p class="label">公司地址</p>
                 <p class="value">
                   <span v-show="!IsEdit">{{ AddressText(ChoseCompany) }}</span>
@@ -223,7 +223,7 @@
                             v-model="ChoseCompany"
                             :style="{width: '300px'}"></Cascader>
                 </p>
-              </li>
+              </li>-->
               <li class="single-line">
                 <p class="label">公司详细地址</p>
                 <p class="value">
