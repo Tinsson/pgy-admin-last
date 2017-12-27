@@ -1198,7 +1198,7 @@
           this.$Message.error('没法展期！');
         }
         if(jk_list.length > 0){
-          const jk_data = jk_list[jk_list.length - 1];
+          const jk_data = this.ArrLast(jk_list);
           const data = {
             uid: this.ID,
             id: jk_data.id,
@@ -1288,10 +1288,9 @@
             this.$Message.error('该用户已放款！');
             return false;
           }
-          amount = last_jk.amount;
-        }else{
-          amount = this.Limit.value;
+          //amount = last_jk.amount;
         }
+        amount = this.Limit.value;
         if(amount <= 0){
           this.$Message.error('请先给用户授予额度！');
           return;

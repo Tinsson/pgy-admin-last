@@ -6,7 +6,7 @@
     @on-cancel="CloseBtn">
     <Form :model="LoanInfo" :label-width="120">
       <FormItem label="借款金额：">
-        <Input class="unit-width" v-model="LoanInfo.amount" @on-keyup="ChangeAmount"/>
+        <Input class="unit-width" v-model="LoanInfo.amount" readonly @on-keyup="ChangeAmount"/>
       </FormItem>
       <!--<FormItem label="合同还款金额：">
         <Input class="unit-width" v-model="LoanInfo.ht_amount"/>
@@ -16,13 +16,14 @@
                     placeholder="选择日期"
                     class="unit-width"
                     format="yyyy-MM-dd"
+                    readonly
                     placement="bottom-end"
                     :value="LoanInfo.jk_date"
                     @on-change="ChoseStart"
                     style="width: 280px"></DatePicker>
       </FormItem>
       <FormItem label="借款天数：">
-        <Input class="unit-width" v-model="LoanInfo.jk_days" @on-blur="ClacRes('day')"/>
+        <Input class="unit-width" v-model="LoanInfo.jk_days" readonly @on-blur="ClacRes('day')"/>
       </FormItem>
       <FormItem label="还款时间：">
         <DatePicker type="date"
@@ -30,6 +31,7 @@
                     format="yyyy-MM-dd"
                     class="unit-width"
                     placement="bottom-end"
+                    readonly
                     :value="LoanInfo.hk_date"
                     @on-change="ChoseEnd"
                     style="width: 280px"></DatePicker>

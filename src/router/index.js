@@ -9,6 +9,7 @@ import AdminFrame from '@/components/AdminFrame'
 import NoContent from '@/components/NoContent'
 import NotFind from '@/components/NotFind'
 import OperateRes from '@/components/phoneView/OperateRes'
+import WorkliuMobile from '@/components/phoneView/WorkliuMobile'
 import TaobaoReport from '@/components/reportTable/TaobaoReport'
 import CarrierReport from '@/components/reportTable/CarrierReport'
 
@@ -159,6 +160,13 @@ const routes = [
     name: '钉钉按钮结果',
     component: OperateRes,
     meta: {
+      IsOpen: true
+    }
+  },{
+    path: '/workliumob',
+    name: '工作流手机版',
+    component: WorkliuMobile,
+    meta:{
       IsOpen: true
     }
   },{
