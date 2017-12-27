@@ -181,7 +181,7 @@
                     <p class="value long">
                       <Row v-for="item in EditData.lianxiren" :key="item.name">
                         <Col class="lxr-line" :span="12">
-                          姓名：<span v-show="!IsEdit">{{item.name}}</span>
+                          {{item.relationship}}：<span v-show="!IsEdit">{{item.name}}</span>
                           <Input v-show="IsEdit" v-model="item.name" :style="{width: IptWidth}"/>
                         </Col>
                         <Col class="lxr-line" :span="12">
