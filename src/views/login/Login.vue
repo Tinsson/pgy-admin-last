@@ -113,7 +113,11 @@
       },
       dingTrans(){
         const params = this.dingding;
-        router.push({path: '/checkover',query: params});
+        if(this.dingding.admin_url === '/workliumob'){
+          router.push({path: '/workliumob'});
+        }else{
+          router.push({path: '/checkover',query: params});
+        }
       }
     }
   }

@@ -22,10 +22,10 @@
               <p class="title">时间(天)</p>
               <p class="value time">7</p>
             </div>
-            <div class="box">
+            <!--<div class="box">
               <p class="title">展期费用(元)</p>
               <p class="value fee">126</p>
-            </div>
+            </div>-->
           </div>
           <p class="status-block">
             {{JudgeType(item.types)}}
@@ -34,6 +34,9 @@
         <div class="delete-btn" @click="RejectOpt(item)">拒绝</div>
       </li>
     </ul>
+    <div class="no-data" v-if="Record.length === 0">
+      暂无数据
+    </div>
   </div>
 </template>
 
@@ -45,13 +48,7 @@
     data () {
       return{
         PageX: 0,
-        Record:[{
-          id: 1,
-          name: 22,
-          jk_amount: 333,
-          types: 1,
-          jk_request_date: 2222
-        }]
+        Record:[]
       }
     },
     created(){
@@ -62,7 +59,7 @@
     methods:{
       InitData(){
         this.$post('/backend/Workliu/workliuList').then(d=>{
-          //this.Record = d.data.list;
+          this.Record = d.data.list;
           this.Record.forEach(val=>{
             val.active = false;
           })
@@ -214,6 +211,12 @@
         text-align: center;
         background: #F00;
       }
+    }
+    .no-data{
+      text-align: center;
+      font-size: 16px;
+      color: #333;
+      line-height: 50px;
     }
   }
 </style>

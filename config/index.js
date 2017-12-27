@@ -13,13 +13,12 @@ if(IsZZ){
 
 module.exports = {
   dev: {
-
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
       '/': {
-        target: url,
+        target: 'http://apitest.pgyxwd.com',
         changeOrigin: true,
       }
     },

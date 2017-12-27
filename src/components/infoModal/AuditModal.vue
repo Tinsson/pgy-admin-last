@@ -250,8 +250,11 @@
               </li>-->
               <li class="single-line">
                 <p class="label">身份证正反面</p>
-                <p class="idcard-box">
+                <p class="idcard-box" v-if="JudgeIdcard">
                   <img v-for="item in AllInfo.jiben.idcardimg" :src="item" @click="CheckBigPic(item)" :key="item" alt="">
+                </p>
+                <p class="idcard-box" v-if="!JudgeIdcard">
+                  暂无图片
                 </p>
               </li>
             </ul>
@@ -945,6 +948,13 @@
         const start = new Date(),
               end = new Date(start.getTime() + 1000 * 60 * 60 * 24 * this.AllInfo.jiben.info.days);
         return `金额：${amount} 利率：24% 还款时间：${end.getFullYear()}-${end.getMonth()+1}-${end.getDate(0)}`;
+      },
+      JudgeIdcard(){
+        if(this.AllInfo.jiben.idcardimg[0] === false || this.AllInfo.jiben.idcardimg[0] === false){
+          return false;
+        }else{
+          return true;
+        }
       }
     },
     methods: {
