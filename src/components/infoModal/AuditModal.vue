@@ -324,6 +324,7 @@
                   <p class="text-line">{{JudgeAmtTip(item.status)}}金额：<i class="price_num">{{ item.yh_amount }}</i></p>
                   <p class="text-line">违约金：{{item.wy_amount}}</p>
                   <p class="text-line">应还日：{{ item.hk_date }}</p>
+                  <p class="text-line">总天数：{{ item.jk_days}}</p>
                 </div>
                 <div class="side-part">
                   <div class="text-line">

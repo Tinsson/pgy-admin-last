@@ -52,7 +52,7 @@
         <div class="card-tit" slot="title">
           <h3>
             <Icon type="clipboard"></Icon>
-            数据列表
+            数据列表 <span class="count-num">总数：{{Page.count}}</span>
           </h3>
           <div class="btn-box">
             <Button type="info" size="large" icon="chatbox" @click="GroupAppOpt">群发消息</Button>
@@ -233,12 +233,14 @@
             }
           },{
             title: '客户类型',
+            align: 'center',
             key: 'type'
           },{
             title: '金额',
             key: 'amount'
           },{
             title: '逾期天数',
+            align: 'center',
             key: 'overdue_day'
           },{
             title: '还款日期',
@@ -721,6 +723,12 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+  }
+  .count-num{
+    font-size: 14px;
+    font-weight: normal;
+    padding-left: 15px;
+    color: #ff6614
   }
   .card-box{
     width: 100%;
