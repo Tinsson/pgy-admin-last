@@ -98,7 +98,7 @@
         this.DelayInfo.end_date = value;
       },
       GetTotalCount(){
-        this.$post('/backend/Tocalculate/zhanqiTocal',{jid: this.DelayInfo.jid,days: this.DelayInfo.days}).then(d=>{
+        this.$post('/backend/Tocalculate/zhanqiTocals',{uid: this.DelayInfo.uid,amount: this.DelayInfo.amount,days: this.DelayInfo.days}).then(d=>{
           this.DelayInfo.fee = d.data;
         })
       },

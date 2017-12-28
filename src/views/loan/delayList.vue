@@ -104,9 +104,6 @@
             title: '展期结束时间',
             key: 'end_date'
           },{
-            title: '订单状态',
-            key: 'status'
-          },{
             title: '展期操作时间',
             key: 'request_date'
           }

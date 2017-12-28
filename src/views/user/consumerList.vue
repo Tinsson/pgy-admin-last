@@ -17,9 +17,7 @@
               筛选查询
             </h3>
             <div class="btn-box">
-              <Upload class="upload-btn" :before-upload="ImportData" action="http://api.pgyxwd.com/">
-                <Button type="primary" icon="upload">批量导入</Button>
-              </Upload>
+              <Button type="primary" icon="upload" @click="OpenImport">批量导入</Button>
               <!--<Button type="ghost" icon="reply" @click="ResetScreen">重置筛选</Button>
               <Button type="success" icon="search" @click="SimpleSearch">查询结果</Button>-->
               <Button type="warning" icon="clipboard" @click="SeniorShow">高级检索</Button>
@@ -183,6 +181,9 @@
           <Button type="info" @click="SeniorSearch">提交筛选</Button>
         </p>
       </Modal>
+      <ImportModal :modalShow="ImportState.show"
+                   :InitData="ImportState.tempUrl"
+                   @CloseModal="CloseImport"></ImportModal>
       <PushApp :modalShow="Group.AppmsgModal"
                :InitData="SelectData"
                :Count="Page.count"
@@ -203,12 +204,14 @@
   import Clipboard from 'clipboard'
   import PushApp from '@/components/groupModal/PushApp'
   import AuditModal from '@/components/infoModal/AuditModal'
+  import ImportModal from '@/components/infoModal/ImportModal'
 
   export default {
     name: 'consumerList',
     components: {
       PushApp,
-      AuditModal
+      AuditModal,
+      ImportModal
     },
     data () {
       return {
@@ -244,6 +247,10 @@
           start_time: '',
           end_time: '',
           qudao: ''
+        },
+        ImportState:{
+          show: false,
+          tempUrl: ''
         },
         UserCol: [
           {
@@ -583,6 +590,13 @@
           this.Idtmte2 = false;
           this.CheckAll2 = false;
         }
+      },
+      //导入数据
+      OpenImport(){
+        this.ImportState.show = true;
+      },
+      CloseImport(){
+        this.ImportState.show = false;
       },
       //审核面板
       AuditPanel(row){

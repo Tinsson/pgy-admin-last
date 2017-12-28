@@ -462,13 +462,15 @@
           content: `<p class="confirm-text">${tips}</p>`,
           onOk: ()=>{
             this.UploadData(url,{jid: row.id,status: -1}).then(()=>{
-              let num = '';
-              this.UserData.forEach((val,index)=>{
-                if(val.id === row.id){
-                  num = index;
-                }
-              });
-              this.UserData = [...this.UserData.slice(0, num),...this.UserData.slice(num+1,this.UserData.length)];
+              if(d.status === 1){
+                let num = '';
+                this.UserData.forEach((val,index)=>{
+                  if(val.id === row.id){
+                    num = index;
+                  }
+                });
+                this.UserData = [...this.UserData.slice(0, num),...this.UserData.slice(num+1,this.UserData.length)];
+              }
             });
           }
         })

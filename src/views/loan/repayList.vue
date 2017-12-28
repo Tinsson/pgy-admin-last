@@ -110,7 +110,7 @@
           },{
             title: '还款时间',
             align: 'center',
-            key: 'repay_time'
+            key: 'request_date'
           }
         ],
         UserData: [],     //表格数据

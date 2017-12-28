@@ -324,7 +324,7 @@
                   <p class="text-line">{{JudgeAmtTip(item.status)}}金额：<i class="price_num">{{ item.yh_amount }}</i></p>
                   <p class="text-line">违约金：{{item.wy_amount}}</p>
                   <p class="text-line">应还日：{{ item.hk_date }}</p>
-                  <p class="text-line">总天数：{{ item.jk_days}}</p>
+                  <p class="text-line">总天数：{{ item.total_days}}</p>
                 </div>
                 <div class="side-part">
                   <div class="text-line">
@@ -1205,6 +1205,21 @@
       //开通展期
       DelayOpt(){
         const jk_list = this.AllInfo.loan.jk_list;
+        const type = this.AllInfo.jiben.info.type;
+        let days = '';
+        switch(type){
+          case 'A':
+            days = 28;
+            break;
+          case 'B':
+            days = 15;
+            break;
+          case 'C':
+            days = 10;
+            break;
+          default:
+            days = this.AllInfo.jiben.info.days;
+        }
         if(this.AllInfo.jiben.info.yuE <= 0){
           this.$Message.error('没法展期！');
         }
@@ -1213,7 +1228,7 @@
           const data = {
             uid: this.ID,
             id: jk_data.id,
-            days: this.AllInfo.jiben.info.days,
+            days: days,
             amount: this.AllInfo.jiben.info.yuE,
             hk_date: jk_data.hk_date,
             name: this.AllInfo.jiben.info.name,

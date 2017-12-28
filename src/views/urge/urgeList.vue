@@ -164,16 +164,16 @@
           type: 4,
           cur: true
         },{
-          name: '明天还款',
-          icon: 'android-calendar',
-          count: 0,
-          type: 2,
-          cur: false
-        },{
           name: '宽限日列表',
           icon: 'ios-search-strong',
           count: 0,
           type: 3,
+          cur: false
+        },{
+          name: '明天还款',
+          icon: 'android-calendar',
+          count: 0,
+          type: 2,
           cur: false
         },{
           name: '逾期列表',
@@ -332,6 +332,8 @@
         }
       });
       this.ClipBoard.on('success',(e)=>{
+        console.log(e.trigger);
+        e.trigger.style.color = '#F00';
         this.$Message.success('复制成功！');
       });
     },
@@ -436,8 +438,8 @@
             let res = d.data.list;
             if(isinit){
               this.CountData[0].count = d.data.today_count;
-              this.CountData[1].count = d.data.tomorrow_count;
-              this.CountData[2].count = d.data.alreadyhk_count;
+              this.CountData[1].count = d.data.alreadyhk_count;
+              this.CountData[2].count = d.data.tomorrow_count;
               this.CountData[3].count = d.data.yuqi_count;
             }
             this.Page.count = d.data.count;
