@@ -1,7 +1,7 @@
 <template>
   <div id="statistical-index">
     <Row :gutter="20">
-      <Col class="card-col" span="6">
+      <Col class="card-col" span="8">
         <Card>
           <h2 class="card-title">总注册数</h2>
           <p class="card-number">{{ CountData.TotalRegis }}</p>
@@ -25,7 +25,7 @@
           </div>
         </Card>
       </Col>
-      <Col class="card-col" span="6">
+      <Col class="card-col" span="8">
         <Card>
           <h2 class="card-title">借款总金额</h2>
           <p class="card-number">¥{{ CountData.LoanAmount }}</p>
@@ -45,7 +45,7 @@
           </div>
         </Card>
       </Col>
-      <Col class="card-col" span="6">
+      <Col class="card-col" span="8">
         <Card>
           <h2 class="card-title">展期总金额</h2>
           <p class="card-number">¥{{ CountData.HuankuanAllAmount }}</p>
@@ -65,7 +65,7 @@
           </div>
         </Card>
       </Col>
-      <Col class="card-col" span="6">
+      <Col class="card-col" span="8">
         <Card>
           <h2 class="card-title">逾期总金额</h2>
           <p class="card-number">¥3423423</p>
@@ -83,7 +83,7 @@
           </div>
         </Card>
       </Col>
-      <Col class="card-col" span="6">
+      <Col class="card-col" span="8">
       <Card>
         <h2 class="card-title">总逾期率</h2>
         <p class="card-number">¥{{ 23234 }}</p>
@@ -114,7 +114,18 @@
           </div>
           <div class="divide-box">
             <div class="side-part">
-              <h3 class="sub-title"></h3>
+              <h3 class="sub-title">L</h3>
+              <p class="line"><Icon class="icon" type="social-yen"></Icon>在借金额：12323</p>
+              <p class="line"><Icon class="icon" type="ios-people"></Icon>在借人数：12323</p>
+              <p class="line"><Icon class="icon" type="social-yen"></Icon>逾期金额：12323</p>
+              <p class="line"><Icon class="icon" type="ios-people"></Icon>逾期人数：12323</p>
+            </div>
+            <div class="side-part">
+              <h3 class="sub-title">Z</h3>
+              <p class="line"><Icon class="icon" type="social-yen"></Icon>在借金额：12323</p>
+              <p class="line"><Icon class="icon" type="ios-people"></Icon>在借人数：12323</p>
+              <p class="line"><Icon class="icon" type="social-yen"></Icon>逾期金额：12323</p>
+              <p class="line"><Icon class="icon" type="ios-people"></Icon>逾期人数：12323</p>
             </div>
           </div>
         </Card>
@@ -155,25 +166,25 @@
           tips: '注册',
           value: '100'
         },{
-          icon: 'ios-people',
+          icon: 'ios-list',
           tips: '新增笔数',
           value: '50'
-        },{
-          icon: 'ios-list',
-          tips: '放款笔数',
-          value: '3243'
         },{
           icon: 'social-yen',
           tips: '放款金额',
           value: '200'
         },{
           icon: 'ios-list',
-          tips: '展期笔数',
-          value: '302'
+          tips: '放款笔数',
+          value: '3243'
         },{
           icon: 'social-yen',
           tips: '展期金额',
           value: '435'
+        },{
+          icon: 'ios-list',
+          tips: '展期笔数',
+          value: '302'
         },{
           icon: 'social-yen',
           tips: '展期费',
@@ -393,15 +404,25 @@
   .divide-box{
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     width: 100%;
     margin-top: 16px;
     .side-part{
-      width: 45%;
+      width: 48%;
       border: 1px solid #e3e3e3;
       padding: 10px;
       border-radius: 5px;
       .sub-title{
-
+        font-size: 18px;
+        padding: 0 0 10px 10px;
+      }
+      .line{
+        font-size: 14px;
+        .icon{
+          font-size: 18px;
+          padding: 0 8px;
+          color: #259bf1;
+        }
       }
     }
   }
