@@ -6,7 +6,11 @@
     @on-cancel="CloseBtn">
     <div class="all-content">
       <div class="opt-btn down" @click="DownloadTemp">下载模板</div>
-      <div class="opt-btn import">导入数据</div>
+      <Upload
+        :before-upload="UploadData"
+        action="http://apitest.pgyxwd.com">
+        <div class="opt-btn import">导入数据</div>
+      </Upload>
     </div>
     <div slot="footer">
     </div>
@@ -46,6 +50,9 @@
       },
       DownloadTemp(){
         window.open(this.TempUrl);
+      },
+      UploadData(file){
+
       }
     }
   }

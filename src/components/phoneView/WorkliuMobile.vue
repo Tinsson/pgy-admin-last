@@ -20,12 +20,12 @@
             </div>
             <div class="box">
               <p class="title">时间(天)</p>
-              <p class="value time">7</p>
+              <p class="value time">{{item.days}}</p>
             </div>
-            <!--<div class="box">
+            <div class="box" v-if="item.types === 2">
               <p class="title">展期费用(元)</p>
-              <p class="value fee">126</p>
-            </div>-->
+              <p class="value fee">{{item.fee}}</p>
+            </div>
           </div>
           <p class="status-block" :class="`type${item.types}`">
             {{JudgeType(item.types)}}
@@ -210,10 +210,10 @@
         color: #FFF;
         background: #096dd9;
         &.type2{
-          background: #7cb305;
+          background: #ff9800;
         }
         &.type3{
-          background: #d48806;
+          background: #4caf50;
         }
       }
       .delete-btn{

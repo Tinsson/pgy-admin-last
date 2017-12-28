@@ -136,6 +136,9 @@
               return h('span', text);
             }
           },{
+            title: '费用',
+            key: 'fee'
+          },{
             title: '类型',
             key: 'types',
             render: (h,params)=>{
@@ -190,6 +193,9 @@
               let text = (params.row.zqid > 0)?params.row.zq_request_date:params.row.jk_request_date;
               return h('span', text);
             }
+          },{
+            title: '还款日',
+            key: 'hkri'
           },{
             title: '操作',
             key: 'operation',

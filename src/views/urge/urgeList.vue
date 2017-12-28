@@ -332,7 +332,6 @@
         }
       });
       this.ClipBoard.on('success',(e)=>{
-        console.log(e.trigger);
         e.trigger.style.color = '#F00';
         this.$Message.success('复制成功！');
       });
@@ -370,7 +369,6 @@
       //统计列表
       CountList(num){
         this.ResetPageNum();
-        console.log(num);
         this.ScreenData.key = '';
         this.allTime = [];
         this.ScreenData.start_time = '';
@@ -480,7 +478,6 @@
           idArr.push(val.loan_id);
         });
         this.Audit.allId = idArr;
-        console.log(idArr);
       },
       AuditCancel(){
         this.Audit.modal = false;
