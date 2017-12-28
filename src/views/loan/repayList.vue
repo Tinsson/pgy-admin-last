@@ -106,7 +106,7 @@
           },{
             title: '状态',
             align: 'center',
-            key: 'is_quane'
+            key: 'type'
           },{
             title: '还款时间',
             align: 'center',

@@ -8,14 +8,20 @@
           <div class="card-content">
             <p class="info-txt">
               <span class="half">
-                <span class="label">总放款人数</span>
+                <span class="label">借款总人数</span>
+                <span class="value">0</span>
+              </span>
+              <span class="half">
+                <span class="label">人均借款金额</span>
                 <span class="value">0</span>
               </span>
             </p>
           </div>
           <div class="card-footer">
-            <span>人均放款金额</span>
-            <span class="value">{{ CountData.BindCardNum }}</span>
+            <span>通过率</span>
+            <span class="value">80%</span>
+            <span>放款率</span>
+            <span class="value">50%</span>
           </div>
         </Card>
       </Col>
@@ -32,33 +38,17 @@
             </p>
           </div>
           <div class="card-footer">
-            <span>借款平均金额</span>
+            <span>笔均借款金额</span>
             <span class="value">¥{{ AveLoan }}</span>
-          </div>
-        </Card>
-      </Col>
-      <Col class="card-col" span="6">
-        <Card>
-          <h2 class="card-title">还款总金额</h2>
-          <p class="card-number">¥{{ CountData.HuankuanAllAmount }}</p>
-          <div class="card-content">
-            <p class="info-txt">
-              <span class="half">
-                <span class="label">还款总笔数</span>
-                <span class="value">{{CountData.HuankuanBishu}}</span>
-              </span>
-            </p>
-          </div>
-          <div class="card-footer">
-            <span>还款平均金额</span>
-            <span class="value">¥{{AveRepay}}</span>
+            <span>人均借款笔数</span>
+            <span class="value">5</span>
           </div>
         </Card>
       </Col>
       <Col class="card-col" span="6">
         <Card>
           <h2 class="card-title">展期总金额</h2>
-          <p class="card-number">¥{{ CountData.ZhanqiAllAmount }}</p>
+          <p class="card-number">¥{{ CountData.HuankuanAllAmount }}</p>
           <div class="card-content">
             <p class="info-txt">
               <span class="half">
@@ -69,24 +59,26 @@
           </div>
           <div class="card-footer">
             <span>展期费总金额</span>
-            <span class="value">¥{{2323}}</span>
+            <span class="value">¥{{AveRepay}}</span>
+            <span>人均展期笔数</span>
+            <span class="value">3</span>
           </div>
         </Card>
       </Col>
       <Col class="card-col" span="6">
         <Card>
           <h2 class="card-title">逾期总金额</h2>
-          <p class="card-number">¥{{ CountData.ZhanqiAllAmount }}</p>
+          <p class="card-number">¥3423423</p>
           <div class="card-content">
             <p class="info-txt">
                 <span class="half">
-                  <span class="label">逾期总笔数</span>
-                  <span class="value">{{CountData.HuankuanBishu}}</span>
+                  <span class="label">逾期总人数</span>
+                  <span class="value">3243</span>
                 </span>
             </p>
           </div>
           <div class="card-footer">
-            <span>平均每笔逾期金额</span>
+            <span>笔均逾期金额</span>
             <span class="value">¥{{2323}}</span>
           </div>
         </Card>
@@ -94,7 +86,7 @@
       <Col class="card-col" span="6">
       <Card>
         <h2 class="card-title">总逾期率</h2>
-        <p class="card-number">¥{{ CountData.ZhanqiAllAmount }}</p>
+        <p class="card-number">¥{{ 23234 }}</p>
         <div class="card-content">
           <p class="info-txt">
               <span class="half">
@@ -111,14 +103,23 @@
       </Col>
     </Row>
     <Row :gutter="14" class="pie-box">
-      <Col span="13">
+      <Col span="12">
         <Card>
-          <p ref="PieTitle" class="chart-tit" slot="title">注册与放款人数比例</p>
-          <div id="pieChart1" class="chart-out" :style="{width: PieWidth+'px',height: PieWidth+'px'}"></div>
-          <div id="pieChart2" class="chart-out" :style="{width: PieWidth+'px',height: PieWidth+'px'}"></div>
+          <p ref="PieTitle" class="chart-tit" slot="title">实时账户数据</p>
+          <div class="count-all">
+            <p class="single"><Icon class="icon" type="social-yen"></Icon>在借金额：12323</p>
+            <p class="single"><Icon class="icon" type="social-yen"></Icon>逾期金额：12323</p>
+            <p class="single"><Icon class="icon" type="ios-people"></Icon>在借人数：12323</p>
+            <p class="single"><Icon class="icon" type="ios-people"></Icon>逾期人数：12323</p>
+          </div>
+          <div class="divide-box">
+            <div class="side-part">
+              <h3 class="sub-title"></h3>
+            </div>
+          </div>
         </Card>
       </Col>
-      <Col span="11">
+      <Col span="12">
         <Card>
           <p ref="BarTitle" class="chart-tit" slot="title">今日数据</p>
           <Row :gutter="10">
@@ -151,16 +152,36 @@
         loading: true,
         TodayCount:[{
           icon: 'clock',
-          tips: '今日注册',
+          tips: '注册',
           value: '100'
         },{
-          icon: 'calendar',
-          tips: '今日放款人数',
+          icon: 'ios-people',
+          tips: '新增笔数',
           value: '50'
         },{
-          icon: 'clock',
-          tips: '今日放款金额',
+          icon: 'ios-list',
+          tips: '放款笔数',
+          value: '3243'
+        },{
+          icon: 'social-yen',
+          tips: '放款金额',
           value: '200'
+        },{
+          icon: 'ios-list',
+          tips: '展期笔数',
+          value: '302'
+        },{
+          icon: 'social-yen',
+          tips: '展期金额',
+          value: '435'
+        },{
+          icon: 'social-yen',
+          tips: '展期费',
+          value: '222'
+        },{
+          icon: 'ios-list',
+          tips: '还款笔数',
+          value: '325'
         }],
         CountData: {
           TotalRegis: 0,
@@ -322,11 +343,14 @@
       position: absolute;
       bottom: 0;
       left: 0;
-      width: 50%;
+      width: 100%;
       display: flex;
       flex-direction: row;
-      .value{
-        margin-left:8px;
+      .half{
+        width: 50%;
+        .value{
+          margin-left:8px;
+        }
       }
     }
   }
@@ -335,8 +359,9 @@
     padding-top: 9px;
     margin-top: 8px;
     color: rgba(0, 0, 0, 0.65);
+    font-size: 12px;
     .value{
-      margin-left: 8px;
+      margin: 0 8px;
       color: rgba(0, 0, 0, 0.85);
     }
   }
@@ -346,6 +371,39 @@
   .chart-tit{
     width: 100%;
     font-size: 18px;
+  }
+  .count-all{
+    width: 100%;
+    border: 1px solid #e3e3e3;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    .single{
+      width: 50%;
+      display: block;
+      .icon{
+        font-size: 18px;
+        padding: 0 8px;
+        color: #259bf1;
+      }
+    }
+  }
+  .divide-box{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-top: 16px;
+    .side-part{
+      width: 45%;
+      border: 1px solid #e3e3e3;
+      padding: 10px;
+      border-radius: 5px;
+      .sub-title{
+
+      }
+    }
   }
   .chart-out{
     display: inline-block;

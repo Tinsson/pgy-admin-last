@@ -7,8 +7,9 @@
     <div class="all-content">
       <div class="opt-btn down" @click="DownloadTemp">下载模板</div>
       <Upload
-        :before-upload="UploadData"
-        action="http://apitest.pgyxwd.com">
+        :headers="Config"
+        :action="TempUrl"
+        @on-success="UploadSuccess" @on-error="UploadError">
         <div class="opt-btn import">导入数据</div>
       </Upload>
     </div>
@@ -18,11 +19,15 @@
 </template>
 
 <script>
+  import axios from 'axios'
   export default {
     name: 'DelayModal',
     data () {
       return{
         State: false,
+        Config:{
+          token: ''
+        },
         TempUrl: ''
       }
     },
@@ -38,6 +43,10 @@
         this.TempUrl = val;
       }
     },
+    created(){
+      this.TempUrl = this.$axios.defaults.baseURL + '/backend/user/UserImprot';
+      this.Config.token = this.$getLocal('token');
+    },
     methods: {
       CloseBtn(){
         this.$emit('CloseModal');
@@ -51,8 +60,14 @@
       DownloadTemp(){
         window.open(this.TempUrl);
       },
-      UploadData(file){
-
+      UploadSuccess(response){
+        console.log(response);
+        console.log(1);
+        this.$Message.success('导入成功！');
+        this.CloseBtn();
+      },
+      UploadError(){
+        console.log(2);
       }
     }
   }

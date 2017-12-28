@@ -187,15 +187,15 @@
               },text);
             }
           },{
+            title: '还款时间',
+            key: 'hkri'
+          },{
             title: '申请时间',
             key: 'req_date',
             render: (h,params)=>{
               let text = (params.row.zqid > 0)?params.row.zq_request_date:params.row.jk_request_date;
               return h('span', text);
             }
-          },{
-            title: '还款日',
-            key: 'hkri'
           },{
             title: '操作',
             key: 'operation',

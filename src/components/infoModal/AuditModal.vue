@@ -961,13 +961,14 @@
     methods: {
       //提交信息操作
       UploadData(url,info){
-        return new Promise((resolve)=>{
+        return new Promise((resolve,reject)=>{
           this.$post(url,info).then((d)=>{
             if(d.status === 1){
               this.$Message.success(d.message);
               resolve(d.data);
             }else{
               this.$Message.error(d.message);
+              reject();
             }
           }).catch((err)=>{
             this.$Message.error('服务器繁忙，请稍后再试！');
@@ -1247,6 +1248,8 @@
         this.UploadData('/backend/Loan/payDelayRequest',data).then(()=>{
           this.Delay.modal = false;
           this.InitData(this.InitId);
+        }).catch(()=>{
+          this.Delay.modal = false;
         });
       },
       //加入黑名单
