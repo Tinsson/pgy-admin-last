@@ -9,7 +9,7 @@
       <Upload
         :headers="Config"
         :action="TempUrl"
-        @on-success="UploadSuccess" @on-error="UploadError">
+        :on-success="UploadSuccess" :on-error="UploadError">
         <div class="opt-btn import">导入数据</div>
       </Upload>
     </div>
@@ -28,7 +28,7 @@
         Config:{
           token: ''
         },
-        TempUrl: ''
+        TempUrl: 'http://apinew.pgyxwd.com/excel/temp.xlsx'
       }
     },
     props: {
@@ -51,23 +51,27 @@
       CloseBtn(){
         this.$emit('CloseModal');
       },
-      Submit(){
-        this.$emit('SubModal',this.LoanInfo);
+      ImportOver(){
+        this.$emit('ImportSuccess');
       },
       ChoseStart(value){
         this.LoanInfo.jk_date = value;
       },
       DownloadTemp(){
-        window.open(this.TempUrl);
+        window.location.href = this.TempUrl;
       },
-      UploadSuccess(response){
-        console.log(response);
-        console.log(1);
-        this.$Message.success('导入成功！');
-        this.CloseBtn();
+      UploadSuccess(res){
+        if(res.status){
+          this.$Message.info({
+            content: res.message,
+            duration: 10,
+            closable: true
+          });
+          this.ImportOver();
+        }
       },
       UploadError(){
-        console.log(2);
+        this.$Message.error('导入失败！');
       }
     }
   }

@@ -183,6 +183,7 @@
       </Modal>
       <ImportModal :modalShow="ImportState.show"
                    :InitData="ImportState.tempUrl"
+                   @ImportSuccess="ImportOver"
                    @CloseModal="CloseImport"></ImportModal>
       <PushApp :modalShow="Group.AppmsgModal"
                :InitData="SelectData"
@@ -597,6 +598,10 @@
       },
       CloseImport(){
         this.ImportState.show = false;
+      },
+      ImportOver(){
+        this.ImportState.show = false;
+        this.InitData();
       },
       //审核面板
       AuditPanel(row){

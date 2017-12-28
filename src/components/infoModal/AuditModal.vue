@@ -321,7 +321,7 @@
               <div class="lend-info row">
                 <!--<p class="yq_state">{{ item.yq_status }}</p>-->
                 <div class="main-part">
-                  <p class="text-line">{{JudgeAmtTip(item.status)}}金额：<i class="price_num">{{ item.yh_amount }}</i></p>
+                  <p class="text-line">{{JudgeAmtTip(item.color)}}金额：<i class="price_num">{{ item.yh_amount }}</i></p>
                   <p class="text-line">违约金：{{item.wy_amount}}</p>
                   <p class="text-line">应还日：{{ item.hk_date }}</p>
                   <p class="text-line">总天数：{{ item.total_days}}</p>
@@ -1434,8 +1434,8 @@
           this.SetLoan.select = d.data;
         })
       },
-      JudgeAmtTip(status){
-        if(status === '已还款'){
+      JudgeAmtTip(color){
+        if(color === '#19be6b' || color === '#42be19'){
           return '已还';
         }else{
           return '应还';

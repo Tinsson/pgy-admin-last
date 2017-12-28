@@ -301,7 +301,7 @@
           title: '温馨提示',
           content: '<p class="confirm-text">确认删除此角色吗？</p>',
           onOk: ()=>{
-            this.UploadData('/backend/Auth/authDel',{id: row.id});
+            this.UploadData('/backend/Auth/roleDel',{id: row.id});
           }
         })
       }
