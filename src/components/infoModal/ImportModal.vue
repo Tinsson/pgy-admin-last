@@ -58,7 +58,7 @@
         this.LoanInfo.jk_date = value;
       },
       DownloadTemp(){
-        window.location.href = this.TempUrl;
+        window.location.href = 'http://apinew.pgyxwd.com/excel/temp.xlsx';
       },
       UploadSuccess(res){
         if(res.status){

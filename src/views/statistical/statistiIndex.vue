@@ -107,10 +107,10 @@
         <Card>
           <p ref="PieTitle" class="chart-tit" slot="title">实时账户数据</p>
           <div class="count-all">
-            <p class="single"><Icon class="icon" type="social-yen"></Icon>在借金额：12323</p>
-            <p class="single"><Icon class="icon" type="social-yen"></Icon>逾期金额：12323</p>
-            <p class="single"><Icon class="icon" type="ios-people"></Icon>在借人数：12323</p>
-            <p class="single"><Icon class="icon" type="ios-people"></Icon>逾期人数：12323</p>
+            <p class="single"><Icon class="icon" type="social-yen"></Icon><span class="text">在借金额：12323</span></p>
+            <p class="single"><Icon class="icon" type="social-yen"></Icon><span class="text">逾期金额：12323</span></p>
+            <p class="single"><Icon class="icon" type="ios-people"></Icon><span class="text">在借人数：12323</span></p>
+            <p class="single"><Icon class="icon" type="ios-people"></Icon><span class="text">逾期人数：12323</span></p>
           </div>
           <div class="divide-box">
             <div class="side-part">
@@ -394,10 +394,16 @@
     .single{
       width: 50%;
       display: block;
+      font-size: 14px;
+      padding-bottom: 10px;
       .icon{
-        font-size: 18px;
+        font-size: 40px;
         padding: 0 8px;
         color: #259bf1;
+      }
+      .text{
+        display: inline-block;
+        margin-bottom: 5px;
       }
     }
   }
@@ -413,13 +419,15 @@
       padding: 10px;
       border-radius: 5px;
       .sub-title{
-        font-size: 18px;
+        font-size: 20px;
         padding: 0 0 10px 10px;
       }
       .line{
         font-size: 14px;
+        padding-bottom: 5px;
+        text-align: center;
         .icon{
-          font-size: 18px;
+          font-size: 40px;
           padding: 0 8px;
           color: #259bf1;
         }

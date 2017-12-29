@@ -17,6 +17,8 @@
           <div class="head-info">
             <div class="avator">
               <img src="../../assets/images/avator.jpg" alt="">
+              <Icon v-if="EditData.info.sex === '男'" class="icon male" type="male"></Icon>
+              <Icon v-if="EditData.info.sex === '女'" class="icon female" type="female"></Icon>
             </div>
             <ul class="third-party">
               <li class="res-box">
@@ -39,7 +41,7 @@
               </li>
               <li class="res-box">
                 <div class="simple edit-part" @click="ZmfEdit" :class="'type'+AllInfo.jiben.info.zhimafen.status">
-                  <span v-show="!Zhimafen.modal">{{AllInfo.jiben.info.zhimafen.info}}</span>
+                  <span v-show="!Zhimafen.modal">{{EditData.info.zmop}}</span>
                   <input v-show="Zhimafen.modal" ref="ZmfIpt" class="head-input" :class="'type'+AllInfo.jiben.info.zhimafen.status" v-model="Zhimafen.data.zmop" @keyup.enter="ZmfSub"/>
                 </div>
                 <p class="title">芝麻分</p>
@@ -84,7 +86,7 @@
               </li>
               <li class="single-line">
                 <Row>
-                  <Col span="6">
+                  <!--<Col span="6">
                     <p class="label">性别</p>
                     <p class="value">
                       <span v-show="!IsEdit">{{EditData.info.sex}}</span>
@@ -93,7 +95,7 @@
                         <Radio label="女"></Radio>
                       </RadioGroup>
                     </p>
-                  </Col>
+                  </Col>-->
                   <Col span="6">
                     <p class="label">年龄</p>
                     <p class="value">
@@ -118,33 +120,45 @@
                   <Col span="6">
                     <p class="label">生日</p>
                     <p class="value">
-                      <span v-show="!IsEdit">{{EditData.info.birth}}</span>
-                      <DatePicker type="date"
+                      <span>{{EditData.info.birth}}</span>
+                      <!--<DatePicker type="date"
                                   placeholder="选择日期"
                                   format="yyyy/MM/dd"
                                   v-show="IsEdit"
                                   :value="EditData.info.birth"
                                   @on-change="PickDate"
-                                  :style="{width: IptWidth}"></DatePicker>
+                                  :style="{width: IptWidth}"></DatePicker>-->
                     </p>
                   </Col>
-                </Row>
-              </li>
-              <li class="single-line">
-                <Row>
-                  <Col span="8">
-                  <p class="label">运营商</p>
-                  <p class="value">
-                    <span>实名</span>
-                  </p>
-                  </Col>
-                  <Col span="8">
+                  <Col span="6">
                   <p class="label">网龄</p>
                   <p class="value">
                     {{AllInfo.moxie.interday}}
                   </p>
                   </Col>
-                  <Col span="8">
+                </Row>
+              </li>
+              <!--<li class="single-line">
+                <Row>
+                  <Col span="6">
+                  <p class="label">运营商</p>
+                  <p class="value">
+                    <span>实名</span>
+                  </p>
+                  </Col>
+                  <Col span="6">
+                  <p class="label">淘宝</p>
+                  <p class="value">
+                    <span>实名／不实名</span>
+                  </p>
+                  </Col>
+                  <Col span="6">
+                  <p class="label">网龄</p>
+                  <p class="value">
+                    {{AllInfo.moxie.interday}}
+                  </p>
+                  </Col>
+                  <Col span="6">
                   <p class="label">芝麻分</p>
                   <p class="value">
                     <span>{{EditData.info.zmop}}</span>
@@ -173,35 +187,46 @@
                   </p>
                   </Col>
                 </Row>
-              </li>
+              </li>-->
               <li class="single-line">
-                <Row>
-                  <Col :span="16">
-                    <p class="label">联系人</p>
-                    <p class="value long">
-                      <Row v-for="item in EditData.lianxiren" :key="item.name">
+                <p class="label">联系人</p>
+                <p class="value long">
+                  <Row>
+                    <Col v-for="item in EditData.lianxiren" :key="item.name" :span="12">
+                      <Row>
                         <Col class="lxr-line" :span="12">
-                          {{item.relationship}}：<span v-show="!IsEdit">{{item.name}}</span>
-                          <Input v-show="IsEdit" v-model="item.name" :style="{width: IptWidth}"/>
+                        {{item.relationship}}：<span v-show="!IsEdit">{{item.name}}</span>
+                        <Input v-show="IsEdit" v-model="item.name" :style="{width: IptWidth}"/>
                         </Col>
                         <Col class="lxr-line" :span="12">
-                          手机号：<span v-show="!IsEdit">{{item.phone}}</span>
-                          <Input v-show="IsEdit" v-model="item.phone" :style="{width: IptWidth}"/>
+                        手机号：<span v-show="!IsEdit">{{item.phone}}-<span class="num">{{ 12 }}</span>次</span>
+                        <Input v-show="IsEdit" v-model="item.phone" :style="{width: IptWidth}"/>
                         </Col>
                       </Row>
-                    </p>
-                  </Col>
-                </Row>
+                    </Col>
+                  </Row>
+                </p>
+                <p class="value long">
+                  <Row>
+                    <Col v-for="(value, key) in AllInfo.moxie.yys" :key="key" :span="6"><p class="line">{{key}}-<span class="num">{{value}}</span>次</p></Col>
+                  </Row>
+                </p>
               </li>
               <li class="single-line">
-                <p class="label">最近常用联系号码</p>
+                <p class="label">地址</p>
                 <div class="value long">
-                  <Row>
-                    <Col v-for="(value, key) in AllInfo.moxie.yys" :key="key" :span="8"><p class="line">{{key}}-<span class="num">{{value}}</span>次</p></Col>
-                  </Row>
+                  <p v-if="EditData.info.address" class="line">
+                    {{EditData.info.address}}-(户籍地址)
+                  </p>
+                  <p v-if="DetailsCompany" class="line">
+                    {{DetailsCompany}}-(公司地址)
+                  </p>
+                  <p class="line" v-for="item in AllInfo.moxie.tb" :key="item.address">
+                    {{`${item.address} ${item.name} ${item.phone}`}}-(淘宝地址)
+                  </p>
                 </div>
               </li>
-              <li class="single-line">
+              <!--<li class="single-line">
                 <p class="label">淘宝地址</p>
                 <div class="value long">
                   <p class="line" v-for="item in AllInfo.moxie.tb" :key="item.address">{{`${item.address} ${item.name} ${item.phone}`}}</p>
@@ -214,7 +239,7 @@
                   <Input v-show="IsEdit" v-model="EditData.info.address" :style="{width: IptWidth}"></Input>
                 </p>
               </li>
-              <!--<li class="single-line">
+              <li class="single-line">
                 <p class="label">公司地址</p>
                 <p class="value">
                   <span v-show="!IsEdit">{{ AddressText(ChoseCompany) }}</span>
@@ -223,7 +248,7 @@
                             v-model="ChoseCompany"
                             :style="{width: '300px'}"></Cascader>
                 </p>
-              </li>-->
+              </li>
               <li class="single-line">
                 <p class="label">公司详细地址</p>
                 <p class="value">
@@ -231,7 +256,7 @@
                   <Input v-show="IsEdit" v-model="DetailsCompany" style="width: 300px"></Input>
                 </p>
               </li>
-              <!--<li class="single-line">
+              <li class="single-line">
                 <p class="label">居住地址</p>
                 <p class="value">
                   <span v-show="!IsEdit">{{ AddressText(ChoseLive) }}</span>
@@ -269,10 +294,24 @@
           <div class="base-info" v-show="NavData.baseInfo.cur">
             <Tabs>
               <TabPane label="基本信息">
-                <p class="info-box">
-                  <span class="half">审核员：{{AllInfo.jiben.info.auditorId}}</span>
-                  <span class="half">催收员：{{AllInfo.jiben.info.collectorId}}</span>
-                </p>
+                <div class="info-box">
+                  <!--<span class="half">审核员：{{AllInfo.jiben.info.auditorId}}</span>
+                  <span class="half">催收员：{{AllInfo.jiben.info.collectorId}}</span>-->
+                  <p class="half">
+                    <span @click="OpenEdit('IsAuditor')">审核员：</span>
+                    <span @click="OpenEdit('IsAuditor')" v-show="!EditPerson.IsAuditor">{{ GetAuditor }}</span>
+                    <Select v-show="EditPerson.IsAuditor" v-model="EditData.info.auditorId" size="small" :style="{width: '100px'}">
+                      <Option v-for="item in EditData.auditor" :value="item.id" :key="item.id">{{item.admin_user}}</Option>
+                    </Select>
+                  </p>
+                  <p class="half">
+                    <span @click="OpenEdit('IsCollector')">催收员：</span>
+                    <span @click="OpenEdit('IsCollector')" v-show="!EditPerson.IsCollector">{{ GetCollector }}</span>
+                    <Select v-show="EditPerson.IsCollector" v-model="EditData.info.collectorId" size="small" :style="{width: '100px'}">
+                      <Option v-for="item in EditData.collector" :value="item.id" :key="item.id">{{item.admin_user}}</Option>
+                    </Select>
+                  </p>
+                </div>
                 <p class="info-box">
                   <!--<span class="half">放款员：{{AllInfo.jiben.info.fangkuanId}}</span>-->
                   <span class="half">放款员：冯剑涛</span>
@@ -839,7 +878,11 @@
           }
         },
         //按钮集合
-        ButtonAll:[]
+        ButtonAll:[],
+        EditPerson: {
+          IsAuditor: false,
+          IsCollector: false
+        }
       }
     },
     props: {
@@ -1514,6 +1557,9 @@
         }else{
           return false;
         }
+      },
+      OpenEdit(type){
+        this.EditPerson[type] = true;
       }
     }
   }
@@ -1560,6 +1606,19 @@
       width: 60px;
       height: 60px;
       margin: 10px 15px;
+      position: relative;
+      .icon{
+        position: absolute;
+        bottom: 0;
+        right: -25px;
+        font-size: 25px;
+        &.male{
+          color: rgb(65,177,228);
+        }
+        &.female{
+          color: rgb(228,58,141);
+        }
+      }
       img{
         width: 100%;
         border-radius: 50%;
@@ -1630,6 +1689,10 @@
       .label{
         font-size: 18px;
         line-height: 25px;
+      }
+      .cross{
+        display: flex;
+        flex-direction: row;
       }
       .value{
         font-size: 12px;
