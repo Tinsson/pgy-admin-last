@@ -20,9 +20,9 @@
             </div>
             <div class="card-footer">
               <span>通过率</span>
-              <span class="value">{{ CountData.throughRate }}%</span>
+              <span class="value">{{ CountData.throughRate }}</span>
               <span>放款率</span>
-              <span class="value">{{ CountData.LoanRate }}%</span>
+              <span class="value">{{ CountData.LoanRate }}</span>
             </div>
           </Card>
         </router-link>
