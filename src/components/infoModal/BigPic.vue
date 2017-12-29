@@ -2,7 +2,7 @@
   <Modal
     v-model="State"
     :width="this.Width + 30"
-    title="背景图"
+    :title="titleTxt"
     :styles="{top: '20px',zIndex: '10'}"
     @on-cancel="CloseBtn">
     <img class="big-img" :style="{maxWidth: this.Width+'px'}" :src="Img" alt="">
@@ -25,7 +25,8 @@
     props: {
       modalShow: Boolean,
       InitData: String,
-      maxWidth: Number
+      maxWidth: Number,
+      titleTxt: String
     },
     watch: {
       modalShow(val){

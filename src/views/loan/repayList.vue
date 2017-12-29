@@ -110,6 +110,7 @@
           },{
             title: '还款时间',
             align: 'center',
+            width: '150',
             key: 'request_date'
           }
         ],

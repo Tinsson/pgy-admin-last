@@ -74,6 +74,7 @@ import Registered from '@/views/generalize/Registered'
 //统计
 import statistiIndex from '@/views/statistical/statistiIndex'
 import statiTrading from '@/views/statistical/statiTrading'
+import statistiDetails from '@/views/statistical/statistiDetails'
 
 //整合所有的模块集合，用于动态路由
 const componentList = {
@@ -116,7 +117,8 @@ const componentList = {
   generalizeList,
 
   statistiIndex,
-  statiTrading
+  statiTrading,
+  statistiDetails
 };
 Vue.use(Router);
 
@@ -169,6 +171,17 @@ const routes = [
     meta:{
       IsOpen: true
     }
+  },{
+    path: '/statistical',
+    name: '统计中心',
+    component: AdminFrame,
+    children: [
+      {
+        path: 'statistiDetails',
+        name: '统计详情',
+        component: statistiDetails
+      }
+    ]
   },{
     path: '/generalize',
     name: '推广管理',

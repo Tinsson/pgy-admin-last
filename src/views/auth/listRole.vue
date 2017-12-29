@@ -115,9 +115,11 @@
             key: 'sort'
           },{
             title: '创建时间',
+            width: '170',
             key: 'created_at'
           },{
             title: '修改时间',
+            width: '170',
             key: 'updated_at'
           },{
             title: '操作',

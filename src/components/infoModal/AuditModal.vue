@@ -16,7 +16,9 @@
         <Col class="left-box" :span="16">
           <div class="head-info">
             <div class="avator">
-              <img src="../../assets/images/avator.jpg" alt="">
+              <img v-if="EmptyAvator" @click="GetAvator" src="../../assets/images/avator.jpg" alt="">
+              <img v-if="!EmptyAvator" @click="GetAvator" :src="Avator" alt="">
+              <p v-if="!EmptyAvator" class="text">{{ NickName }}</p>
               <Icon v-if="EditData.info.sex === '男'" class="icon male" type="male"></Icon>
               <Icon v-if="EditData.info.sex === '女'" class="icon female" type="female"></Icon>
             </div>
@@ -300,14 +302,14 @@
                   <p class="half">
                     <span @click="OpenEdit('IsAuditor')">审核员：</span>
                     <span @click="OpenEdit('IsAuditor')" v-show="!EditPerson.IsAuditor">{{ GetAuditor }}</span>
-                    <Select v-show="EditPerson.IsAuditor" v-model="EditData.info.auditorId" size="small" :style="{width: '100px'}">
+                    <Select v-show="EditPerson.IsAuditor" v-model="EditData.info.auditorId" @on-change="SelectAuditor" size="small" :style="{width: '100px'}">
                       <Option v-for="item in EditData.auditor" :value="item.id" :key="item.id">{{item.admin_user}}</Option>
                     </Select>
                   </p>
                   <p class="half">
                     <span @click="OpenEdit('IsCollector')">催收员：</span>
                     <span @click="OpenEdit('IsCollector')" v-show="!EditPerson.IsCollector">{{ GetCollector }}</span>
-                    <Select v-show="EditPerson.IsCollector" v-model="EditData.info.collectorId" size="small" :style="{width: '100px'}">
+                    <Select v-show="EditPerson.IsCollector" v-model="EditData.info.collectorId" @on-change="SelectCollector" size="small" :style="{width: '100px'}">
                       <Option v-for="item in EditData.collector" :value="item.id" :key="item.id">{{item.admin_user}}</Option>
                     </Select>
                   </p>
@@ -608,6 +610,7 @@
     <BigPic :modalShow="BigPic.modal"
             :InitData="BigPic.img"
             :maxWidth="800"
+            titleTxt="身份证正反面"
             @CloseModal="CloseBigPic"></BigPic>
     <DelayModal :modalShow="Delay.modal"
                 :initData="Delay.data"
@@ -648,6 +651,8 @@
         Unique: this.UniqueId,
         IdArr: this.AllId,
         IptWidth: '160px',
+        Avator: '',
+        NickName: '',
         TextArr: {
           edu:['初中','高中','大专','本科','硕士','博士','博士后']
         },
@@ -999,6 +1004,13 @@
         }else{
           return true;
         }
+      },
+      EmptyAvator(){
+        if(this.Avator === ''){
+          return true;
+        }else{
+          return false;
+        }
       }
     },
     methods: {
@@ -1115,10 +1127,12 @@
       EditInfo(){
         this.IsEdit = true;
       },
-      SubOpt(){
+      SubOpt(sign = 1){
         const allinfo = JSON.stringify(this.EditData);
         this.UploadData('/backend/User/editUserQuery',{_post: allinfo}).then(()=>{
-          this.IsEdit = false;
+          if(sign){
+            this.IsEdit = false;
+          }
         });
       },
       EditCancel(){
@@ -1560,6 +1574,29 @@
       },
       OpenEdit(type){
         this.EditPerson[type] = true;
+      },
+      SelectAuditor(){
+        const allinfo = JSON.stringify(this.EditData);
+        /*this.$post('/backend/User/editUserQuery',{_post: allinfo}).then(()=>{
+          this.EditPerson.IsAuditor = false;
+        });*/
+      },
+      SelectCollector(){
+        const allinfo = JSON.stringify(this.EditData);
+        /*this.$post('/backend/User/editUserQuery',{_post: allinfo}).then(()=>{
+          this.EditPerson.IsCollector = false;
+        });*/
+      },
+      GetAvator(){
+        this.$fetch('backend/User/loadUserInfo',{uid: this.ID}).then((d)=>{
+          if(d.status === 1){
+            this.$Message.success(d.message);
+            this.Avator = d.data.wx_userInfo.wx_avatar;
+            this.NickName = d.data.wx_userInfo.wx_nick_name;
+          }else{
+            this.$Message.error('该用户已经取消关注！');
+          }
+        })
       }
     }
   }
@@ -1605,8 +1642,13 @@
     .avator{
       width: 60px;
       height: 60px;
-      margin: 10px 15px;
+      margin: 2px 15px 0;
       position: relative;
+      cursor: pointer;
+      .text{
+        text-align: center;
+        font-size: 12px;
+      }
       .icon{
         position: absolute;
         bottom: 0;

@@ -105,6 +105,7 @@
             key: 'end_date'
           },{
             title: '展期操作时间',
+            width: '150',
             key: 'request_date'
           }
         ],

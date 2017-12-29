@@ -313,6 +313,7 @@
             key: 'qudao'
           },{
             title: '注册时间',
+            width: '150',
             key: 'create_at'
           },{
             title: '操作',

@@ -2,28 +2,30 @@
   <div id="statistical-index">
     <Row :gutter="20">
       <Col class="card-col" span="8">
-        <Card>
-          <h2 class="card-title">总注册数</h2>
-          <p class="card-number">{{ CountData.TotalRegis }}</p>
-          <div class="card-content">
-            <p class="info-txt">
-              <span class="half">
-                <span class="label">借款总人数</span>
-                <span class="value">0</span>
-              </span>
-              <span class="half">
-                <span class="label">人均借款金额</span>
-                <span class="value">0</span>
-              </span>
-            </p>
-          </div>
-          <div class="card-footer">
-            <span>通过率</span>
-            <span class="value">80%</span>
-            <span>放款率</span>
-            <span class="value">50%</span>
-          </div>
-        </Card>
+        <router-link to="/statistical/statistiDetails">
+          <Card>
+            <h2 class="card-title">总注册数</h2>
+            <p class="card-number">{{ CountData.TotalRegis }}</p>
+            <div class="card-content">
+              <p class="info-txt">
+                <span class="half">
+                  <span class="label">借款总人数</span>
+                  <span class="value">{{ CountData.IndeLoanRen }}</span>
+                </span>
+                <span class="half">
+                  <span class="label">人均借款金额</span>
+                  <span class="value">{{ CountData.AveJiekuanAmoutnAll }}</span>
+                </span>
+              </p>
+            </div>
+            <div class="card-footer">
+              <span>通过率</span>
+              <span class="value">{{ CountData.throughRate }}%</span>
+              <span>放款率</span>
+              <span class="value">{{ CountData.LoanRate }}%</span>
+            </div>
+          </Card>
+        </router-link>
       </Col>
       <Col class="card-col" span="8">
         <Card>
@@ -33,71 +35,89 @@
             <p class="info-txt">
               <span class="half">
                 <span class="label">借款总笔数</span>
-                <span class="value">{{CountData.RequestLoanBishu}}</span>
+                <span class="value">{{CountData.LoanBishu}}</span>
               </span>
             </p>
           </div>
           <div class="card-footer">
             <span>笔均借款金额</span>
-            <span class="value">¥{{ AveLoan }}</span>
+            <span class="value">¥{{ CountData.AveJiekuanAmountD }}</span>
             <span>人均借款笔数</span>
-            <span class="value">5</span>
+            <span class="value">{{CountData.AveLoanRen}}</span>
           </div>
         </Card>
       </Col>
       <Col class="card-col" span="8">
         <Card>
           <h2 class="card-title">展期总金额</h2>
-          <p class="card-number">¥{{ CountData.HuankuanAllAmount }}</p>
+          <p class="card-number">¥{{ CountData.ZhanqiAllAmount }}</p>
           <div class="card-content">
             <p class="info-txt">
               <span class="half">
                 <span class="label">展期总笔数</span>
-                <span class="value">{{CountData.HuankuanBishu}}</span>
+                <span class="value">{{CountData.ZhanqiAllBishu}}</span>
               </span>
             </p>
           </div>
           <div class="card-footer">
             <span>展期费总金额</span>
-            <span class="value">¥{{AveRepay}}</span>
+            <span class="value">¥{{CountData.ZhanqiFeeAllAmount}}</span>
             <span>人均展期笔数</span>
-            <span class="value">3</span>
+            <span class="value">{{ CountData.AveZhqnqiBishuR }}</span>
           </div>
         </Card>
       </Col>
       <Col class="card-col" span="8">
         <Card>
           <h2 class="card-title">逾期总金额</h2>
-          <p class="card-number">¥3423423</p>
+          <p class="card-number">{{ CountData.LoanYuqiAmountAll }}</p>
           <div class="card-content">
             <p class="info-txt">
                 <span class="half">
                   <span class="label">逾期总人数</span>
-                  <span class="value">3243</span>
+                  <span class="value">{{ CountData.LoanYuqiRenAll }}</span>
                 </span>
             </p>
           </div>
           <div class="card-footer">
             <span>笔均逾期金额</span>
-            <span class="value">¥{{2323}}</span>
+            <span class="value">{{ CountData.AveLoanYuqiAmount }}</span>
           </div>
         </Card>
       </Col>
       <Col class="card-col" span="8">
       <Card>
-        <h2 class="card-title">总逾期率</h2>
-        <p class="card-number">¥{{ 23234 }}</p>
+        <h2 class="card-title">笔数总逾期率</h2>
+        <p class="card-number">{{ CountData.BishuYuqiReteAll }}</p>
         <div class="card-content">
           <p class="info-txt">
-              <span class="half">
-                <span class="label">笔数逾期率</span>
-                <span class="value">{{CountData.HuankuanBishu}}</span>
+              <span>
+                <span class="label">笔数逾期率（今年）</span>
+                <span class="value">{{ CountData.BishuYuqiReteYear }}</span>
               </span>
           </p>
         </div>
         <div class="card-footer">
-          <span>金额逾期率</span>
-          <span class="value">¥{{2323}}</span>
+          <span></span>
+          <span class="value"></span>
+        </div>
+      </Card>
+      </Col>
+      <Col class="card-col" span="8">
+      <Card>
+        <h2 class="card-title">金额总逾期率</h2>
+        <p class="card-number">{{ CountData.AmountYuqiReteAll }}</p>
+        <div class="card-content">
+          <p class="info-txt">
+              <span>
+                <span class="label">金额逾期率（今年）</span>
+                <span class="value">{{ CountData.AmountYuqiReteYear }}</span>
+              </span>
+          </p>
+        </div>
+        <div class="card-footer">
+          <span></span>
+          <span class="value"></span>
         </div>
       </Card>
       </Col>
@@ -107,25 +127,25 @@
         <Card>
           <p ref="PieTitle" class="chart-tit" slot="title">实时账户数据</p>
           <div class="count-all">
-            <p class="single"><Icon class="icon" type="social-yen"></Icon><span class="text">在借金额：12323</span></p>
-            <p class="single"><Icon class="icon" type="social-yen"></Icon><span class="text">逾期金额：12323</span></p>
-            <p class="single"><Icon class="icon" type="ios-people"></Icon><span class="text">在借人数：12323</span></p>
-            <p class="single"><Icon class="icon" type="ios-people"></Icon><span class="text">逾期人数：12323</span></p>
+            <p class="single"><Icon class="icon" type="social-yen"></Icon><span class="text">在借金额：{{CountData.ThisAmount.ALL}}</span></p>
+            <p class="single"><Icon class="icon" type="social-yen"></Icon><span class="text">逾期金额：{{CountData.ThisYuqiAmount.ALL}}</span></p>
+            <p class="single"><Icon class="icon" type="ios-people"></Icon><span class="text">在借人数：{{CountData.ThisRenshu.ALL}}</span></p>
+            <p class="single"><Icon class="icon" type="ios-people"></Icon><span class="text">逾期人数：{{CountData.ThisYuqiRenshu.ALL}}</span></p>
           </div>
           <div class="divide-box">
             <div class="side-part">
               <h3 class="sub-title">L</h3>
-              <p class="line"><Icon class="icon" type="social-yen"></Icon>在借金额：12323</p>
-              <p class="line"><Icon class="icon" type="ios-people"></Icon>在借人数：12323</p>
-              <p class="line"><Icon class="icon" type="social-yen"></Icon>逾期金额：12323</p>
-              <p class="line"><Icon class="icon" type="ios-people"></Icon>逾期人数：12323</p>
+              <p class="line"><Icon class="icon" type="social-yen"></Icon>在借金额：{{CountData.ThisAmount.L}}</p>
+              <p class="line"><Icon class="icon" type="ios-people"></Icon>在借人数：{{CountData.ThisRenshu.L}}</p>
+              <p class="line"><Icon class="icon" type="social-yen"></Icon>逾期金额：{{CountData.ThisYuqiAmount.L}}</p>
+              <p class="line"><Icon class="icon" type="ios-people"></Icon>逾期人数：{{CountData.ThisYuqiRenshu.L}}</p>
             </div>
             <div class="side-part">
               <h3 class="sub-title">Z</h3>
-              <p class="line"><Icon class="icon" type="social-yen"></Icon>在借金额：12323</p>
-              <p class="line"><Icon class="icon" type="ios-people"></Icon>在借人数：12323</p>
-              <p class="line"><Icon class="icon" type="social-yen"></Icon>逾期金额：12323</p>
-              <p class="line"><Icon class="icon" type="ios-people"></Icon>逾期人数：12323</p>
+              <p class="line"><Icon class="icon" type="social-yen"></Icon>在借金额：{{CountData.ThisAmount.Z}}</p>
+              <p class="line"><Icon class="icon" type="ios-people"></Icon>在借人数：{{CountData.ThisRenshu.Z}}</p>
+              <p class="line"><Icon class="icon" type="social-yen"></Icon>逾期金额：{{CountData.ThisYuqiAmount.Z}}</p>
+              <p class="line"><Icon class="icon" type="ios-people"></Icon>逾期人数：{{CountData.ThisYuqiRenshu.Z}}</p>
             </div>
           </div>
         </Card>
@@ -134,7 +154,7 @@
         <Card>
           <p ref="BarTitle" class="chart-tit" slot="title">今日数据</p>
           <Row :gutter="10">
-            <Col v-for="item in TodayCount" :key="item" class="count-info" :span="12">
+            <Col v-for="item in TodayCount" :key="item.tops" class="count-info" :span="12">
               <div class="record">
                 <span class="icon-box"><Icon :type="item.icon"></Icon></span>
                 <div class="info-box">
@@ -158,41 +178,41 @@
     data () {
       return {
         title: '统计首页',
-        apiUrl: '/backend/Statistical/statiIndex',
+        apiUrl: '/backend/Statistical/statiTrading',
         auth_id: '',
         loading: true,
         TodayCount:[{
           icon: 'clock',
           tips: '注册',
-          value: '100'
+          value: '0'
         },{
           icon: 'ios-list',
           tips: '新增笔数',
-          value: '50'
+          value: '0'
         },{
           icon: 'social-yen',
           tips: '放款金额',
-          value: '200'
+          value: '0'
         },{
           icon: 'ios-list',
           tips: '放款笔数',
-          value: '3243'
+          value: '0'
         },{
           icon: 'social-yen',
           tips: '展期金额',
-          value: '435'
+          value: '0'
         },{
           icon: 'ios-list',
           tips: '展期笔数',
-          value: '302'
+          value: '0'
         },{
           icon: 'social-yen',
           tips: '展期费',
-          value: '222'
+          value: '0'
         },{
           icon: 'ios-list',
           tips: '还款笔数',
-          value: '325'
+          value: '0'
         }],
         CountData: {
           TotalRegis: 0,
@@ -203,78 +223,28 @@
           ZhanqiAllAmount: 0,
           IdcardNum: 0,
           LivingNum: 0,
-          BindCardNum: 0
-        },
-        PieWidth: '',
-        PieOption1:{
-          title : {
-            text: '身份证识别比例',
-            subtext: '',
-            x:'center'
+          BindCardNum: 0,
+          AveJiekuanAmountD: 0,
+          ThisAmount:{
+            ALL: '',
+            L: '',
+            Z: ''
           },
-          tooltip : {
-            trigger: 'item',
-            formatter: "{a} <br/>{b} : {c} ({d}%)"
+          ThisYuqiAmount:{
+            ALL: '',
+            L: '',
+            Z: ''
           },
-          legend: {
-            orient: 'vertical',
-            left: 'left',
-            data: ['识别','未识别']
+          ThisRenshu: {
+            ALL: '',
+            L: '',
+            Z: ''
           },
-          series : [
-            {
-              name: '识别情况',
-              type: 'pie',
-              radius : '55%',
-              center: ['50%', '60%'],
-              data:[
-                {value: 2, name:'识别', itemStyle:{normal:{color:'rgb(106,164,231)'}}},
-                {value: 10, name:'未识别', itemStyle:{normal:{color:'rgb(239,145,74)'}}}
-              ],
-              itemStyle: {
-                emphasis: {
-                  shadowBlur: 10,
-                  shadowOffsetX: 0,
-                  shadowColor: 'rgba(0, 0, 0, 0.5)'
-                }
-              }
-            }
-          ]
-        },
-        PieOption2:{
-          title : {
-            text: '活体识别比例',
-            subtext: '',
-            x:'center'
-          },
-          tooltip : {
-            trigger: 'item',
-            formatter: "{a} <br/>{b} : {c} ({d}%)"
-          },
-          legend: {
-            orient: 'vertical',
-            left: 'left',
-            data: ['识别','未识别']
-          },
-          series : [
-            {
-              name: '识别情况',
-              type: 'pie',
-              radius : '55%',
-              center: ['50%', '60%'],
-              data:[
-                {value: 0, name:'识别', itemStyle:{normal:{color:'rgb(108,108,227)'}}},
-                {value: 0, name:'未识别', itemStyle:{normal:{color:'rgb(231,66,72)'}}}
-              ],
-              itemStyle: {
-                emphasis: {
-                  shadowBlur: 10,
-                  shadowOffsetX: 0,
-                  shadowColor: 'rgba(0, 0, 0, 0.5)'
-                }
-              }
-            }
-          ]
+          ThisYuqiRenshu:{
+            ALL: '',
+            L: '',
+            Z: ''
+          }
         }
       }
     },
@@ -282,8 +252,9 @@
       this.auth_id = getLocal('auth_id');
     },
     mounted(){
-      this.PieWidth = (this.$refs['PieTitle'].offsetWidth / 2) - 10;
-      this.InitData(this.apiUrl);
+      this.InitData(this.apiUrl).then(()=>{
+        console.log(this.CountData);
+      });
     },
     computed: {
       AveLoan(){
@@ -299,26 +270,26 @@
       //初始化数据
       InitData(url,params = {}){
         this.loading = true;
+        /*this.$post('/backend/Statistical/statiTrading').then((d)=>{
+          this.CountData = Object.assign(this.CountData,d.data);
+        });*/
         //列表数据获取
         return new Promise((resolve)=>{
           this.$post(url,params).then((d)=>{
             let res = d.data;
-            this.PieOption1.series[0].data[0].value = res.IdcardNum;
-            this.PieOption1.series[0].data[1].value = res.TotalRegis - res.IdcardNum;
-            this.PieOption2.series[0].data[0].value = res.LivingNum;
-            this.PieOption2.series[0].data[1].value = res.TotalRegis - res.LivingNum;
-            this.DrawChart();
-            this.CountData = res;
+            this.CountData = Object.assign(this.CountData,res);
+            this.TodayCount[0].value = this.CountData.DayReg;
+            this.TodayCount[1].value = this.CountData.DayNewBishu;
+            this.TodayCount[2].value = this.CountData.DayLoanAmount;
+            this.TodayCount[3].value = this.CountData.DayLoanBishu;
+            this.TodayCount[4].value = this.CountData.DayZhanqiAmount;
+            this.TodayCount[5].value = this.CountData.DayZhanqiBishu;
+            this.TodayCount[6].value = this.CountData.DayZhanqiFee;
+            this.TodayCount[7].value = this.CountData.DayHuankuanBishu;
             this.loading = false;
             resolve();
           })
         })
-      },
-      DrawChart(){
-        let PieChart1 = this.$echarts.init(document.getElementById('pieChart1'));
-        let PieChart2 = this.$echarts.init(document.getElementById('pieChart2'));
-        PieChart1.setOption(this.PieOption1);
-        PieChart2.setOption(this.PieOption2);
       }
     }
   }
@@ -359,6 +330,7 @@
       flex-direction: row;
       .half{
         width: 50%;
+        color: #333;
         .value{
           margin-left:8px;
         }
