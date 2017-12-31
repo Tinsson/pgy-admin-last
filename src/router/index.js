@@ -45,6 +45,7 @@ import repayConfirm from '@/views/urge/repayConfirm'
 
 //工作流平台
 import workliuList from '@/views/workliu/workliuList'
+import workCommission from '@/views/workliu/workCommission'
 import reviewPanel from '@/views/workliu/reviewPanel'
 import loanPanel from '@/views/workliu/loanPanel'
 
@@ -99,6 +100,7 @@ const componentList = {
   workliuList,
   reviewPanel,
   loanPanel,
+  workCommission,
 
   autoPost,
   templateEdit,

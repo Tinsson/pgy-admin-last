@@ -21,15 +21,23 @@
             <p class="state"><i class="icon-state"></i>online</p>
           </div>
         </div>
-        <Submenu v-for="item in authView" :name="item.path" :key="item.path">
-          <template slot="title">
-            <Icon :type="item.meta.icon"></Icon>
-            {{item.name}}
-          </template>
-          <router-link v-for="child in item.children" :to="item.path+'/'+child.path" :key="child.path">
-            <MenuItem :name="item.path+'/'+child.path">{{child.name}}</MenuItem>
+        <div v-for="item in authView" :key="item.path">
+          <Submenu v-if="item.children.length > 1" :name="item.path">
+            <template slot="title">
+              <Icon :type="item.meta.icon"></Icon>
+              {{item.name}}
+            </template>
+            <router-link v-for="child in item.children" :to="item.path+'/'+child.path" :key="child.path">
+              <MenuItem :name="item.path+'/'+child.path">{{child.name}}</MenuItem>
+            </router-link>
+          </Submenu>
+          <router-link v-else v-for="child in item.children" :to="item.path+'/'+child.path" :key="child.path">
+            <MenuItem :name="item.path+'/'+child.path">
+              <Icon :type="item.meta.icon"></Icon>
+              {{item.name}}
+            </MenuItem>
           </router-link>
-        </Submenu>
+        </div>
       </Menu>
       </Col>
       <Col span="21" class="layout-menu-right" :style="{minHeight: RightHeight}">

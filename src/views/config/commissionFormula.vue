@@ -64,6 +64,9 @@
         <FormItem label="参数值">
           <Input v-model="ParamsModal.data.content" :disabled="ParamsModal.disable"></Input>
         </FormItem>
+        <FormItem label="备注：">
+          <Input v-model="ParamsModal.data.remark" type="textarea"/>
+        </FormItem>
       </Form>
       <div slot="footer">
         <Button type="text" @click="ModalCancel('ParamsModal')" size="large">取消</Button>
@@ -121,7 +124,8 @@
             name_en: '',
             status: 1,
             variable: 0,
-            content: ''
+            content: '',
+            remark: ''
           }
         },
         ParamsAll: {
@@ -455,6 +459,17 @@
       },
       FormulaDel(){
         this.FormulaEditArr.pop();
+      },
+      //删除功能
+      Delopt(row){
+        //删除确认
+        this.$Modal.confirm({
+          title: '温馨提示',
+          content: '<p class="confirm-text">确认删除此业绩公式吗？</p>',
+          onOk: ()=>{
+            this.UploadData('',{id: row.id});
+          }
+        })
       }
     }
   }

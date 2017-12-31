@@ -260,6 +260,7 @@
             align: 'center'
           },{
             title: '用户ID',
+            width: '80',
             key: 'id'
           },{
             title: '姓名',

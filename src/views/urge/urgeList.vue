@@ -244,6 +244,7 @@
             key: 'overdue_day'
           },{
             title: '还款日期',
+            width: '100',
             key: 'hk_date'
           },{
             title: '备注',

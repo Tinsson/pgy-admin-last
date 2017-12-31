@@ -302,14 +302,14 @@
                   <p class="half">
                     <span @click="OpenEdit('IsAuditor')">审核员：</span>
                     <span @click="OpenEdit('IsAuditor')" v-show="!EditPerson.IsAuditor">{{ GetAuditor }}</span>
-                    <Select v-show="EditPerson.IsAuditor" v-model="EditData.info.auditorId" @on-change="SelectAuditor" size="small" :style="{width: '100px'}">
+                    <Select v-show="EditPerson.IsAuditor" v-model="EditPerson.auditor" @on-change="SelectAuditor" size="small" :style="{width: '100px'}">
                       <Option v-for="item in EditData.auditor" :value="item.id" :key="item.id">{{item.admin_user}}</Option>
                     </Select>
                   </p>
                   <p class="half">
                     <span @click="OpenEdit('IsCollector')">催收员：</span>
                     <span @click="OpenEdit('IsCollector')" v-show="!EditPerson.IsCollector">{{ GetCollector }}</span>
-                    <Select v-show="EditPerson.IsCollector" v-model="EditData.info.collectorId" @on-change="SelectCollector" size="small" :style="{width: '100px'}">
+                    <Select v-show="EditPerson.IsCollector" v-model="EditPerson.collector" @on-change="SelectCollector" size="small" :style="{width: '100px'}">
                       <Option v-for="item in EditData.collector" :value="item.id" :key="item.id">{{item.admin_user}}</Option>
                     </Select>
                   </p>
@@ -885,7 +885,9 @@
         //按钮集合
         ButtonAll:[],
         EditPerson: {
+          auditor: '',
           IsAuditor: false,
+          collector: '',
           IsCollector: false
         }
       }
@@ -1305,6 +1307,7 @@
         this.UploadData('/backend/Loan/payDelayRequest',data).then(()=>{
           this.Delay.modal = false;
           this.InitData(this.InitId);
+          this.$post('/backend/Collection/remark', {loan_id: data.jid,remark: ' '});
         }).catch(()=>{
           this.Delay.modal = false;
         });
@@ -1521,6 +1524,7 @@
           this.AllInfo.jiben.info.zhimafen.info = this.Zhimafen.data.zmop;
           this.AllInfo.jiben.info.zhimafen.status = 1;
           this.AllInfo.jiben.info.zmop = this.Zhimafen.data.zmop;
+          this.EditData.info.zmop = this.Zhimafen.data.zmop;
           this.Zhimafen.modal = false;
         });
       },
@@ -1574,6 +1578,8 @@
       },
       OpenEdit(type){
         this.EditPerson[type] = true;
+        this.EditPerson.collector = this.EditData.info.collectorId;
+        this.EditPerson.auditor = this.EditData.info.auditorId;
       },
       SelectAuditor(){
         const allinfo = JSON.stringify(this.EditData);
@@ -1620,7 +1626,7 @@
   }
   .content{
     font-size: 14px;
-    height: 550px;
+    height: 540px;
     overflow: hidden;
     background-color: #add8f7;
   }
@@ -1629,7 +1635,7 @@
     justify-content: space-between;
   }
   .left-box{
-    max-height: 550px;
+    max-height: 540px;
     overflow: auto;
     background: #FFF;
   }
@@ -1762,7 +1768,7 @@
     }
   }
   .record-box{
-    max-height: 550px;
+    max-height: 540px;
     overflow: auto;
   }
   .nav-box{

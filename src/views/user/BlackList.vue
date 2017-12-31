@@ -118,7 +118,7 @@
             align: 'center'
           },{
             title: '序号',
-            width: '70',
+            width: '90',
             align: 'center',
             key: 'id'
           },{

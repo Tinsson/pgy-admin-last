@@ -136,6 +136,9 @@
               return h('span', text);
             }
           },{
+            title: '出资人',
+            key: 'capital_name'
+          },{
             title: '费用',
             key: 'fee'
           },{

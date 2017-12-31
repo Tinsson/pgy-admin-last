@@ -71,7 +71,7 @@
             align: 'center'
           },{
             title: '序号',
-            width: '70',
+            width: '80',
             align: 'center',
             key: 'id'
           },{

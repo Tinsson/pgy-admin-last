@@ -2,7 +2,7 @@
   <div id="statistical-index">
     <Row :gutter="20">
       <Col class="card-col" span="8">
-        <router-link to="/statistical/statistiDetails">
+        <router-link to="/statistical/statistiDetails?type=registried">
           <Card>
             <h2 class="card-title">总注册数</h2>
             <p class="card-number">{{ CountData.TotalRegis }}</p>
@@ -28,62 +28,74 @@
         </router-link>
       </Col>
       <Col class="card-col" span="8">
-        <Card>
-          <h2 class="card-title">借款总金额</h2>
-          <p class="card-number">¥{{ CountData.LoanAmount }}</p>
-          <div class="card-content">
-            <p class="info-txt">
-              <span class="half">
-                <span class="label">借款总笔数</span>
-                <span class="value">{{CountData.LoanBishu}}</span>
-              </span>
-            </p>
-          </div>
-          <div class="card-footer">
-            <span>笔均借款金额</span>
-            <span class="value">¥{{ CountData.AveJiekuanAmountD }}</span>
-            <span>人均借款笔数</span>
-            <span class="value">{{CountData.AveLoanRen}}</span>
-          </div>
-        </Card>
+        <router-link to="/statistical/statistiDetails?type=loan">
+          <Card>
+            <h2 class="card-title">借款总金额</h2>
+            <p class="card-number">¥{{ CountData.LoanAmount }}</p>
+            <div class="card-content">
+              <p class="info-txt">
+                <span class="half">
+                  <span class="label">借款总笔数</span>
+                  <span class="value">{{CountData.LoanBishu}}</span>
+                </span>
+              </p>
+            </div>
+            <div class="card-footer">
+              <span>笔均借款金额</span>
+              <span class="value">¥{{ CountData.AveJiekuanAmountD }}</span>
+              <span>人均借款笔数</span>
+              <span class="value">{{CountData.AveLoanRen}}</span>
+            </div>
+          </Card>
+        </router-link>
       </Col>
       <Col class="card-col" span="8">
-        <Card>
-          <h2 class="card-title">展期总金额</h2>
-          <p class="card-number">¥{{ CountData.ZhanqiAllAmount }}</p>
-          <div class="card-content">
-            <p class="info-txt">
-              <span class="half">
-                <span class="label">展期总笔数</span>
-                <span class="value">{{CountData.ZhanqiAllBishu}}</span>
-              </span>
-            </p>
-          </div>
-          <div class="card-footer">
-            <span>展期费总金额</span>
-            <span class="value">¥{{CountData.ZhanqiFeeAllAmount}}</span>
-            <span>人均展期笔数</span>
-            <span class="value">{{ CountData.AveZhqnqiBishuR }}</span>
-          </div>
-        </Card>
+        <router-link to="/statistical/statistiDetails?type=delay">
+          <Card>
+            <h2 class="card-title">展期总金额</h2>
+            <p class="card-number">¥{{ CountData.ZhanqiAllAmount }}</p>
+            <div class="card-content">
+              <p class="info-txt">
+                <span class="half">
+                  <span class="label">展期总笔数</span>
+                  <span class="value">{{CountData.ZhanqiAllBishu}}</span>
+                </span>
+              </p>
+            </div>
+            <div class="card-footer">
+              <span>展期费总金额</span>
+              <span class="value">¥{{CountData.ZhanqiFeeAllAmount}}</span>
+              <span>人均展期笔数</span>
+              <span class="value">{{ CountData.AveZhqnqiBishuR }}</span>
+            </div>
+          </Card>
+        </router-link>
       </Col>
       <Col class="card-col" span="8">
+        <router-link to="/statistical/statistiDetails?type=overdue">
         <Card>
           <h2 class="card-title">逾期总金额</h2>
           <p class="card-number">{{ CountData.LoanYuqiAmountAll }}</p>
           <div class="card-content">
             <p class="info-txt">
-                <span class="half">
-                  <span class="label">逾期总人数</span>
-                  <span class="value">{{ CountData.LoanYuqiRenAll }}</span>
-                </span>
+              <span class="half">
+                <span class="label">逾期总人数</span>
+                <span class="value">{{ CountData.LoanYuqiRenAll }}</span>
+              </span>
+              <span class="half">
+                <span class="label">在借逾期占比</span>
+                <span class="value">无</span>
+              </span>
             </p>
           </div>
           <div class="card-footer">
             <span>笔均逾期金额</span>
             <span class="value">{{ CountData.AveLoanYuqiAmount }}</span>
+            <span>逾期人数占比</span>
+            <span class="value">无</span>
           </div>
         </Card>
+        </router-link>
       </Col>
       <Col class="card-col" span="8">
       <Card>
@@ -213,6 +225,10 @@
           icon: 'ios-list',
           tips: '还款笔数',
           value: '0'
+        },{
+          icon: 'social-yen',
+          tips: '还款金额',
+          value: '0'
         }],
         CountData: {
           TotalRegis: 0,
@@ -252,9 +268,7 @@
       this.auth_id = getLocal('auth_id');
     },
     mounted(){
-      this.InitData(this.apiUrl).then(()=>{
-        console.log(this.CountData);
-      });
+      this.InitData(this.apiUrl);
     },
     computed: {
       AveLoan(){
