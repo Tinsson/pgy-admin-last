@@ -4,10 +4,7 @@
       <div ref="BarTitle" class="chart-tit" slot="title">
         <span class="tit-text">统计详情</span>
         <div class="right-side">
-          <Select v-model="CountType">
-            <Option value="month">最近6个月</Option>
-            <Option value="day">最近7天</Option>
-          </Select>
+          <DatePicker type="month" style="width: 120px" :value="CurrentMonth" placement="bottom-end" @on-change="pickMonth"></DatePicker>
         </div>
       </div>
       <div id="BarChart1" class="chart-box" :style="{width: BarWidth+'px'}"></div>
@@ -26,11 +23,12 @@
       return {
         title: '统计详情',
         loading: false,
-        apiUrl: '/backend/Statistical/statiIndex',
-        CountType: 'month',
+        apiUrl: '/backend/Statistical/staticinfo',
+        CountType: '',
         CountData: {},
         ThirdH: '300px',
         HasThird: false,
+        CurrentMonth: '',
         BarWidth: '',
         BarOption1:{
           title : {
@@ -112,7 +110,7 @@
               name:'',
               type:'bar',
               barWidth: '60%',
-              data:[2, 3, 4, 5, 6, 7, 8]
+              data:[0, 0, 0, 0, 0, 0, 0]
             }
           ]
         },
@@ -154,30 +152,18 @@
               name:'',
               type:'bar',
               barWidth: '60%',
-              data:[2, 3, 4, 5, 6, 7, 8]
+              data:[0, 0, 0, 0, 0, 0, 0]
             }
           ]
         }
       }
     },
     mounted(){
-      switch(this.$route.query.type){
-        case 'registried':
-          this.InitReg();
-          break;
-        case 'loan':
-          this.InitLoan();
-          break;
-        case 'delay':
-          this.InitDelay();
-          break;
-        case 'overdue':
-          this.InitOverDue();
-          break;
-      }
+      this.CountType = this.$route.query.type;
+      const now = new Date();
+      this.CurrentMonth = `${now.getFullYear()}-${now.getMonth()+1}`;
+      this.Distinguish();
       this.BarWidth = this.$refs['BarTitle'].offsetWidth;
-      this.DrawChart();
-      this.InitData(this.apiUrl);
     },
     methods: {
       //初始化数据
@@ -187,9 +173,7 @@
         return new Promise((resolve)=>{
           this.$post(url,params).then((d)=>{
             let res = d.data;
-            this.CountData = res;
-            this.loading = false;
-            resolve();
+            resolve(res);
           })
         })
       },
@@ -203,17 +187,56 @@
           BarChart3.setOption(this.BarOption3);
         }
       },
+      Distinguish(){
+        switch(this.CountType){
+          case 'registried':
+            this.InitReg();
+            break;
+          case 'loan':
+            this.InitLoan();
+            break;
+          case 'delay':
+            this.InitDelay();
+            break;
+          case 'overdue':
+            this.InitOverDue();
+            break;
+        }
+      },
       //注册统计
       InitReg(){
         this.BarOption1.title.text = '注册总人数';
         this.BarOption2.title.text = '通过数';
         this.ThirdH = '0px';
+        let params = {
+          status: 'reg',
+          y: this.CurrentMonth.split('-')[0],
+          m: this.CurrentMonth.split('-')[1]
+        };
+        this.InitData(this.apiUrl,params).then(res=>{
+          this.BarOption1.xAxis[0].data = Object.keys(res);
+          this.BarOption2.xAxis[0].data = Object.keys(res);
+          this.BarOption1.series[0].data = Object.values(res);
+          this.DrawChart();
+        });
       },
       //借款统计
       InitLoan(){
         this.BarOption1.title.text = '借款总金额';
         this.BarOption2.title.text = '借款总笔数';
         this.ThirdH = '0px';
+        let params = {
+          status: 'loan',
+          y: this.CurrentMonth.split('-')[0],
+          m: this.CurrentMonth.split('-')[1]
+        };
+        this.InitData(this.apiUrl,params).then(res=>{
+          this.BarOption1.xAxis[0].data = Object.keys(res);
+          this.BarOption2.xAxis[0].data = Object.keys(res);
+          this.BarOption1.series[0].data = this.getInnerValue(Object.values(res),'amount');
+          this.BarOption2.series[0].data = this.getInnerValue(Object.values(res),'count');
+          this.DrawChart();
+        });
       },
       //展期统计
       InitDelay(){
@@ -221,12 +244,49 @@
         this.BarOption2.title.text = '展期总笔数';
         this.BarOption3.title.text = '展期费总额';
         this.HasThird = true;
+        let params = {
+          status: 'delay',
+          y: this.CurrentMonth.split('-')[0],
+          m: this.CurrentMonth.split('-')[1]
+        };
+        this.InitData(this.apiUrl,params).then(res=>{
+          this.BarOption1.xAxis[0].data = Object.keys(res);
+          this.BarOption2.xAxis[0].data = Object.keys(res);
+          this.BarOption3.xAxis[0].data = Object.keys(res);
+          this.BarOption1.series[0].data = this.getInnerValue(Object.values(res),'amount');
+          this.BarOption2.series[0].data = this.getInnerValue(Object.values(res),'count');
+          this.BarOption3.series[0].data = this.getInnerValue(Object.values(res),'fee');
+          this.DrawChart();
+        });
       },
       //逾期统计
       InitOverDue(){
         this.BarOption1.title.text = '逾期总金额';
         this.BarOption2.title.text = '逾期总人数';
         this.ThirdH = '0px';
+        let params = {
+          status: 'yuqi',
+          y: this.CurrentMonth.split('-')[0],
+          m: this.CurrentMonth.split('-')[1]
+        };
+        this.InitData(this.apiUrl,params).then(res=>{
+          this.BarOption1.xAxis[0].data = Object.keys(res);
+          this.BarOption2.xAxis[0].data = Object.keys(res);
+          this.BarOption1.series[0].data = this.getInnerValue(Object.values(res),'amount');
+          this.BarOption2.series[0].data = this.getInnerValue(Object.values(res),'count');
+        this.DrawChart();
+      });
+      },
+      pickMonth(date){
+        this.CurrentMonth = date;
+        this.Distinguish();
+      },
+      getInnerValue(arr,key){
+        let res = [];
+        arr.forEach(val=>{
+          res.push(val[key]);
+        });
+        return res;
       }
     }
   }

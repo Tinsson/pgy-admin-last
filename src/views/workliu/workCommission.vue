@@ -23,7 +23,7 @@
           </div>
         </div>
         <div id="BarChart1" class="chart-box" :style="{width: BarWidth+'px'}"></div>
-        <div v-show="HasSecond">
+        <div v-show="HasSecond" style="margin-top: 15px">
           <div id="BarChart2" class="chart-box" :style="{width: BarWidth+'px'}"></div>
         </div>
       </Card>
@@ -136,7 +136,7 @@
         },
         BarOption2:{
           title : {
-            text: '展期费统计',
+            text: '还款笔数',
             subtext: '',
             x:'center'
           },
@@ -182,7 +182,13 @@
       const now = new Date();
       this.CurrentMonth = `${now.getFullYear()}-${now.getMonth()+1}`;
       this.auth_id = getLocal('auth_id');
-      this.InitData(this.apiUrl);
+      this.$post('/backend/Results/index').then(d=>{
+        this.CountData[0].count = d.audit;
+        this.CountData[1].count = d.lending;
+        this.CountData[2].count = d.zjamount;
+        this.CountData[3].count = d.zkfamount;
+        this.InitData(this.apiUrl);
+      });
     },
     mounted(){
       this.BarWidth = this.$refs['BarTitle'].offsetWidth;
@@ -221,8 +227,8 @@
             break;
           case 'urge':
             this.HasSecond = true;
-            this.BarOption1.title.text = '展期费统计';
-            this.BarOption2.title.text = '还款笔数统计';
+            this.BarOption1.title.text = '展期费';
+            this.BarOption2.title.text = '还款笔数';
             params.status = item.id;
             this.InitData('/backend/Results/Collection',params);
             break;
@@ -235,8 +241,15 @@
         //列表数据获取
         return new Promise((resolve)=>{
           this.$fetch(url,params).then((d)=>{
-            this.BarOption1.xAxis[0].data = Object.keys(d);
-            this.BarOption1.series[0].data = Object.values(d);
+            if(this.HasSecond){
+              this.BarOption1.xAxis[0].data = Object.keys(d.zq);
+              this.BarOption1.series[0].data = Object.values(d.zq);
+              this.BarOption2.xAxis[0].data = Object.keys(d.hk);
+              this.BarOption2.series[0].data = Object.values(d.hk);
+            }else{
+              this.BarOption1.xAxis[0].data = Object.keys(d);
+              this.BarOption1.series[0].data = Object.values(d);
+            }
             this.DrawChart();
             that.loading = false;
             resolve();
@@ -272,7 +285,13 @@
           if(val.cur){
             this.CountList(val,date);
           }
-        })
+        });
+        this.$post('/backend/Results/index',{y: date.split('-')[0],m: date.split('-')[1]}).then(d=>{
+          this.CountData[0].count = d.audit;
+          this.CountData[1].count = d.lending;
+          this.CountData[2].count = d.zjamount;
+          this.CountData[3].count = d.zkfamount;
+        });
       }
     }
   }
