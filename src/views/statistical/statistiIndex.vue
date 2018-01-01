@@ -84,7 +84,7 @@
               </span>
               <span class="half">
                 <span class="label">在借逾期占比</span>
-                <span class="value">无</span>
+                <span class="value">{{ CountData.ThisLoanRate }}</span>
               </span>
             </p>
           </div>
@@ -92,7 +92,7 @@
             <span>笔均逾期金额</span>
             <span class="value">{{ CountData.AveLoanYuqiAmount }}</span>
             <span>逾期人数占比</span>
-            <span class="value">无</span>
+            <span class="value">{{ CountData.YuqiRenshuRate }}</span>
           </div>
         </Card>
         </router-link>
@@ -300,6 +300,7 @@
             this.TodayCount[5].value = this.CountData.DayZhanqiBishu;
             this.TodayCount[6].value = this.CountData.DayZhanqiFee;
             this.TodayCount[7].value = this.CountData.DayHuankuanBishu;
+            this.TodayCount[8].value = this.CountData.DayHuankuanAmount;
             this.loading = false;
             resolve();
           })

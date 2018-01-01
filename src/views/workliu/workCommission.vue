@@ -18,9 +18,14 @@
             <Icon type="clipboard"></Icon>
             数据列表
           </h3>
+          <div class="right-side">
+            <DatePicker type="month" style="width: 120px" :value="CurrentMonth" placement="bottom-end" @on-change="pickMonth"></DatePicker>
+          </div>
         </div>
         <div id="BarChart1" class="chart-box" :style="{width: BarWidth+'px'}"></div>
-        <div id="BarChart2" class="chart-box" :style="{width: BarWidth+'px', height: SecondH}"></div>
+        <div v-show="HasSecond">
+          <div id="BarChart2" class="chart-box" :style="{width: BarWidth+'px'}"></div>
+        </div>
       </Card>
     </div>
   </div>
@@ -39,18 +44,20 @@
     data () {
       return {
         title: '工作业绩',
-        apiUrl: '/backend/loan-audit/list',
+        apiUrl: '/backend/Results/Audit',
         auth_id: '',
         loading: true,
         allTime: [],
         //统计数据
+        CurrentMonth: '',
         CountData: [{
           name: '方其余',
           icon: 'ios-list-outline',
           count: 0,
           cunit: '元',
           second: false,
-          status: 'check_waiting',
+          status: 'review_fqy',
+          type: 'review',
           cur: true
         },{
           name: '冯剑涛',
@@ -58,7 +65,8 @@
           count: 0,
           cunit: '元',
           second: false,
-          status: 'check_pass_today',
+          status: 'loan_fjt',
+          type: 'loan',
           cur: false
         },{
           name: '张杰',
@@ -66,7 +74,8 @@
           count: 0,
           cunit: '元',
           second: false,
-          status: 'check_pass',
+          status: 'urge_zj',
+          type: 'urge',
           cur: false
         },{
           name: '张铠峰',
@@ -74,7 +83,8 @@
           count: 0,
           cunit: '元',
           second: false,
-          status: 'check_deny',
+          status: 'urge_zkf',
+          type: 'urge',
           cur: false
         }],
         SecondH: '300px',
@@ -128,7 +138,7 @@
             subtext: '',
             x:'center'
           },
-          color: ['#358AF5'],
+          color: ['#fa8c16'],
           tooltip : {
             trigger: 'axis',
             axisPointer : {            // 坐标轴指示器，坐标轴触发有效
@@ -167,39 +177,57 @@
       }
     },
     created(){
+      const now = new Date();
+      this.CurrentMonth = `${now.getFullYear()}-${now.getMonth()+1}`;
       this.auth_id = getLocal('auth_id');
-      this.InitData(this.apiUrl,{type: 'check_waiting'});
+      this.InitData(this.apiUrl);
     },
     mounted(){
       this.BarWidth = this.$refs['BarTitle'].offsetWidth;
     },
     methods: {
       //统计列表
-      CountList(status){
+      CountList(status,params = {}){
         this.loading = true;
+        let type = '';
         this.CountData.forEach(val=>{
           if(val.status === status){
             val.cur = true;
+            type = val.type;
           }else{
             val.cur = false;
           }
         });
+        this.DrawChart();
+        switch(type){
+          case 'review':
+            this.HasSecond = false;
+            this.BarOption1.title.text = '审核客户数量';
+            this.InitData(this.apiUrl);
+            break;
+          case 'loan':
+            this.HasSecond = false;
+            this.BarOption1.title.text = '当月放款客户数量';
+            this.InitData('/backend/Results/Lending');
+            break;
+          case 'urge':
+            this.HasSecond = true;
+            this.BarOption1.title.text = '展期费统计';
+            this.BarOption2.title.text = '还款笔数统计';
+            this.InitData('/backend/Results/Collection');
+            break;
+        }
       },
       //初始化数据
       InitData(url,params = {}){
         const that = this;
         this.loading = true;
-        this.$fetch('/backend/loan-audit/block-data').then(d=>{
-          this.CountData.forEach(val=>{
-            val.count = d.data[val.status];
-          })
-        });
         //列表数据获取
         return new Promise((resolve)=>{
           this.$fetch(url,params).then((d)=>{
-            let res = d.data;
+            this.BarOption1.xAxis[0].data = Object.keys(d);
+            this.BarOption1.series[0].data = Object.values(d);
             this.DrawChart();
-            this.UserData = res.customer_list;
             that.loading = false;
             resolve();
           })
@@ -220,18 +248,16 @@
           })
         })
       },
-      //重置页码
-      ResetPageNum(){
-        this.Page.cur = 1;
-        this.Page.size = 20;
-        this.ScreenData.page = 1;
-        this.ScreenData.num = 20;
-      },
       DrawChart(){
         let BarChart1 = this.$echarts.init(document.getElementById('BarChart1'));
-        let BarChart2 = this.$echarts.init(document.getElementById('BarChart2'));
         BarChart1.setOption(this.BarOption1);
-        BarChart2.setOption(this.BarOption2);
+        if(this.HasSecond){
+          let BarChart2 = this.$echarts.init(document.getElementById('BarChart2'));
+          BarChart2.setOption(this.BarOption2);
+        }
+      },
+      pickMonth(data){
+        console.log(data);
       }
     }
   }

@@ -62,40 +62,21 @@
              :width="600"
              @on-ok="SeniorSearch">
         <h2 slot="header">高级筛选</h2>
-        <Form :model="SeniorData" label-position="right" :label-width="90" inline>
-          <h3 class="senior-subtit">基础数据：</h3>
-          <FormItem label="用户姓名：">
-            <Input v-model="SeniorData.name"></Input>
-          </FormItem>
-          <FormItem label="身份证号：">
-            <Input v-model="SeniorData.idcard"></Input>
-          </FormItem>
-          <FormItem label="用户手机号：">
-            <Input v-model="SeniorData.phone"></Input>
-          </FormItem>
+        <Form class="ipt-form" :model="SeniorData" label-position="right" :label-width="120" inline>
           <FormItem label="用户类型：">
             <Select v-model="SeniorData.type" placeholder="请选择用户类型" style="width:162px">
               <Option value="A">A</Option>
               <Option value="B">B</Option>
               <Option value="C">C</Option>
               <Option value="D">D</Option>
-              <Option value="E">E</Option>
             </Select>
           </FormItem>
-          <h3 class="senior-subtit">状态检索：</h3>
-          <RadioGroup v-model="SeniorData.status_bz">
+          <RadioGroup class="rdo-group" v-model="SeniorData.status_bz">
             <div class="chose-area">
               <Radio label="AUDIT">审核状态：</Radio>
               <Select v-model="SeniorData.sh_status" placeholder="请选择审核状态" style="width:162px">
-                <Option value="1">仅注册</Option>
-                <Option value="2">活体识别通过</Option>
-                <Option value="3">活体识别未通过</Option>
-                <Option value="4">微信客服审核通过</Option>
-                <Option value="5">微信客服审核不通过</Option>
-                <Option value="6">同盾审核通过</Option>
-                <Option value="7">同盾审核未通过</Option>
-                <Option value="8">成安审核通过</Option>
-                <Option value="9">成安审核未通过</Option>
+                <Option value="1">已通过</Option>
+                <Option value="2">未通过</Option>
               </Select>
             </div>
             <div class="chose-area">
@@ -109,7 +90,7 @@
                 <Option value="6">展期逾期未还</Option>
               </Select>
             </div>
-            <div class="chose-area long">
+            <!--<div class="chose-area long">
               <Radio label="CERT" class="rz-state">认证状态：</Radio>
               <div class="option">
                 <div class="opt-box">
@@ -147,8 +128,14 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div>-->
           </RadioGroup>
+          <FormItem label="来源渠道：">
+            <Select v-model="SeniorData.qudao" placeholder="请选择来源渠道" style="width:162px">
+              <Option :value="0">今日头条</Option>
+              <Option :value="1">借贷宝</Option>
+            </Select>
+          </FormItem>
           <FormItem label="芝麻分范围：">
             <Row style="width: 300px">
               <Col span="10">
@@ -166,14 +153,8 @@
                         format="yyyy-MM-dd HH:mm:ss"
                         @on-change="PickDate"
                         :value="allTime"
-                        style="width: 280px"
+                        style="width: 275px"
                         placement="top"></DatePicker>
-          </FormItem>
-          <FormItem label="来源渠道：">
-            <Select v-model="SeniorData.qudao" placeholder="请选择来源渠道" style="width:162px">
-              <Option :value="0">今日头条</Option>
-              <Option :value="1">借贷宝</Option>
-            </Select>
           </FormItem>
         </Form>
         <p slot="footer">
@@ -703,6 +684,9 @@
       flex-direction: row-reverse;
     }
   }
+  .ipt-form{
+    padding-top: 20px;
+  }
   .card-tit{
     display: flex;
     flex-direction: row;
@@ -711,9 +695,12 @@
   .senior-subtit{
     padding-bottom: 15px;
   }
+  .rdo-group{
+    display: block;
+    padding-left: 31px;
+  }
   .chose-area{
-    display: inline-block;
-    width: 262px;
+    display: block;
     margin-bottom: 24px;
     &.long{
       width: 100%;
