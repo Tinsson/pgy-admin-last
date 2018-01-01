@@ -166,7 +166,7 @@
             }
           },{
             title: '出资人',
-            key: 'capital_name'
+            key: 'capital_account'
           },{
             title: '费用',
             key: 'fee'

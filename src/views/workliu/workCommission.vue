@@ -4,7 +4,7 @@
       <span class="tit-text">{{ title }}</span>
     </h1>
     <div class="card-box">
-      <div v-for="item in CountData" class="sim-card" :class="{cur:item.cur}" @click="CountList(item.status)">
+      <div v-for="item in CountData" class="sim-card" :class="{cur:item.cur}" @click="CountList(item)">
         <Icon class="icon" :type="item.icon"></Icon>
         <p class="title">{{ item.name }}</p>
         <p class="value"><span class="num">{{item.count}}</span>{{item.cunit}}</p>
@@ -72,6 +72,7 @@
           name: '张杰',
           icon: 'ios-list-outline',
           count: 0,
+          id: 22,
           cunit: '元',
           second: false,
           status: 'urge_zj',
@@ -81,6 +82,7 @@
           name: '张铠峰',
           icon: 'ios-list-outline',
           count: 0,
+          id: 23,
           cunit: '元',
           second: false,
           status: 'urge_zkf',
@@ -92,7 +94,7 @@
         BarWidth: '',
         BarOption1:{
           title : {
-            text: '当月新增放款客户数量',
+            text: '审核客户数',
             subtext: '',
             x:'center'
           },
@@ -134,7 +136,7 @@
         },
         BarOption2:{
           title : {
-            text: '当月新增放款客户数量',
+            text: '展期费统计',
             subtext: '',
             x:'center'
           },
@@ -187,34 +189,42 @@
     },
     methods: {
       //统计列表
-      CountList(status,params = {}){
+      CountList(item, month = 0){
         this.loading = true;
         let type = '';
         this.CountData.forEach(val=>{
-          if(val.status === status){
+          if(val.status === item.status){
             val.cur = true;
             type = val.type;
           }else{
             val.cur = false;
           }
         });
-        this.DrawChart();
+        let params = {};
+        if(month === 0){
+          params.y = this.CurrentMonth.split('-')[0];
+          params.m = this.CurrentMonth.split('-')[1];
+        }else{
+          params.y = month.split('-')[0];
+          params.m = month.split('-')[1];
+        }
         switch(type){
           case 'review':
             this.HasSecond = false;
-            this.BarOption1.title.text = '审核客户数量';
-            this.InitData(this.apiUrl);
+            this.BarOption1.title.text = '审核客户数';
+            this.InitData(this.apiUrl,params);
             break;
           case 'loan':
             this.HasSecond = false;
-            this.BarOption1.title.text = '当月放款客户数量';
-            this.InitData('/backend/Results/Lending');
+            this.BarOption1.title.text = '放款客户数';
+            this.InitData('/backend/Results/Lending',params);
             break;
           case 'urge':
             this.HasSecond = true;
             this.BarOption1.title.text = '展期费统计';
             this.BarOption2.title.text = '还款笔数统计';
-            this.InitData('/backend/Results/Collection');
+            params.status = item.id;
+            this.InitData('/backend/Results/Collection',params);
             break;
         }
       },
@@ -256,8 +266,13 @@
           BarChart2.setOption(this.BarOption2);
         }
       },
-      pickMonth(data){
-        console.log(data);
+      pickMonth(date){
+        this.CurrentMonth = date;
+        this.CountData.forEach(val=>{
+          if(val.cur){
+            this.CountList(val,date);
+          }
+        })
       }
     }
   }

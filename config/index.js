@@ -3,7 +3,7 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path');
-const IsZZ = 0;
+const IsZZ = 1;
 let url = '';
 if(IsZZ){
   url = 'http://www.pgyqb.com';
