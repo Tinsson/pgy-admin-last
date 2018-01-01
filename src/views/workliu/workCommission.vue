@@ -4,10 +4,10 @@
       <span class="tit-text">{{ title }}</span>
     </h1>
     <div class="card-box">
-      <div v-for="item in CountData" class="sim-card" :class="{cur:item.cur}" @click="CountList(item)">
+      <div v-for="item in CountData" v-if="item.show" class="sim-card" :class="{cur:item.cur}" @click="CountList(item)">
         <Icon class="icon" :type="item.icon"></Icon>
         <p class="title">{{ item.name }}</p>
-        <p class="value"><span class="num">{{item.count}}</span>{{item.cunit}}</p>
+        <p class="value"><span class="num">{{item.count}}</span>元</p>
         <span class="tips">点击查看</span>
       </div>
     </div>
@@ -51,43 +51,39 @@
         //统计数据
         CurrentMonth: '',
         CountData: [{
-          name: '方其余',
+          name: '方启宇',
           icon: 'ios-list-outline',
           count: 0,
-          cunit: '元',
-          second: false,
           status: 'review_fqy',
           type: 'review',
-          cur: true
+          cur: true,
+          show: false
         },{
           name: '冯剑涛',
           icon: 'ios-list-outline',
           count: 0,
-          cunit: '元',
-          second: false,
           status: 'loan_fjt',
           type: 'loan',
-          cur: false
+          cur: false,
+          show: false
         },{
           name: '张杰',
           icon: 'ios-list-outline',
           count: 0,
           id: 22,
-          cunit: '元',
-          second: false,
           status: 'urge_zj',
           type: 'urge',
-          cur: false
+          cur: false,
+          show: false
         },{
           name: '张铠峰',
           icon: 'ios-list-outline',
           count: 0,
           id: 23,
-          cunit: '元',
-          second: false,
           status: 'urge_zkf',
           type: 'urge',
-          cur: false
+          cur: false,
+          show: false
         }],
         SecondH: '300px',
         HasSecond: false,
@@ -187,7 +183,21 @@
         this.CountData[1].count = d.lending;
         this.CountData[2].count = d.zjamount;
         this.CountData[3].count = d.zkfamount;
-        this.InitData(this.apiUrl);
+        if(d.status === 'all'){
+          this.CountData.forEach(val=>{
+            val.show = true;
+          });
+          this.InitData(this.apiUrl);
+        }else{
+          this.CountData.forEach(val=>{
+            if(val.status === d.status){
+              val.show = true;
+              this.CountList(val);
+            }else{
+              val.show = false;
+            }
+          })
+        }
       });
     },
     mounted(){

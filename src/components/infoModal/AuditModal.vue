@@ -1307,7 +1307,7 @@
         this.UploadData('/backend/Loan/payDelayRequest',data).then(()=>{
           this.Delay.modal = false;
           this.InitData(this.InitId);
-          this.$post('/backend/Collection/remark', {loan_id: data.jid,remark: ' '});
+          //this.$post('/backend/Collection/remark', {loan_id: data.jid,remark: ' '});
         }).catch(()=>{
           this.Delay.modal = false;
         });
