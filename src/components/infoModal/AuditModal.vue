@@ -1074,6 +1074,8 @@
         this.$emit('CloseModal',this.modalState);
       },
       InitData(id){
+        this.Avator = '';
+        this.NickName = '';
         this.$fetch('backend/Menuauth/listAuthGet', {auth_id: this.BtnId}).then(d=>{
           this.ButtonAll = [];
           this.IsPass.isLimit = false;
@@ -1646,9 +1648,8 @@
     border-bottom: 1px solid #eee;
     border-right: 1px solid #eee;
     .avator{
-      width: 100px;
+      width: 125px;
       height: 60px;
-      margin: 2px 15px 0;
       text-align: center;
       position: relative;
       cursor: pointer;
@@ -1659,7 +1660,7 @@
       .icon{
         position: absolute;
         bottom: 0;
-        right: -25px;
+        right: 10px;
         font-size: 25px;
         &.male{
           color: rgb(65,177,228);

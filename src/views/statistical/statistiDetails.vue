@@ -227,9 +227,10 @@
           m: this.CurrentMonth.split('-')[1]
         };
         this.InitData(this.apiUrl,params).then(res=>{
-          this.BarOption1.xAxis[0].data = Object.keys(res);
-          this.BarOption2.xAxis[0].data = Object.keys(res);
-          this.BarOption1.series[0].data = Object.values(res);
+          this.BarText1 = res.regAll;
+          this.BarOption1.xAxis[0].data = Object.keys(res.data);
+          this.BarOption2.xAxis[0].data = Object.keys(res.data);
+          this.BarOption1.series[0].data = Object.values(res.data);
           this.DrawChart();
         });
       },
@@ -244,10 +245,12 @@
           m: this.CurrentMonth.split('-')[1]
         };
         this.InitData(this.apiUrl,params).then(res=>{
-          this.BarOption1.xAxis[0].data = Object.keys(res);
-          this.BarOption2.xAxis[0].data = Object.keys(res);
-          this.BarOption1.series[0].data = this.getInnerValue(Object.values(res),'amount');
-          this.BarOption2.series[0].data = this.getInnerValue(Object.values(res),'count');
+          this.BarText1 = res.amountAll;
+          this.BarText2 = res.countAll;
+          this.BarOption1.xAxis[0].data = Object.keys(res.data);
+          this.BarOption2.xAxis[0].data = Object.keys(res.data);
+          this.BarOption1.series[0].data = this.getInnerValue(Object.values(res.data),'amount');
+          this.BarOption2.series[0].data = this.getInnerValue(Object.values(res.data),'count');
           this.DrawChart();
         });
       },
@@ -263,12 +266,15 @@
           m: this.CurrentMonth.split('-')[1]
         };
         this.InitData(this.apiUrl,params).then(res=>{
-          this.BarOption1.xAxis[0].data = Object.keys(res);
-          this.BarOption2.xAxis[0].data = Object.keys(res);
-          this.BarOption3.xAxis[0].data = Object.keys(res);
-          this.BarOption1.series[0].data = this.getInnerValue(Object.values(res),'amount');
-          this.BarOption2.series[0].data = this.getInnerValue(Object.values(res),'count');
-          this.BarOption3.series[0].data = this.getInnerValue(Object.values(res),'fee');
+          this.BarText1 = res.amountAll;
+          this.BarText2 = res.countAll;
+          this.BarText3 = res.feeAll;
+          this.BarOption1.xAxis[0].data = Object.keys(res.data);
+          this.BarOption2.xAxis[0].data = Object.keys(res.data);
+          this.BarOption3.xAxis[0].data = Object.keys(res.data);
+          this.BarOption1.series[0].data = this.getInnerValue(Object.values(res.data),'amount');
+          this.BarOption2.series[0].data = this.getInnerValue(Object.values(res.data),'count');
+          this.BarOption3.series[0].data = this.getInnerValue(Object.values(res.data),'fee');
           this.DrawChart();
         });
       },
@@ -283,12 +289,14 @@
           m: this.CurrentMonth.split('-')[1]
         };
         this.InitData(this.apiUrl,params).then(res=>{
-          this.BarOption1.xAxis[0].data = Object.keys(res);
-          this.BarOption2.xAxis[0].data = Object.keys(res);
-          this.BarOption1.series[0].data = this.getInnerValue(Object.values(res),'amount');
-          this.BarOption2.series[0].data = this.getInnerValue(Object.values(res),'count');
-        this.DrawChart();
-      });
+          this.BarText1 = res.amountAll;
+          this.BarText2 = res.renAll;
+          this.BarOption1.xAxis[0].data = Object.keys(res.data);
+          this.BarOption2.xAxis[0].data = Object.keys(res.data);
+          this.BarOption1.series[0].data = this.getInnerValue(Object.values(res.data),'amount');
+          this.BarOption2.series[0].data = this.getInnerValue(Object.values(res.data),'count');
+          this.DrawChart();
+        });
       },
       pickMonth(date){
         this.CurrentMonth = date;

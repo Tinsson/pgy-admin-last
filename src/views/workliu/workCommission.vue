@@ -262,9 +262,12 @@
               this.BarOption1.series[0].data = Object.values(d.zq);
               this.BarOption2.xAxis[0].data = Object.keys(d.hk);
               this.BarOption2.series[0].data = Object.values(d.hk);
+              this.BarText1 = this.CountAll(Object.values(d.zq));
+              this.BarText2 = this.CountAll(Object.values(d.hk));
             }else{
               this.BarOption1.xAxis[0].data = Object.keys(d);
               this.BarOption1.series[0].data = Object.values(d);
+              this.BarText1 = this.CountAll(Object.values(d));
             }
             this.DrawChart();
             that.loading = false;
@@ -308,6 +311,13 @@
           this.CountData[2].count = d.zjamount;
           this.CountData[3].count = d.zkfamount;
         });
+      },
+      CountAll(arr){
+        let res = 0;
+        arr.forEach(val=>{
+          res += parseFloat(val);
+        });
+        return res;
       }
     }
   }
