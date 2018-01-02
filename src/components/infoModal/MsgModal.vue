@@ -14,7 +14,7 @@
               <Button v-for="item in FixArr" class="button" :key="item.value" icon="ios-plus-empty" type="dashed" @click="AddTag(item)">{{item.name}}</Button>
             </p>
           </div>
-          <div class="cus-box">
+          <!--<div class="cus-box">
             <h2 class="title">自定义内容</h2>
             <Form inline :label-width="60">
               <FormItem label="内容：">
@@ -22,15 +22,15 @@
               </FormItem>
               <Button type="success" @click="AddCus">添加</Button>
             </Form>
-          </div>
+          </div>-->
         </div>
         <div class="preview-box">
           <div class="opt-info">
-            <h2 class="title">模板说明信息（直接输入信息）</h2>
+            <h2 class="title">模板说明</h2>
             <Form :label-width="80" inline>
-              <FormItem label="模板名称">
+              <!--<FormItem label="模板名称">
                 <Input v-model="SubData.name" class="ipt-info"/>
-              </FormItem>
+              </FormItem>-->
               <FormItem label="英文名">
                 <Input v-model="SubData.title_en" class="ipt-info"/>
               </FormItem>
@@ -44,13 +44,11 @@
           </div>
           <h2 class="title">模板内容（左侧操作输入信息）</h2>
           <Form :label-width="80" inline>
-            <FormItem label="标题：">
-              <Input type="textarea" class="ipt-info" :value="getTitle" @on-focus="Focus('title')" readonly/>
-              <Button type="error" class="del-btn" @click="Delete('title')">回删</Button>
+            <FormItem label="标题名称：">
+              <Input type="textarea" class="ipt-info" v-model="SubData.title" @on-focus="Focus('title')"/>
             </FormItem>
             <FormItem label="内容：">
-              <Input type="textarea" class="ipt-info" :value="getContent" @on-focus="Focus('content')" readonly/>
-              <Button type="error" class="del-btn" @click="Delete('content')">回删</Button>
+              <Input type="textarea" class="ipt-info" v-model="SubData.content" @on-focus="Focus('content')"/>
             </FormItem>
           </Form>
         </div>
@@ -96,15 +94,15 @@
         CusInfo: '',
         FocusKey: '',
         ShowData: {
-          title: [],
-          content: []
+          title: '',
+          content: ''
         },
         SubData:{
           status: 1,
           name: '',
           title_en: '',
-          title: [],
-          content: []
+          title: '',
+          content: ''
         }
       }
     },
@@ -126,12 +124,8 @@
             status: 1,
             name: '',
             title_en: '',
-            title: [],
-            content: []
-          };
-          this.ShowData = {
-            title: [],
-            content: []
+            title: '',
+            content: ''
           };
         }
       },
@@ -142,7 +136,7 @@
         this.SubData.title = val.title;
         this.SubData.content = val.content;
 
-        let title = [],
+        /*let title = [],
             content = [];
         this.SubData.title.forEach(val=>{
           if(/^{\w+}$/.test(val)){
@@ -165,18 +159,11 @@
           }else{
             content.push(val);
           }
-        })
-        this.ShowData.title = title;
-        this.ShowData.content = content;
+        })*/
       }
     },
     computed:{
-      getTitle(){
-        return this.ShowData.title.join('');
-      },
-      getContent(){
-        return this.ShowData.content.join('');
-      }
+
     },
     methods: {
       CloseBtn(){
@@ -187,8 +174,7 @@
       },
       AddTag(tag){
         if(this.FocusKey){
-          this.SubData[this.FocusKey].push(tag.value);
-          this.ShowData[this.FocusKey].push(tag.name);
+          this.SubData[this.FocusKey] += tag.value;
         }else{
           this.AlertErr();
         }

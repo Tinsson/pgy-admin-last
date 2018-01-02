@@ -1,7 +1,7 @@
 <template>
   <Modal
     v-model="AppPushState"
-    title="推送消息"
+    title="发送消息"
     @on-cancel="CloseBtn">
     <Form ref="Result" :model="Result" :rules="ValidateRules" label-position="right" :label-width="120">
       <FormItem label="发送对象：">

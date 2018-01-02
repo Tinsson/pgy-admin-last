@@ -45,7 +45,7 @@
     components: {
       AuditModal
     },
-    data () {
+    data: function () {
       return {
         title: '工作业绩',
         apiUrl: '/backend/Results/Audit',
@@ -62,7 +62,7 @@
           type: 'review',
           cur: true,
           show: false
-        },{
+        }, {
           name: '冯剑涛',
           icon: 'ios-list-outline',
           count: 0,
@@ -70,7 +70,7 @@
           type: 'loan',
           cur: false,
           show: false
-        },{
+        }, {
           name: '张杰',
           icon: 'ios-list-outline',
           count: 0,
@@ -79,7 +79,7 @@
           type: 'urge',
           cur: false,
           show: false
-        },{
+        }, {
           name: '张铠峰',
           icon: 'ios-list-outline',
           count: 0,
@@ -93,17 +93,17 @@
         HasSecond: false,
         BarWidth: '',
         BarText1: '0',
-        BarOption1:{
-          title : {
+        BarOption1: {
+          title: {
             text: '审核客户数',
             subtext: '',
-            x:'center'
+            x: 'center'
           },
           color: ['#358AF5'],
-          tooltip : {
+          tooltip: {
             trigger: 'axis',
-            axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-              type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+              type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
             }
           },
           grid: {
@@ -112,41 +112,41 @@
             bottom: '3%',
             containLabel: true
           },
-          xAxis : [
+          xAxis: [
             {
-              type : 'category',
-              data : ['2017-12-24', '2017-12-25', '2017-12-26', '2017-12-27', '2017-12-28', '2017-12-29'],
+              type: 'category',
+              data: ['2017-12-24', '2017-12-25', '2017-12-26', '2017-12-27', '2017-12-28', '2017-12-29'],
               axisTick: {
                 alignWithLabel: true
               }
             }
           ],
-          yAxis : [
+          yAxis: [
             {
-              type : 'value'
+              type: 'value'
             }
           ],
-          series : [
+          series: [
             {
-              name:'',
-              type:'bar',
+              name: '',
+              type: 'bar',
               barWidth: '60%',
-              data:[2, 3, 4, 5, 6, 7]
+              data: [2, 3, 4, 5, 6, 7]
             }
           ]
         },
         BarText2: '0',
-        BarOption2:{
-          title : {
+        BarOption2: {
+          title: {
             text: '还款笔数',
             subtext: '',
-            x:'center'
+            x: 'center'
           },
           color: ['#fa8c16'],
-          tooltip : {
+          tooltip: {
             trigger: 'axis',
-            axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-              type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+              type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
             }
           },
           grid: {
@@ -155,26 +155,26 @@
             bottom: '3%',
             containLabel: true
           },
-          xAxis : [
+          xAxis: [
             {
-              type : 'category',
-              data : ['2017-12-24', '2017-12-25', '2017-12-26', '2017-12-27', '2017-12-28', '2017-12-29', '2017-12-30'],
+              type: 'category',
+              data: ['2017-12-24', '2017-12-25', '2017-12-26', '2017-12-27', '2017-12-28', '2017-12-29', '2017-12-30'],
               axisTick: {
                 alignWithLabel: true
               }
             }
           ],
-          yAxis : [
+          yAxis: [
             {
-              type : 'value'
+              type: 'value'
             }
           ],
-          series : [
+          series: [
             {
-              name:'',
-              type:'bar',
+              name: '',
+              type: 'bar',
               barWidth: '60%',
-              data:[2, 3, 4, 5, 6, 7, 8]
+              data: [2, 3, 4, 5, 6, 7, 8]
             }
           ]
         }

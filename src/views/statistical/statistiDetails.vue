@@ -49,7 +49,7 @@
             subtext: '',
             x:'center'
           },
-          color: ['#358AF5'],
+          color: ['#358AF5','#13c2c2'],
           tooltip : {
             trigger: 'axis',
             axisPointer : {            // 坐标轴指示器，坐标轴触发有效
@@ -80,7 +80,6 @@
             {
               name:'',
               type:'bar',
-              barWidth: '60%',
               data:[2, 3, 4, 5, 6, 7, 8]
             }
           ]
@@ -91,7 +90,7 @@
             subtext: '',
             x:'center'
           },
-          color: ['#fa8c16'],
+          color: ['#fa8c16','#722ed1'],
           tooltip : {
             trigger: 'axis',
             axisPointer : {            // 坐标轴指示器，坐标轴触发有效
@@ -122,7 +121,6 @@
             {
               name:'',
               type:'bar',
-              barWidth: '60%',
               data:[0, 0, 0, 0, 0, 0, 0]
             }
           ]
@@ -247,10 +245,25 @@
         this.InitData(this.apiUrl,params).then(res=>{
           this.BarText1 = res.amountAll;
           this.BarText2 = res.countAll;
+          this.BarOption1.title.subtext = '当月新增总金额：' + res.newAmountAll;
+          this.BarOption2.title.subtext = '当月新增总笔数：' + res.newCountAll;
           this.BarOption1.xAxis[0].data = Object.keys(res.data);
           this.BarOption2.xAxis[0].data = Object.keys(res.data);
-          this.BarOption1.series[0].data = this.getInnerValue(Object.values(res.data),'amount');
-          this.BarOption2.series[0].data = this.getInnerValue(Object.values(res.data),'count');
+          this.BarOption1.series[0].data = this.getInnerSpeciel(res.data,'amount');
+          this.BarOption2.series[0].data = this.getInnerSpeciel(res.data,'count');
+          this.BarOption1.series[0].name = '借款金额';
+          this.BarOption2.series[0].name = '借款笔数';
+          this.BarOption1.series[1] = {
+            name:'新增金额',
+            type:'bar',
+            data: this.getInnerSpeciel(res.data_,'amount')
+          };
+          this.BarOption2.series[1] = {
+            name: '新增笔数',
+            type: 'bar',
+            data: this.getInnerSpeciel(res.data_,'count')
+          };
+          console.log(this.getInnerSpeciel(res.data_,'count'));
           this.DrawChart();
         });
       },
@@ -272,9 +285,9 @@
           this.BarOption1.xAxis[0].data = Object.keys(res.data);
           this.BarOption2.xAxis[0].data = Object.keys(res.data);
           this.BarOption3.xAxis[0].data = Object.keys(res.data);
-          this.BarOption1.series[0].data = this.getInnerValue(Object.values(res.data),'amount');
-          this.BarOption2.series[0].data = this.getInnerValue(Object.values(res.data),'count');
-          this.BarOption3.series[0].data = this.getInnerValue(Object.values(res.data),'fee');
+          this.BarOption1.series[0].data = this.getInnerSpeciel(res.data,'amount');
+          this.BarOption2.series[0].data = this.getInnerSpeciel(res.data,'count');
+          this.BarOption3.series[0].data = this.getInnerSpeciel(res.data,'fee');
           this.DrawChart();
         });
       },
@@ -293,8 +306,8 @@
           this.BarText2 = res.renAll;
           this.BarOption1.xAxis[0].data = Object.keys(res.data);
           this.BarOption2.xAxis[0].data = Object.keys(res.data);
-          this.BarOption1.series[0].data = this.getInnerValue(Object.values(res.data),'amount');
-          this.BarOption2.series[0].data = this.getInnerValue(Object.values(res.data),'count');
+          this.BarOption1.series[0].data = this.getInnerSpeciel(res.data,'amount');
+          this.BarOption2.series[0].data = this.getInnerSpeciel(res.data,'count');
           this.DrawChart();
         });
       },
@@ -306,6 +319,13 @@
         let res = [];
         arr.forEach(val=>{
           res.push(val[key]);
+        });
+        return res;
+      },
+      getInnerSpeciel(obj,key){
+        let res = [];
+        Object.keys(obj).forEach(val=>{
+          res.push(obj[val][key]);
         });
         return res;
       },
