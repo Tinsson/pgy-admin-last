@@ -971,7 +971,7 @@
         }
       },
       GetAuditor(){
-        let name = ''
+        let name = '';
         this.EditData.auditor.forEach(val=>{
           if(val.id === this.EditData.info.auditorId){
             name = val.admin_user;
@@ -1585,12 +1585,38 @@
       },
       SelectAuditor(){
         const allinfo = JSON.stringify(this.EditData);
+        if(this.EditPerson.auditor === ''){
+          return false;
+        }
+        if(this.EditPerson.auditor !== this.EditData.info.auditorId){
+          const data = {
+            uid: this.ID,
+            upid: this.EditPerson.auditor
+          }
+          this.UploadData('backend/User/upAudit', data).then(()=>{
+            this.EditData.info.auditorId = this.EditPerson.auditor;
+            this.EditPerson.IsAuditor = false;
+          });
+        }
         /*this.$post('/backend/User/editUserQuery',{_post: allinfo}).then(()=>{
           this.EditPerson.IsAuditor = false;
         });*/
       },
       SelectCollector(){
         const allinfo = JSON.stringify(this.EditData);
+        if(this.EditPerson.collector === ''){
+          return false;
+        }
+        if(this.EditPerson.collector !== this.EditData.info.collectorId){
+          const data = {
+            uid: this.ID,
+            upid: this.EditPerson.collector
+          }
+          this.UploadData('backend/User/upColle', data).then(()=>{
+            this.EditData.info.collectorId = this.EditPerson.collector;
+            this.EditPerson.IsCollector = false;
+          });
+        }
         /*this.$post('/backend/User/editUserQuery',{_post: allinfo}).then(()=>{
           this.EditPerson.IsCollector = false;
         });*/
