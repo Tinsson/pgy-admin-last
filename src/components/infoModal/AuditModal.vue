@@ -1646,9 +1646,10 @@
     border-bottom: 1px solid #eee;
     border-right: 1px solid #eee;
     .avator{
-      width: 60px;
+      width: 100px;
       height: 60px;
       margin: 2px 15px 0;
+      text-align: center;
       position: relative;
       cursor: pointer;
       .text{
@@ -1668,7 +1669,7 @@
         }
       }
       img{
-        width: 100%;
+        width: 60px;
         border-radius: 50%;
       }
     }

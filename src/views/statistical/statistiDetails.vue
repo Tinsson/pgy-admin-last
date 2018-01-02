@@ -4,12 +4,22 @@
       <div ref="BarTitle" class="chart-tit" slot="title">
         <span class="tit-text">统计详情</span>
         <div class="right-side">
+          <Button type="primary" icon="android-arrow-back" @click="BackCountCenter">返回统计中心</Button>
           <DatePicker type="month" style="width: 120px" :value="CurrentMonth" placement="bottom-end" @on-change="pickMonth"></DatePicker>
         </div>
       </div>
-      <div id="BarChart1" class="chart-box" :style="{width: BarWidth+'px'}"></div>
-      <div id="BarChart2" class="chart-box" :style="{width: BarWidth+'px'}"></div>
-      <div id="BarChart3" class="chart-box" :style="{width: BarWidth+'px',height: ThirdH}"></div>
+      <div class="chart-out">
+        <span class="count-all">总计：{{BarText1}}</span>
+        <div id="BarChart1" class="chart-box" :style="{width: BarWidth+'px'}"></div>
+      </div>
+      <div class="chart-out">
+        <span class="count-all">总计：{{BarText2}}</span>
+        <div id="BarChart2" class="chart-box" :style="{width: BarWidth+'px'}"></div>
+      </div>
+      <div class="chart-out" v-show="HasThird">
+        <span class="count-all">总计：{{BarText3}}</span>
+        <div id="BarChart3" class="chart-box" :style="{width: BarWidth+'px',height: ThirdH}"></div>
+      </div>
     </Card>
   </div>
 </template>
@@ -30,6 +40,9 @@
         HasThird: false,
         CurrentMonth: '',
         BarWidth: '',
+        BarText1: '0',
+        BarText2: '0',
+        BarText3: '0',
         BarOption1:{
           title : {
             text: '总金额',
@@ -287,6 +300,11 @@
           res.push(val[key]);
         });
         return res;
+      },
+      BackCountCenter(){
+        this.$router.push({
+          path: '/statistical/statistiIndex'
+        })
       }
     }
   }
@@ -302,7 +320,7 @@
   }
   .right-side{
     display: inline-block;
-    width: 120px;
+    width: 250px;
   }
   .tit-text{
     padding: 5px 0;
@@ -313,5 +331,13 @@
   }
   .third-chart{
     display: none;
+  }
+  .chart-out{
+    position: relative;
+    .count-all{
+      position: absolute;
+      top: 10px;
+      right: 35px;
+    }
   }
 </style>

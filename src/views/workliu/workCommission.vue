@@ -22,8 +22,12 @@
             <DatePicker type="month" style="width: 120px" :value="CurrentMonth" placement="bottom-end" @on-change="pickMonth"></DatePicker>
           </div>
         </div>
-        <div id="BarChart1" class="chart-box" :style="{width: BarWidth+'px'}"></div>
-        <div v-show="HasSecond" style="margin-top: 15px">
+        <div class="chart-out">
+          <span class="count-all">总计：{{BarText1}}</span>
+          <div id="BarChart1" class="chart-box" :style="{width: BarWidth+'px'}"></div>
+        </div>
+        <div v-show="HasSecond" class="chart-out" style="margin-top: 15px">
+          <span class="count-all">总计：{{BarText2}}</span>
           <div id="BarChart2" class="chart-box" :style="{width: BarWidth+'px'}"></div>
         </div>
       </Card>
@@ -88,6 +92,7 @@
         SecondH: '300px',
         HasSecond: false,
         BarWidth: '',
+        BarText1: '0',
         BarOption1:{
           title : {
             text: '审核客户数',
@@ -130,6 +135,7 @@
             }
           ]
         },
+        BarText2: '0',
         BarOption2:{
           title : {
             text: '还款笔数',
@@ -412,5 +418,14 @@
   }
   .chart-box{
     height: 300px;
+    position: relative;
+  }
+  .chart-out{
+    position: relative;
+    .count-all{
+      position: absolute;
+      top: 10px;
+      right: 35px;
+    }
   }
 </style>
