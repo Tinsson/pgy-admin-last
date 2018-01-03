@@ -319,6 +319,13 @@
                   <span class="half">放款员：冯剑涛</span>
                   <span class="half">借款用途：{{AllInfo.jiben.info.money_use_to}}</span>
                 </p>
+                <p class="info-box">
+                  <span class="half">审核状态：{{AllInfo.jiben.info.audit_status}}</span>
+                  <span class="half">借款状态：{{AllInfo.jiben.info.loan_status}}</span>
+                </p>
+                <p class="info-box">
+                  <span class="half">黑名单：</span>
+                </p>
                 <Card class="card-area">
                   <h2 class="user-title">认证数据</h2>
                   <Table :columns="Authorize.Col"
@@ -577,6 +584,28 @@
             <Input ref="LimitInput" v-show="Limit.status" v-model="Limit.value" autofocus @on-enter="SubmitLimit" style="width: 80px;display: inline-block"/>
           </p>
           <Button type="info" @click="RemarkOpt">添加备注</Button>
+          <p v-show="IsImportTb.status" class="inline-block">
+            <Upload
+              :headers="IsImportTb.config"
+              :action="IsImportTb.url"
+              :data="IsImportTb.params"
+              :show-upload-list="false"
+              :on-success="UploadSuccessTb" :on-error="UploadErrorTb">
+              <Button :type="IsImportTb.type">{{IsImportTb.text}}</Button>
+            </Upload>
+          </p>
+          <p v-show="IsImportYys.status" class="inline-block">
+            <Upload
+              :headers="IsImportYys.config"
+              :action="IsImportYys.url"
+              :data="IsImportYys.params"
+              :show-upload-list="false"
+              :before-upload="UploadStart"
+              :on-success="UploadSuccessYys"
+              :on-error="UploadErrorYys">
+              <Button :type="IsImportYys.type">{{IsImportYys.text}}</Button>
+            </Upload>
+          </p>
           <p id="clipBtn" class="clipBtn" ref="ClipBox" :src="LoanCopyInfo"></p>
           <!--<p v-show="IsPass.isLoan" class="inline-block">-->
             <!--<Button type="info" v-show="IsPass.status" @click="SetLoanOpt">设置放款员</Button>-->
@@ -740,6 +769,22 @@
           type: 'primary',
           status: false,
           text: '挂起'
+        },
+        IsImportTb:{
+          status: false,
+          config: {},
+          params: {},
+          url: '',
+          type: 'info',
+          text: '导入报表'
+        },
+        IsImportYys:{
+          status: false,
+          config: {},
+          params: {},
+          url: '',
+          type: 'info',
+          text: '导入报表'
         },
         Limit: {
           status: false,
@@ -1080,6 +1125,7 @@
           this.ButtonAll = [];
           this.IsPass.isLimit = false;
           this.IsPass.isLoan = false;
+          this.IsImportTb.status = false;
           this.Urge.auth = false;
           d.data.operation.forEach(val=>{
             if(val.class === 'GiveLimitOpt'){
@@ -1090,6 +1136,20 @@
               this.IsPass.isLoan = true;
             }else if(val.class === 'RecordAddOpt'){
               this.Urge.auth = true;
+            }else if(val.class === 'ImportTaobaoOpt'){
+              this.IsImportTb.status = true;
+              this.IsImportTb.text = val.name;
+              this.IsImportTb.type = val.color;
+              this.IsImportTb.url = this.$axios.defaults.baseURL + '';
+              this.IsImportTb.config.token = this.$getLocal('token');
+              this.IsImportTb.params.uid = this.ID;
+            }else if(val.class === 'ImportYysOpt'){
+              this.IsImportYys.status = true;
+              this.IsImportYys.text = val.name;
+              this.IsImportYys.type = val.color;
+              this.IsImportYys.url = this.$axios.defaults.baseURL + '/backend/User/improYys';
+              this.IsImportYys.config.token = this.$getLocal('token');
+              this.IsImportYys.params.uid = this.ID;
             }else{
               this.ButtonAll.push(val);
             }
@@ -1631,6 +1691,37 @@
             this.$Message.error('该用户已经取消关注！');
           }
         })
+      },
+      //导入淘宝
+      UploadSuccessTb(){
+
+      },
+      UploadErrorTb(){
+
+      },
+      UploadStart(){
+        this.$Message.loading({
+          content: '上传中，请勿进行其他操作！',
+          duration: 100
+        });
+      },
+      //导入运营商
+      UploadSuccessYys(res){
+        this.$Message.destroy();
+        if(res.status){
+          this.$Message.success({
+            content: res.message,
+            duration: 3
+          });
+        }else{
+          this.$Message.error({
+            content: res.message,
+            duration: 3
+          })
+        }
+      },
+      UploadErrorYys(){
+
       }
     }
   }

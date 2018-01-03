@@ -185,6 +185,12 @@
           name: '设置放款员按钮',
           value: 'SetLoanOpt'
         },{
+          name: '导入淘宝按钮',
+          value: 'ImportTaobaoOpt'
+        },{
+          name: '导入运营商按钮',
+          value: 'ImportYysOpt'
+        },{
           name: '加入黑名单按钮',
           value: 'AddBlackOpt'
         },{
