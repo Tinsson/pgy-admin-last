@@ -239,6 +239,10 @@
             title: '金额',
             key: 'amount'
           },{
+            title: '黑名单',
+            align: 'center',
+            key: 'black'
+          },{
             title: '逾期天数',
             align: 'center',
             key: 'overdue_day'
@@ -414,6 +418,7 @@
           this.InitData(this.apiUrl,this.ScreenData).then(()=>{
             if(sign){
               this.$Message.success('筛选成功！')
+              this.SelectData = [];
             }
             resolve();
           });
@@ -602,11 +607,17 @@
         this.Group.AppmsgModal = false;
       },
       AppOpt(info){
-        let sinfo = this.RemoveObserve(info);
-        sinfo.regid = (sinfo.type.length > 0)?sinfo.regid.join(','):'';
-        this.UploadData('/backend/Push/pushs',sinfo).then(()=>{
+        let params = {
+          ispush: info.type,
+          arr: info.regid.join(','),
+          modid: info.tmplid
+        };
+        this.UploadData('/backend/Collection/collectionListInfo', params).then(()=>{
           this.Group.AppmsgModal = false;
         });
+        /*this.UploadData('/backend/Push/pushs',sinfo).then(()=>{
+          this.Group.AppmsgModal = false;
+        });*/
         //this.Group.AppmsgModal = false;
       },
       OpenReport(){

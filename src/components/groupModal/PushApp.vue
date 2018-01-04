@@ -17,8 +17,8 @@
       </FormItem>
       <FormItem label="推送类型：">
         <RadioGroup v-model="Result.type">
-          <Radio label="all">全部</Radio>
-          <Radio label="notall">
+          <Radio :label="1">全部</Radio>
+          <Radio :label="2">
             <span>仅勾选对象</span>
           </Radio>
         </RadioGroup>
@@ -48,7 +48,7 @@
         AppPushState: this.modalShow,
         Result: {
           regid: [],
-          type: 'notall',
+          type: 2,
           tmplid: 0,
           all: false
         },
@@ -96,13 +96,10 @@
         })
       },
       EditOver(){
+        console.log(this.Result.regid);
         this.$refs['Result'].validate(valid=>{
           if(valid){
-            if(this.Result.type === 'notall' && this.Result.regid){
-              this.$Message.error('请先勾选用户！');
-            }else{
-              this.$emit('UpOver',this.Result);
-            }
+            this.$emit('UpOver',this.Result);
           }
         })
       },

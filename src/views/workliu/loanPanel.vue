@@ -44,7 +44,7 @@
             用户列表
           </h3>
           <div class="btn-box">
-            <Button type="info" size="large" icon="chatbox" @click="GroupAppOpt" style="margin-right: 12px;">群发消息</Button>
+            <!--<Button type="info" size="large" icon="chatbox" @click="GroupAppOpt" style="margin-right: 12px;">群发消息</Button>-->
             <span>资金账号：
             <Select v-model="Owner" @on-change="ChoseOwner" style="display: inline-block;width: 80px;">
               <Option :value="1">李义</Option>

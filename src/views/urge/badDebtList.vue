@@ -179,6 +179,9 @@
             title: '金额',
             key: 'amount'
           },{
+            title: '黑名单',
+            key: 'black'
+          },{
             title: '逾期天数',
             key: 'overdue_day'
           },{

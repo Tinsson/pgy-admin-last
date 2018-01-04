@@ -207,6 +207,7 @@
                       </Row>
                     </Col>
                   </Row>
+                  <Button type="warning" @click="LinkAdd" v-show="IsEdit">添加联系人</Button>
                 </p>
                 <p class="value long">
                   <Row>
@@ -653,6 +654,11 @@
                :initData="Loan.data"
                @CloseModal="LoanCancel"
                @SubModal="LoanSub"></LoanModal>
+    <LinkModal :modalShow="Link.modal"
+               ref="link_modal"
+               :initData="Link.data"
+               @CloseModal="LinkCancel"
+               @SubModal="LinkSub"></LinkModal>
   </div>
 </template>
 
@@ -663,6 +669,7 @@
   import DelayModal from '@/components/infoModal/DelayModal'
   import RepayModal from '@/components/infoModal/RepayModal'
   import LoanModal from '@/components/infoModal/LoanModal'
+  import LinkModal from '@/components/infoModal/LinkModal'
 
   export default {
     name: 'AuditModal',
@@ -670,7 +677,8 @@
       BigPic,
       DelayModal,
       RepayModal,
-      LoanModal
+      LoanModal,
+      LinkModal
     },
     data () {
       return{
@@ -904,6 +912,16 @@
             id: '',
             name: '',
             amount: ''
+          }
+        },
+        //联系人添加
+        Link: {
+          modal: false,
+          data:{
+            id: '',
+            name: '',
+            phone: '',
+            relationship: ''
           }
         },
         Huabei:{
@@ -1464,6 +1482,46 @@
         this.UploadData('/backend/Loan/payLoanRequest',data).then(()=>{
           this.Loan.modal = false;
           this.InitData(this.InitId);
+        })
+      },
+      LinkAdd(){
+        this.Link.data = {
+          uid: this.ID,
+          name: '',
+          phone: '',
+          relationship: ''
+        };
+        this.$refs.link_modal.show();
+      },
+      LinkCancel(){
+        this.Link.modal = false;
+      },
+      LinkSub(data){
+        this.UploadData('/backend/User/addContact',data).then(()=>{
+          let relationship = '';
+          switch(data.relationship){
+            case 'F':
+              relationship = '父亲';
+              break;
+            case 'M':
+              relationship = '母亲';
+              break;
+            case 'P':
+              relationship = '配偶';
+              break;
+            case 'Y':
+              relationship = '朋友';
+              break;
+            case 'T':
+              relationship = '同事';
+              break;
+            case 'L':
+              relationship = '领导';
+              break;
+          }
+          data.relationship = relationship;
+          this.EditData.lianxiren.push(data);
+          this.$refs.link_modal.close();
         })
       },
       StateText(arr){

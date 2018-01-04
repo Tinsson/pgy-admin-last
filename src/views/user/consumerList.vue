@@ -618,10 +618,12 @@
         this.Group.AppmsgModal = false;
       },
       AppOpt(info){
-        let sinfo = this.RemoveObserve(info);
-        sinfo.regid = (sinfo.type.length > 0)?sinfo.regid.join(','):'';
-        console.log(sinfo);
-        this.UploadData('/backend/Push/pushs',sinfo).then(()=>{
+        let params = {
+          ispush: info.type,
+          arr: info.regid.join(','),
+          modid: info.tmplid
+        };
+        this.UploadData('/backend/User/getUserList', params).then(()=>{
           this.Group.AppmsgModal = false;
         });
       },
