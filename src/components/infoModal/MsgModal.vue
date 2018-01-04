@@ -206,12 +206,6 @@
 </script>
 
 <style lang="less" scoped>
-  .big-img{
-    display: inline-block;
-  }
-  .unit-width{
-    width: 280px;
-  }
   .ding-area{
     display: flex;
     flex-direction: row;

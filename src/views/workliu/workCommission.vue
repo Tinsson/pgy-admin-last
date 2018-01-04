@@ -99,7 +99,7 @@
             subtext: '',
             x: 'center'
           },
-          color: ['#358AF5'],
+          color: ['#358AF5','#13c2c2','#52c41a'],
           tooltip: {
             trigger: 'axis',
             axisPointer: {            // 坐标轴指示器，坐标轴触发有效
@@ -130,7 +130,6 @@
             {
               name: '',
               type: 'bar',
-              barWidth: '60%',
               data: [2, 3, 4, 5, 6, 7]
             }
           ]
@@ -173,7 +172,6 @@
             {
               name: '',
               type: 'bar',
-              barWidth: '60%',
               data: [2, 3, 4, 5, 6, 7, 8]
             }
           ]
@@ -264,10 +262,30 @@
               this.BarOption2.series[0].data = Object.values(d.hk);
               this.BarText1 = this.CountAll(Object.values(d.zq));
               this.BarText2 = this.CountAll(Object.values(d.hk));
+              this.CutRest();
             }else{
-              this.BarOption1.xAxis[0].data = Object.keys(d);
-              this.BarOption1.series[0].data = Object.values(d);
-              this.BarText1 = this.CountAll(Object.values(d));
+              if(this.CountData[1].cur){
+                this.BarOption1.xAxis[0].data = Object.keys(d.data);
+                this.BarOption1.series[0].data = Object.values(d.data);
+                this.BarOption1.series[0].name = '总客户数';
+                this.BarOption1.series[1] = {
+                  name:'新增客户',
+                  type:'bar',
+                  data: Object.values(d.data1)
+                };
+                this.BarOption1.series[2] = {
+                  name:'续借客户',
+                  type:'bar',
+                  data: Object.values(d.data2)
+                };
+                this.BarOption1.title.subtext = `新增总数：${d.fkNew} 续借总数：${d.fkXuj}`;
+                this.BarText1 = d.fkAll;
+              }else{
+                this.BarOption1.xAxis[0].data = Object.keys(d);
+                this.BarOption1.series[0].data = Object.values(d);
+                this.BarText1 = this.CountAll(Object.values(d));
+                this.CutRest();
+              }
             }
             this.DrawChart();
             that.loading = false;
@@ -292,7 +310,7 @@
       },
       DrawChart(){
         let BarChart1 = this.$echarts.init(document.getElementById('BarChart1'));
-        BarChart1.setOption(this.BarOption1);
+        BarChart1.setOption(this.BarOption1,true);
         if(this.HasSecond){
           let BarChart2 = this.$echarts.init(document.getElementById('BarChart2'));
           BarChart2.setOption(this.BarOption2);
@@ -318,6 +336,13 @@
           res += parseFloat(val);
         });
         return res;
+      },
+      CutRest(){
+        if(this.BarOption1.series.length > 1){
+          this.BarOption1.series = this.BarOption1.series.slice(0,1);
+          this.BarOption1.series[0].name = '';
+          this.BarOption1.title.subtext = '';
+        }
       }
     }
   }
