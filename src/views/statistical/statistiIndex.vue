@@ -98,40 +98,44 @@
         </router-link>
       </Col>
       <Col class="card-col" span="8">
-      <Card>
-        <h2 class="card-title">笔数总逾期率</h2>
-        <p class="card-number">{{ CountData.BishuYuqiReteAll }}</p>
-        <div class="card-content">
-          <p class="info-txt">
-              <span>
-                <span class="label">笔数逾期率（今年）</span>
-                <span class="value">{{ CountData.BishuYuqiReteYear }}</span>
-              </span>
-          </p>
-        </div>
-        <div class="card-footer">
-          <span></span>
-          <span class="value"></span>
-        </div>
-      </Card>
+        <router-link to="/statistical/statistiDetails?type=bishu">
+          <Card>
+            <h2 class="card-title">笔数总逾期率</h2>
+            <p class="card-number">{{ CountData.BishuYuqiReteAll }}</p>
+            <div class="card-content">
+              <p class="info-txt">
+                  <span>
+                    <span class="label">笔数逾期率（今年）</span>
+                    <span class="value">{{ CountData.BishuYuqiReteYear }}</span>
+                  </span>
+              </p>
+            </div>
+            <div class="card-footer">
+              <span></span>
+              <span class="value"></span>
+            </div>
+          </Card>
+        </router-link>
       </Col>
       <Col class="card-col" span="8">
-      <Card>
-        <h2 class="card-title">金额总逾期率</h2>
-        <p class="card-number">{{ CountData.AmountYuqiReteAll }}</p>
-        <div class="card-content">
-          <p class="info-txt">
-              <span>
-                <span class="label">金额逾期率（今年）</span>
-                <span class="value">{{ CountData.AmountYuqiReteYear }}</span>
-              </span>
-          </p>
-        </div>
-        <div class="card-footer">
-          <span></span>
-          <span class="value"></span>
-        </div>
-      </Card>
+        <router-link to="/statistical/statistiDetails?type=amount">
+          <Card>
+            <h2 class="card-title">金额总逾期率</h2>
+            <p class="card-number">{{ CountData.AmountYuqiReteAll }}</p>
+            <div class="card-content">
+              <p class="info-txt">
+                  <span>
+                    <span class="label">金额逾期率（今年）</span>
+                    <span class="value">{{ CountData.AmountYuqiReteYear }}</span>
+                  </span>
+              </p>
+            </div>
+            <div class="card-footer">
+              <span></span>
+              <span class="value"></span>
+            </div>
+          </Card>
+        </router-link>
       </Col>
     </Row>
     <Row :gutter="14" class="pie-box">
@@ -343,6 +347,7 @@
       width: 100%;
       display: flex;
       flex-direction: row;
+      color: #333;
       .half{
         width: 50%;
         color: #333;

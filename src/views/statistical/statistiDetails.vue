@@ -5,18 +5,19 @@
         <span class="tit-text">统计详情</span>
         <div class="right-side">
           <Button type="primary" icon="android-arrow-back" @click="BackCountCenter">返回统计中心</Button>
-          <DatePicker type="month" style="width: 120px" :value="CurrentMonth" placement="bottom-end" @on-change="pickMonth"></DatePicker>
+          <DatePicker type="year" style="width: 120px" v-show="IsSingle" :value="CurrentYear" placement="bottom-end" @on-change="pickYear"></DatePicker>
+          <DatePicker type="month" style="width: 120px" v-show="!IsSingle" :value="CurrentMonth" placement="bottom-end" @on-change="pickMonth"></DatePicker>
         </div>
       </div>
       <div class="chart-out">
-        <span class="count-all">总计：{{BarText1}}</span>
+        <span class="count-all" v-show="!IsSingle">总计：{{BarText1}}</span>
         <div id="BarChart1" class="chart-box" :style="{width: BarWidth+'px'}"></div>
       </div>
-      <div class="chart-out">
+      <div class="chart-out" v-show="!IsSingle">
         <span class="count-all">总计：{{BarText2}}</span>
         <div id="BarChart2" class="chart-box" :style="{width: BarWidth+'px'}"></div>
       </div>
-      <div class="chart-out" v-show="HasThird">
+      <div class="chart-out" v-show="HasThird && !IsSingle">
         <span class="count-all">总计：{{BarText3}}</span>
         <div id="BarChart3" class="chart-box" :style="{width: BarWidth+'px',height: ThirdH}"></div>
       </div>
@@ -36,9 +37,11 @@
         apiUrl: '/backend/Statistical/staticinfo',
         CountType: '',
         CountData: {},
+        IsSingle: false,
         ThirdH: '300px',
         HasThird: false,
         CurrentMonth: '',
+        CurrentYear: '',
         BarWidth: '',
         BarText1: '0',
         BarText2: '0',
@@ -173,6 +176,7 @@
       this.CountType = this.$route.query.type;
       const now = new Date();
       this.CurrentMonth = `${now.getFullYear()}-${now.getMonth()+1}`;
+      this.CurrentYear = `${now.getFullYear()}`;
       this.Distinguish();
       this.BarWidth = this.$refs['BarTitle'].offsetWidth;
     },
@@ -191,7 +195,7 @@
       DrawChart(){
         let BarChart1 = this.$echarts.init(document.getElementById('BarChart1'));
         let BarChart2 = this.$echarts.init(document.getElementById('BarChart2'));
-        BarChart1.setOption(this.BarOption1);
+        BarChart1.setOption(this.BarOption1, true);
         BarChart2.setOption(this.BarOption2);
         if(this.HasThird){
           let BarChart3 = this.$echarts.init(document.getElementById('BarChart3'));
@@ -211,6 +215,12 @@
             break;
           case 'overdue':
             this.InitOverDue();
+            break;
+          case 'bishu':
+            this.InitBishu();
+            break;
+          case 'amount':
+            this.InitAmount();
             break;
         }
       },
@@ -311,8 +321,42 @@
           this.DrawChart();
         });
       },
+      //笔数逾期率统计
+      InitBishu(){
+        this.BarOption1.title.text = '笔数逾期率';
+        this.ThirdH = '0px';
+        this.IsSingle = true;
+        let params = {
+          status: 'bishu',
+          y: this.CurrentYear
+        };
+        this.InitData(this.apiUrl,params).then(res=>{
+          this.BarOption1.xAxis[0].data = Object.keys(res);
+          this.BarOption1.series[0].data = Object.values(res);
+          this.DrawChart();
+        });
+      },
+      //金额逾期率统计
+      InitAmount(){
+        this.BarOption1.title.text = '金额逾期率';
+        this.ThirdH = '0px';
+        this.IsSingle = true;
+        let params = {
+          status: 'amount',
+          y: this.CurrentYear
+        };
+        this.InitData(this.apiUrl,params).then(res=>{
+          this.BarOption1.xAxis[0].data = Object.keys(res);
+          this.BarOption1.series[0].data = Object.values(res);
+          this.DrawChart();
+        });
+      },
       pickMonth(date){
         this.CurrentMonth = date;
+        this.Distinguish();
+      },
+      pickYear(date){
+        this.CurrentYear = date;
         this.Distinguish();
       },
       getInnerValue(arr,key){
