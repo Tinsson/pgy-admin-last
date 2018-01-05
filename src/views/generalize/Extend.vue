@@ -76,12 +76,12 @@
       }
     },
     created(){
-      this.baseUrl = (process.env.NODE_ENV === 'development')?'http://www.zzdd.com/api':'http://api.xrjinrong.com/api';
+      this.baseUrl = this.$axios.defaults.baseURL;
       this.code = this.$route.query.code;
       this.InitData(this.code);
     },
     mounted(){
-      const title = '欣荣钱包推广'
+      const title = '欣荣钱包推广';
       document.body.style.overflow = 'hidden';
       document.setTitle = function(t) {
         document.title = t;
@@ -101,7 +101,7 @@
       //初始化数据
       InitData(code){
         return new Promise((resolve)=>{
-          this.$axios.get(this.baseUrl+'/Promote/index?code='+code).then((d)=>{
+          this.$axios.get(this.baseUrl+'/backend/Promote/index?code='+code).then((d)=>{
             const res = d.data.data;
             this.SubData.src = res.id;
             this.CodeColor = res.code_color;
@@ -124,11 +124,11 @@
           return;
         }
         this.AuthPic.status = true;
-        this.AuthPic.Data = this.baseUrl+'/Promote/getImgCode?phone='+this.SubData.phone;
+        this.AuthPic.Data = this.baseUrl+'/backend/Promote/getImgCode?phone='+this.SubData.phone;
       },
       ChangeImg(){
         this.$refs['CodeImg'].setAttribute('src','');
-        this.$refs['CodeImg'].setAttribute('src',this.baseUrl+'/Promote/getImgCode?phone='+this.SubData.phone);
+        this.$refs['CodeImg'].setAttribute('src',this.baseUrl+'/backend/Promote/getImgCode?phone='+this.SubData.phone);
       },
       SendSms(){
         if(this.WrongPhone()){
@@ -138,10 +138,10 @@
           alert('请先输入图片验证码！');
           return;
         }
-        this.$axios.post(this.baseUrl+'/Promote/getCode',qs.stringify({
+        this.$post('/backend/Promote/getCode',{
           phone: this.SubData.phone,
           vicode: this.AuthPic.Txt
-        })).then((d)=>{
+        }).then((d)=>{
           alert(d.data.message);
           if(d.data.status === 1){
             this.IsSend = true;
@@ -162,7 +162,7 @@
         },1000);
       },
       RegisterBtn(){
-        this.$axios.post(this.baseUrl+'/Promote/pReg',qs.stringify(this.SubData)).then((d)=>{
+        this.$axios.post(this.baseUrl+'/backend/Promote/pReg',qs.stringify(this.SubData)).then((d)=>{
           if(d.data.status === 1){
             this.$router.push('/registered');
           }else{
