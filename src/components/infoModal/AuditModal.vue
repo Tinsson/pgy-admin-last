@@ -201,7 +201,7 @@
                         <Input v-show="IsEdit" v-model="item.name" :style="{width: IptWidth}"/>
                         </Col>
                         <Col class="lxr-line" :span="12">
-                        手机号：<span v-show="!IsEdit">{{item.phone}}-<span class="num">{{ 12 }}</span>次</span>
+                        手机号：<span v-show="!IsEdit">{{item.phone}}<!--<span class="num">{{ 12 }}</span>次--></span>
                         <Input v-show="IsEdit" v-model="item.phone" :style="{width: IptWidth}"/>
                         </Col>
                       </Row>
