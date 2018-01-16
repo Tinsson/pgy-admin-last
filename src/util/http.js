@@ -17,7 +17,7 @@ if(IsDev){
 }else if(IsTest){
   axios.defaults.baseURL = 'http://apitest.pgyxwd.com'
 }else if(IsProd){
-  axios.defaults.baseURL = 'http://apinew.pgyxwd.com';
+  axios.defaults.baseURL = 'https://apinew.pgyxwd.com';
 };
 
 // http request 拦截器
