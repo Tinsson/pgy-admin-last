@@ -35,11 +35,11 @@
               </li>
               <li class="res-box">
                 <p class="simple" :class="'type'+AllInfo.jiben.info.yunyings.status">{{AllInfo.jiben.info.yunyings.info}}</p>
-                <p class="title">运营商</p>
+                <p class="title active" @click="ReportCarrier">运营商</p>
               </li>
               <li class="res-box">
                 <p class="simple" :class="'type'+AllInfo.jiben.info.taobao.status">{{AllInfo.jiben.info.taobao.info}}</p>
-                <p class="title">淘宝</p>
+                <p class="title active" @click="ReportTaobao">淘宝</p>
               </li>
               <li class="res-box">
                 <div class="simple edit-part" @click="ZmfEdit" :class="'type'+AllInfo.jiben.info.zhimafen.status">
@@ -1533,7 +1533,7 @@
       },
       //淘宝报表
       ReportTaobao(){
-        this.$fetch('/backend/Report/taobao',{user_id: this.ID}).then(d=>{
+        this.$fetch('/backend/Report/taobao-report',{uid: this.ID}).then(d=>{
           if(d.status === 0){
             this.$Message.error(d.message);
           }else{
@@ -1550,7 +1550,7 @@
       },
       //运营商报表
       ReportCarrier(){
-        this.$fetch('/backend/Report/carrier',{user_id: this.ID}).then(d=>{
+        this.$fetch('/backend/Report/carrier-report',{uid: this.ID}).then(d=>{
           if(d.status === 0){
             this.$Message.error(d.message);
           }else{
