@@ -216,7 +216,7 @@
           <td>被叫次数</td>
           <td>通话时长</td>
         </tr>
-        <tr v-for="(item,index) in CallNum.slice(0,10)" :key="index">
+        <tr v-for="(item,index) in CallNum" :key="index">
           <td>{{item.other_cell_phone}}</td>
           <td>{{item.bj}}</td>
           <td>{{item.place}}</td>
