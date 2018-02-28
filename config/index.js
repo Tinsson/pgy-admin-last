@@ -8,7 +8,7 @@ let url = '';
 if(IsZZ){
   url = 'http://www.pgyqb.com';
 }else{
-  url = 'http://apitest.pgyxwd.com';
+  url = 'https://apinew.pgyxwd.com';
 }
 
 module.exports = {

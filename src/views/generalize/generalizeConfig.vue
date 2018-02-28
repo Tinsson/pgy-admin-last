@@ -67,7 +67,7 @@
         </FormItem>
         <FormItem label="背景图：">
           <Select v-model="ModeModal.data.background_img" style="width: 160px">
-            <Option v-for="item in PicJugeData" :value="item.img" :key="item.id">{{item.title}}</Option>
+            <Option v-for="item in PicJugeData" :value="item.shortImg" :key="item.id">{{item.title}}</Option>
           </Select>
         </FormItem>
       </Form>
