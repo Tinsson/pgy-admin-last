@@ -158,7 +158,7 @@
             title: '推广链接',
             key: 'extend_url',
             render: (h, params)=>{
-              const Url = window.location.origin + '/#/extend?code=' + params.row.codebase;
+              const Url = window.location.origin + '/#/extend?code=' + params.row.code;
               return h('div',{
                 'class': {
                   clipBtn : true
