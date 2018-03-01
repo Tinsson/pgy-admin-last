@@ -409,7 +409,7 @@
           title: row.title,
           code_color: row.code_color,
           submit_color: row.submit_color,
-          background_img: row.background_img
+          background_img: row.shortImg
         };
         this.ModeModal.isEdit = true;
         this.ModeModal.id = row.id;
