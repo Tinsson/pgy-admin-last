@@ -28,7 +28,7 @@
         Config:{
           token: ''
         },
-        TempUrl: 'http://apinew.pgyxwd.com/excel/temp.xlsx'
+        TempUrl: 'https://apinew.pgyxwd.com/excel/temp.xls'
       }
     },
     props: {
@@ -58,7 +58,7 @@
         this.LoanInfo.jk_date = value;
       },
       DownloadTemp(){
-        window.location.href = 'http://apinew.pgyxwd.com/excel/temp.xlsx';
+        window.location.href = 'https://apinew.pgyxwd.com/excel/temp.xls';
       },
       UploadSuccess(res){
         if(res.status){

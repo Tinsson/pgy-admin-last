@@ -2,6 +2,10 @@
   <div class="taobao-report">
     <h2 class="all-title">蒲公英淘宝查询报告</h2>
     <p class="sub-title">报告生成时间：2017-10-11 09:11:44</p>
+    <div class="refresh-box">
+      <Button type="success" size="large" @click="handleRefresh">手动刷新数据</Button>
+    </div>
+    <p class="refresh-time">更新时间：2018-03-05 15:23:08</p>
     <div class="simple-box">
       <h3>查询信息</h3>
       <Row class="info-out">
@@ -119,7 +123,8 @@
     data () {
       return{
         Report:{
-        }
+        },
+        isRefresh: false
       }
     },
     computed:{
@@ -172,6 +177,28 @@
         }else{
           return key;
         }
+      },
+      handleRefresh(){
+        if(this.isRefresh){
+          return;
+        }
+        const uid = this.$route.query.uid;
+        this.isRefresh = true;
+        this.$Message.info({
+          content: '更新数据中，请耐心等待',
+          duration: 200
+        });
+        this.$fetch('/backend/report/taobao-reporth',{uid: uid}).then(d=>{
+          if(d.status === 1){
+            this.isRefresh = false;
+            this.$Message.destroy();
+            this.Report = d.data.data;
+          }else{
+            this.isRefresh = false;
+            this.$Message.destroy();
+            this.$Message.error(d.message);
+          }
+        });
       }
     }
   }
@@ -265,5 +292,13 @@
         }
       }
     }
+  }
+  .refresh-box{
+    display: flex;
+    flex-direction: row-reverse;
+  }
+  .refresh-time{
+    padding-top: 5px;
+    text-align: right;
   }
 </style>
