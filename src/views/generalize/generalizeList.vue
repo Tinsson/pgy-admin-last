@@ -142,7 +142,7 @@
           cunit: '人',
           second: true,
           other: 0,
-          ounit: '万元',
+          ounit: '元',
           status: 'HISTORYZH',
           cur: false
         },{
@@ -151,7 +151,7 @@
           count: 0,
           cunit: '%',
           second: false,
-          status: 'DAYLOAN',
+          status: 'ZHRATE',
           cur: false
         },{
           name: '逾期率',
@@ -159,7 +159,7 @@
           count: 0,
           cunit: '%',
           second: false,
-          status: 'HISTORYLOAN',
+          status: 'YQRATE',
           cur: false
         }],
         //基础筛选数据
