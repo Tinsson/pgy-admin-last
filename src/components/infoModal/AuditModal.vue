@@ -428,6 +428,7 @@
               </div>
               <div class="lend-info child">
                 <h2 class="part-title loan">借款</h2>
+                <div class="creat-time">操作日：{{item.create_at}}</div>
                 <div class="row-box">
                   <div class="main-part">
                     <p class="text-line">本金：{{item.amount}}</p>
@@ -441,6 +442,7 @@
               </div>
               <div class="lend-info child" v-if="item.zqlist.length > 0" v-for="zqitem in item.zqlist">
                 <h2 class="part-title delay">展期</h2>
+                <div class="creat-time">操作日：{{item.create_at}}</div>
                 <div class="row-box">
                   <div class="main-part">
                     <div class="text-line">展期费：{{zqitem.fee}}</div>
@@ -454,6 +456,7 @@
               </div>
               <div class="lend-info child" v-if="item.hklist.length > 0" v-for="hkitem in item.hklist">
                 <h2 class="part-title repay">还款</h2>
+                <div class="creat-time">操作日：{{item.create_at}}</div>
                 <div class="row-box">
                   <div class="main-part">
                     <div class="text-line">金额：{{hkitem.amount}}</div>
@@ -1397,6 +1400,7 @@
         this.UploadData('/backend/User/black',{uid: this.ID}).then((d)=>{
           this.EditData.info.black = d.val;
           this.BindHidden();
+          this.InitData(this.InitId);
         })
       },
       RemarkOpt(){
@@ -2050,6 +2054,12 @@
     }
     &.child{
       border-top: 1px solid #e3e3e3;
+      .creat-time{
+        position: absolute;
+        right: 26px;
+        top: 10px;
+        color: #f00;
+      }
     }
     .part-title{
       font-size: 18px;

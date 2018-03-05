@@ -239,6 +239,9 @@
             title: '金额',
             key: 'amount'
           },{
+            title: '应还金额',
+            key: 'payable'
+          },{
             title: '黑名单',
             align: 'center',
             key: 'black'
