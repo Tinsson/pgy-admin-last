@@ -132,8 +132,7 @@
           </RadioGroup>
           <FormItem label="来源渠道：">
             <Select v-model="SeniorData.qudao" placeholder="请选择来源渠道" style="width:162px">
-              <Option :value="0">今日头条</Option>
-              <Option :value="1">借贷宝</Option>
+              <Option v-for="item in channel" :key="item.id" :value="item.id">{{item.title}}</Option>
             </Select>
           </FormItem>
           <FormItem label="芝麻分范围：">
@@ -200,6 +199,7 @@
         title: '用户列表',
         auth_id: '',
         loading: true,
+        channel: [],
         allTime: [],
         //基础筛选数据
         ScreenData: {
@@ -343,6 +343,7 @@
       this.ClipBoard.on('success',(e)=>{
         this.$Message.success('复制成功！');
       })
+      this.getChannel();
     },
     destroyed() {
       this.ClipBoard.destroy();
@@ -418,6 +419,14 @@
             this.SeniorData[key] = this.ScreenData[key];
           }
         });
+      },
+      getChannel(){
+        this.$fetch('/backend/User/getproqd').then(d=>{
+          console.log(d);
+          if(d.status === 1){
+            this.channel = d.data.data;
+          }
+        })
       },
       //初始化列表数据
       InitData(params = {}){

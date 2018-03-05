@@ -149,9 +149,9 @@
         if("ali_order_info" in this.Report){
           info = this.Report.ali_order_info;
           info.forEach(val=>{
-            let date = new Date(val.trans_time * 1000);
-            let res = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
-            val.trans_time = res;
+            //let date = new Date(val.trans_time * 1000);
+            //let res = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+            //val.trans_time = res;
           })
         }
         return info;

@@ -240,7 +240,8 @@
             key: 'amount'
           },{
             title: '应还金额',
-            key: 'payable'
+            align: 'center',
+            key: 'yh_amount'
           },{
             title: '黑名单',
             align: 'center',

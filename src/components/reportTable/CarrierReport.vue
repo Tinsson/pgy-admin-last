@@ -2,6 +2,10 @@
   <div class="carrier-report">
     <h2 class="all-title">蒲公英运营商查询报告</h2>
     <p class="sub-title">报告生成时间：{{UserInfo.time}}</p>
+    <div class="refresh-box">
+      <Button type="success" size="large" @click="refresh">手动刷新数据</Button>
+    </div>
+    <p class="refresh-time">更新时间：2018-03-05 15:23:08</p>
     <div class="simple-box">
       <h3>查询信息</h3>
       <Row class="info-out">
@@ -442,10 +446,10 @@
     line-height: 30px;
     text-align: right;
     padding-right: 50px;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
   }
   .simple-box{
-    padding-top: 15px;
+    padding-top: 5px;
     border-bottom: 1px solid #e8eaeb;
   }
   .simple-box .info-out{
@@ -521,5 +525,13 @@
         }
       }
     }
+  }
+  .refresh-box{
+    display: flex;
+    flex-direction: row-reverse;
+  }
+  .refresh-time{
+    padding-top: 5px;
+    text-align: right;
   }
 </style>
