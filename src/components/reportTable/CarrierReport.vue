@@ -5,7 +5,7 @@
     <div class="refresh-box">
       <Button type="success" size="large" @click="handleRefresh">手动刷新数据</Button>
     </div>
-    <p class="refresh-time">更新时间：2018-03-05 15:23:08</p>
+    <p class="refresh-time">更新时间：{{UserInfo.updatetime}}</p>
     <div class="simple-box">
       <h3>查询信息</h3>
       <Row class="info-out">
