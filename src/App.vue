@@ -104,6 +104,7 @@ export default {
       flex-direction: row;
       align-content: center;
       padding-bottom: 10px;
+      margin-right: 15px;
       .form-label{
         width: 60px;
         font-size: 12px;

@@ -25,6 +25,19 @@
             <label class="form-label">检索：</label>
             <Input v-model="ScreenData.key" style="width: 200px" @on-enter="SimpleSearch"></Input>
           </div>
+          <div class="form-group">
+            <label class="form-label">借款类型：</label>
+            <Select v-model="ScreenData.jk_loan" clearable style="width:162px" @on-change="SimpleSearch">
+              <Option :value="0">新增</Option>
+              <Option :value="1">续借</Option>
+            </Select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">来源渠道：</label>
+            <Select v-model="ScreenData.qudao" clearable style="width:162px" @on-change="SimpleSearch">
+              <Option v-for="item in channel" :key="item.id" :value="item.id">{{item.title}}</Option>
+            </Select>
+          </div>
         </div>
       </Card>
     </div>
@@ -66,8 +79,11 @@
         allTime: [],
         //基础筛选数据
         ScreenData: {
-          key: ''
+          key: '',
+          jk_loan: '',
+          qudao: ''
         },
+        channel: [],
         UserCol: [
           {
             type: 'selection',
@@ -96,6 +112,14 @@
             align: 'center',
             key: 'jk_date'
           },{
+            title: '借款类型',
+            align: 'center',
+            key: 'jk_loan'
+          },{
+            title: '来源渠道',
+            align: 'center',
+            key: 'qudao'
+          },{
             title: '还款时间',
             align: 'center',
             key: 'hthk_date'
@@ -123,6 +147,7 @@
     },
     created(){
       this.InitData();
+      this.getChannel();
     },
     methods: {
       //去除data数据里绑定的监视器
@@ -154,6 +179,14 @@
         this.InitData(sinfo).then(()=>{
           this.$Message.success('筛选成功！');
         });
+      },
+      getChannel(){
+        this.$fetch('/backend/User/getproqd').then(d=>{
+          console.log(d);
+          if(d.status === 1){
+            this.channel = d.data.data;
+          }
+        })
       },
       //初始化数据
       InitData(params = {}){

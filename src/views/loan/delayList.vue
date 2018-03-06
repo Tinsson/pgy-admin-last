@@ -89,6 +89,13 @@
             align: 'center',
             key: 'amount'
           },{
+            title: '展期情况',
+            align: 'center',
+            key: 'zq_incount',
+            render: (h,params)=>{
+              return h('span',`第${params.row.zq_incount}次展期`);
+            }
+          },{
             title: '展期金额',
             key: 'order_amount'
           },{

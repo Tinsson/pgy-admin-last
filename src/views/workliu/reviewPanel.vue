@@ -1,7 +1,7 @@
 <template>
   <div id="review-panel">
     <h1 class="list-title">
-      <span class="tit-text">{{ title }}</span>
+      <span class="tit-text">审核</span>
       <Button class="tit-btn"
               type="info"
               icon="ios-reload"
@@ -15,7 +15,12 @@
         <p class="value"><span class="num">{{item.count}}</span>人</p>
         <span class="tips">点击查看</span>
       </div>
-      <div v-for="item in CountData2" class="sim-card" :class="{cur:item.cur}" @click="CountList(item.status)">
+    </div>
+    <h1 class="list-title">
+      <span class="tit-text">放款</span>
+    </h1>
+    <div class="card-box">
+      <div v-for="item in CountData2" class="sim-card" :class="{cur:item.cur}" @click="CountList2(item.status)">
         <Icon class="icon" :type="item.icon"></Icon>
         <p class="title">{{ item.name }}</p>
         <p class="value"><span class="num">{{item.count}}</span>人</p>
@@ -90,12 +95,13 @@
     },
     data () {
       return {
-        title: '审核审核面板',
+        title: '审核放款面板',
         apiUrl: '/backend/loan-audit/list',  //审核
         apiUrl2: '/backend/loan-make/list',  //放款
         auth_id: '',
         loading: true,
         allTime: [],
+        CardType: 1,
         //统计数据
         CountData: [{
           name: '审核中',
@@ -283,11 +289,22 @@
         return this.ScreenData.is_hang === 1?'default':'primary';
       },
       PassShow(){
-        if(this.CountData[1].cur || this.CountData[2].cur){
-          return false;
-        }else{
+        if(this.CountData[0].cur || this.CountData[3].cur){
           return true;
+        }else{
+          return false;
         }
+      }
+    },
+    watch:{
+      UserCol(col){
+        col.forEach(val=>{
+          if(val.key === "auth_status"){
+            val.align = 'center';
+            val.width = '160';
+            val.render = this.AuthIcon;
+          }
+        });
       }
     },
     methods: {
@@ -331,24 +348,80 @@
           this.$Message.success('刷新成功！');
         });
       },
+      //统一标签
+      GetField(filed){
+        let res = filed;
+        res.forEach(val=>{
+          if(val.key === 'name'){
+            val.render = this.ClipName;
+          }else if(val.key === 'phone'){
+            val.render = this.ClipPhone;
+          }
+        })
+        res.push({
+          title: '操作',
+          key: 'operation',
+          align: 'center',
+          width: '220',
+          render: (h, params)=>{
+            return h('div',this.$renderBtn(h, params, this.BtnData));
+          }
+        });
+        res.unshift({
+          type: 'selection',
+          width: 55,
+          align: 'center'
+        });
+        return res;
+      },
       //二次获取数据
-      SecondData(sinfo){
+      SecondData(sinfo,sign = 1){
+        let url = this.apiUrl;
+        if(sign === 2){
+          url = this.apiUrl2;
+        }
         return new Promise(resolve=>{
-          this.$fetch(this.apiUrl,sinfo).then(d=>{
-            this.UserData = d.data.customer_list;
+          this.$fetch(url,sinfo).then(d=>{
+            if(sign === 1){
+              this.UserData = d.data.customer_list;
+            }else if(sign === 2){
+              this.UserCol = this.GetField(d.data.field);
+              this.UserData = d.data.fk_list;
+            }
             this.Page.count = d.data.total;
             this.loading = false;
             resolve();
           })
         });
       },
+      AuthIcon(h,params){
+        const auth = params.row.auth_status;
+        let elmArr = [];
+        Object.keys(auth).forEach(key=>{
+          if(auth[key]){
+            const elm = h('span',{
+              class:['auth-icon',key]
+            });
+            elmArr.push(elm);
+          }
+        });
+        return h('div',{
+          style:{
+            width: '125px'
+          }
+        },elmArr);
+      },
       //统计列表
       CountList(status){
         this.loading = true;
         this.ScreenData.type = status;
+        this.CardType = 1;
         let sinfo = this.RemoveObserve(this.ScreenData);
         sinfo.page = 1;
         sinfo.num = 20;
+        this.CountData2.forEach(val=>{
+          val.cur = false;
+        });
         this.CountData.forEach(val=>{
           if(val.status === status){
             val.cur = true;
@@ -358,11 +431,33 @@
         });
         this.SecondData(sinfo);
       },
+      CountList2(status){
+        this.loading = true;
+        this.ScreenData.type = status;
+        this.CardType = 2;
+        let sinfo = this.RemoveObserve(this.ScreenData);
+        sinfo.page = 1;
+        sinfo.num = 20;
+        this.CountData.forEach(val=>{
+          val.cur = false;
+        });
+        this.CountData2.forEach(val=>{
+          if(val.status === status){
+            val.cur = true;
+          }else{
+            val.cur = false;
+          }
+        });
+        this.SecondData(sinfo,2);
+      },
       //查询结果
       SimpleSearch(sign = 1,isPage = 0){
         if(sign){
           this.ScreenData.type = 'all';
           this.CountData.forEach(val=>{
+            val.cur = false;
+          })
+          this.CountData2.forEach(val=>{
             val.cur = false;
           })
         }
@@ -373,7 +468,7 @@
           })
         }
         return new Promise((resolve)=>{
-          this.SecondData(this.ScreenData).then(()=>{
+          this.SecondData(this.ScreenData,this.CardType).then(()=>{
             if(sign){
               this.$Message.success('筛选成功！');
             }
@@ -385,6 +480,11 @@
       InitData(url,params = {}){
         const that = this;
         this.loading = true;
+        this.$fetch('/backend/loan-make/block-data').then(d=>{
+          this.CountData2.forEach(val=>{
+            val.count = d.data[val.status];
+          })
+        });
         this.$fetch('/backend/loan-audit/block-data').then(d=>{
           this.CountData.forEach(val=>{
             val.count = d.data[val.status];
@@ -432,7 +532,7 @@
           page: curpage,
           num: this.Page.size
         });
-        this.InitData(this.apiUrl,sinfo).then(()=>{
+        this.SecondData(sinfo,this.CardType).then(()=>{
           this.Page.cur = curpage;
         })
       },
@@ -442,7 +542,7 @@
           page: 1,
           num: size
         });
-        this.InitData(this.apiUrl,sinfo).then(()=>{
+        this.SecondData(sinfo,this.CardType).then(()=>{
           this.Page.cur = 1;
           this.Page.size = size;
         })
