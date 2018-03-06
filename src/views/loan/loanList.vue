@@ -27,7 +27,7 @@
           </div>
           <div class="form-group">
             <label class="form-label">借款类型：</label>
-            <Select v-model="ScreenData.jk_loan" clearable style="width:162px" @on-change="SimpleSearch">
+            <Select v-model="ScreenData.is_first" clearable style="width:162px" @on-change="SimpleSearch">
               <Option :value="0">新增</Option>
               <Option :value="1">续借</Option>
             </Select>
@@ -80,7 +80,7 @@
         //基础筛选数据
         ScreenData: {
           key: '',
-          jk_loan: '',
+          is_first: '',
           qudao: ''
         },
         channel: [],
