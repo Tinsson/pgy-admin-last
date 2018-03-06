@@ -15,6 +15,12 @@
         <p class="value"><span class="num">{{item.count}}</span>人</p>
         <span class="tips">点击查看</span>
       </div>
+      <div v-for="item in CountData2" class="sim-card" :class="{cur:item.cur}" @click="CountList(item.status)">
+        <Icon class="icon" :type="item.icon"></Icon>
+        <p class="title">{{ item.name }}</p>
+        <p class="value"><span class="num">{{item.count}}</span>人</p>
+        <span class="tips">点击查看</span>
+      </div>
     </div>
     <div class="screen-area">
       <Card>
@@ -84,8 +90,9 @@
     },
     data () {
       return {
-        title: '审核面板',
-        apiUrl: '/backend/loan-audit/list',
+        title: '审核审核面板',
+        apiUrl: '/backend/loan-audit/list',  //审核
+        apiUrl2: '/backend/loan-make/list',  //放款
         auth_id: '',
         loading: true,
         allTime: [],
@@ -121,6 +128,31 @@
           cunit: '人',
           second: false,
           status: 'check_deny',
+          cur: false
+        }],
+        CountData2: [{  //放款卡片
+          name: '待放款列表',
+          icon: 'android-bookmark',
+          count: 0,
+          cunit: '人',
+          second: false,
+          status: 'fk_customers_ready',
+          cur: false
+        },{
+          name: '今日放款',
+          icon: 'android-calendar',
+          count: 0,
+          cunit: '人',
+          second: false,
+          status: 'fk_today',
+          cur: false
+        },{
+          name: '潜在客户',
+          icon: 'ios-list-outline',
+          count: 0,
+          cunit: '人',
+          second: false,
+          status: 'potential_customers',
           cur: false
         }],
         //基础筛选数据
@@ -490,7 +522,8 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    //justify-content: space-between;
     padding-bottom: 20px;
     .sim-card{
       position: relative;
@@ -501,6 +534,7 @@
       cursor: pointer;
       border-radius: 5px;
       background-color: #c3c3c3;
+      margin: 5px;
       .title{
         font-size: 16px;
       }

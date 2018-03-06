@@ -132,7 +132,7 @@
           cunit: '笔',
           second: true,
           other: '0',
-          ounit: '万元',
+          ounit: '元',
           status: 'HISTORYZH',
           cur: false
         },{
