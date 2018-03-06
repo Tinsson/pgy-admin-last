@@ -184,7 +184,7 @@
         }
         const uid = this.$route.query.uid;
         this.isRefresh = true;
-        this.$Message.info({
+        this.$Message.loading({
           content: '更新数据中，请耐心等待',
           duration: 200
         });
@@ -193,6 +193,7 @@
             this.isRefresh = false;
             this.$Message.destroy();
             this.Report = d.data.data;
+            this.$Message.success(d.message);
           }else{
             this.isRefresh = false;
             this.$Message.destroy();
