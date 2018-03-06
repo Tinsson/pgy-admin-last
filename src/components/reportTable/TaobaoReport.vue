@@ -1,11 +1,11 @@
 <template>
   <div class="taobao-report">
     <h2 class="all-title">蒲公英淘宝查询报告</h2>
-    <p class="sub-title">报告生成时间：2017-10-11 09:11:44</p>
+    <p class="sub-title">报告生成时间：{{AliInfo.time}}</p>
     <div class="refresh-box">
       <Button type="success" size="large" @click="handleRefresh">手动刷新数据</Button>
     </div>
-    <p class="refresh-time">更新时间：2018-03-05 15:23:08</p>
+    <p class="refresh-time">更新时间：{{AliInfo.updatetime}}</p>
     <div class="simple-box">
       <h3>查询信息</h3>
       <Row class="info-out">
