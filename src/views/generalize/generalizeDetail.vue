@@ -140,14 +140,14 @@
           icon: 'pie-graph',
           count: 0,
           second: false,
-          status: 'REGISTER',
+          status: 'YESREGISTERED',
           cur: false
         },{
           name: '未检测到注册',
           icon: 'help-circled',
           count: 0,
           second: false,
-          status: 'NO_REGISTER'
+          status: 'NOTREGISTERED'
         },{
           name: '注册并关注公众号数',
           icon: 'pie-graph',

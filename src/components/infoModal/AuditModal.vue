@@ -39,7 +39,8 @@
               </li>
               <li class="res-box">
                 <p class="simple" :class="'type'+AllInfo.jiben.info.taobao.status">{{AllInfo.jiben.info.taobao.info}}</p>
-                <p class="title active" @click="ReportTaobao">淘宝</p>
+                <!--<p class="title active" @click="ReportTaobao">淘宝</p>-->
+                <p class="title">淘宝</p>
               </li>
               <li class="res-box">
                 <div class="simple edit-part" @click="ZmfEdit" :class="'type'+AllInfo.jiben.info.zhimafen.status">
