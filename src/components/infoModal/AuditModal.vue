@@ -34,7 +34,7 @@
                 <p class="title">花呗额度</p>
               </li>
               <li class="res-box">
-                <p class="simple" :class="'type'+AllInfo.jiben.info.yunyings.status">{{AllInfo.jiben.info.yunyings.info}}</p>
+                <p class="simple yys" @click="RemoveYys" :class="'type'+AllInfo.jiben.info.yunyings.status">{{AllInfo.jiben.info.yunyings.info}}</p>
                 <p class="title active" @click="ReportCarrier">运营商</p>
               </li>
               <li class="res-box">
@@ -1140,6 +1140,23 @@
         this.ResetData();
         this.$emit('CloseModal',this.modalState);
       },
+      //取消运营商认证
+      RemoveYys(){
+        const status = this.AllInfo.jiben.info.yunyings.status;
+        if(status === 0){
+          return;
+        }else{
+          this.$Modal.confirm({
+            title: '提示',
+            content: '<p>确认要取消该用户的运营商验证吗？</p>',
+            onOk: () => {
+              this.$fetch('backend/User/deluserjxly', {uid: this.ID}).then(d=>{
+                this.$Message.info(d.message);
+              })
+            }
+          });
+        }
+      },
       InitData(id){
         this.Avator = '';
         this.NickName = '';
@@ -1880,6 +1897,15 @@
           }
           &.type2{
             background-color: #d73435;
+            &.yys{
+              cursor: pointer;
+            }
+          }
+          &.type3{
+            background-color: #F39C39;
+            &.yys{
+              cursor: pointer;
+            }
           }
         }
         .title{
