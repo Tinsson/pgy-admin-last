@@ -1152,6 +1152,7 @@
             onOk: () => {
               this.$fetch('backend/User/deluserjxly', {uid: this.ID}).then(d=>{
                 this.$Message.info(d.message);
+                this.InitData(this.ID);
               })
             }
           });
