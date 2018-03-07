@@ -136,6 +136,19 @@
           status: 'HISTORYZH',
           cur: false
         },{
+          name: '已在公众号注册',
+          icon: 'pie-graph',
+          count: 0,
+          second: false,
+          status: 'REGISTER',
+          cur: false
+        },{
+          name: '未检测到注册',
+          icon: 'help-circled',
+          count: 0,
+          second: false,
+          status: 'NO_REGISTER'
+        },{
           name: '注册并关注公众号数',
           icon: 'pie-graph',
           count: 0,

@@ -55,7 +55,12 @@
             用户列表
           </h3>
           <div class="btn-box">
-            <Button :type="HangType" icon="pin" @click="ShowHang">{{HangText}}</Button>
+            <span v-show="fangKuan">资金账号：</span>
+            <Select v-show="fangKuan" v-model="Owner" @on-change="ChoseOwner" style="display: inline-block;width: 80px;margin-right: 10px;">
+              <Option :value="1">李义</Option>
+              <Option :value="2">张晓成</Option>
+            </Select></span>
+            <Button v-show="!fangKuan" :type="HangType" icon="pin" @click="ShowHang">{{HangText}}</Button>
             <Button type="warning" v-show="PassShow" icon="checkmark" @click="SumPass">一键通过</Button>
           </div>
         </div>
@@ -99,6 +104,7 @@
         apiUrl: '/backend/loan-audit/list',  //审核
         apiUrl2: '/backend/loan-make/list',  //放款
         auth_id: '',
+        Owner: 1,
         loading: true,
         allTime: [],
         CardType: 1,
@@ -294,6 +300,13 @@
         }else{
           return false;
         }
+      },
+      fangKuan(){
+        if(this.CardType === 2){
+          return true;
+        }else{
+          return false;
+        }
       }
     },
     watch:{
@@ -449,6 +462,10 @@
           }
         });
         this.SecondData(sinfo,2);
+      },
+      //选择资金账号
+      ChoseOwner(value){
+        saveLocal('owner',value);
       },
       //查询结果
       SimpleSearch(sign = 1,isPage = 0){
