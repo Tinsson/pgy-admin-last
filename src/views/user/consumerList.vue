@@ -77,7 +77,7 @@
               <Option value="3">未通过</Option>
             </Select>
           </FormItem>
-          <RadioGroup class="rdo-group" v-model="SeniorData.status_bz">
+          <CheckboxGroup class="rdo-group" v-model="SeniorData.status_bz">
             <!--<div class="chose-area">
               <Radio label="AUDIT">审核状态：</Radio>
               <Select v-model="SeniorData.sh_status" placeholder="请选择审核状态" style="width:162px">
@@ -86,7 +86,7 @@
               </Select>
             </div>-->
             <div class="chose-area">
-              <Radio label="LOAN">交易状态：</Radio>
+              <Checkbox label="LOAN">交易状态：</Checkbox>
               <Select v-model="SeniorData.pay_status" placeholder="请选择交易状态" style="width:162px">
                 <Option value="1">未借款</Option>
                 <Option value="2">借款已还</Option>
@@ -135,7 +135,7 @@
                 </div>
               </div>
             </div>-->
-          </RadioGroup>
+          </CheckboxGroup>
           <FormItem label="来源渠道：">
             <Select v-model="SeniorData.qudao" placeholder="请选择来源渠道" style="width:162px">
               <Option v-for="item in channel" :key="item.id" :value="item.id">{{item.title}}</Option>
