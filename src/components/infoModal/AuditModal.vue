@@ -675,6 +675,7 @@
   import LoanModal from '@/components/infoModal/LoanModal'
   import LinkModal from '@/components/infoModal/LinkModal'
 
+
   export default {
     name: 'AuditModal',
     components:{
@@ -1248,7 +1249,8 @@
           title: '提示',
           content: `<p class="confirm-text">确认通过该用户的审核吗</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/User/auditUser',{uid: this.ID, status: 2}).then(()=>{
+            const admin_id = this.$getLocal('admin_id');
+            this.UploadData('/backend/User/auditUser',{uid: this.ID, status: 2, admin_id}).then(()=>{
               this.loading = true;
               this.InitData(this.InitId);
             });
@@ -1261,7 +1263,8 @@
           title: '提示',
           content: `<p class="confirm-text">确认不通过该用户的审核吗</p>`,
           onOk: ()=>{
-            this.UploadData('/backend/User/auditUser',{uid: this.ID, status: 3}).then(()=>{
+            const admin_id = this.$getLocal('admin_id');
+            this.UploadData('/backend/User/auditUser',{uid: this.ID, status: 3, admin_id}).then(()=>{
               this.loading = true;
               this.InitData(this.InitId);
             });
