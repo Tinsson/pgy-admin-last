@@ -62,7 +62,7 @@
              :width="600"
              @on-ok="SeniorSearch">
         <h2 slot="header">高级筛选</h2>
-        <Form class="ipt-form" :model="SeniorData" label-position="right" :label-width="120" inline>
+        <Form class="ipt-form" :model="SeniorData" label-position="right" :label-width="120">
           <FormItem label="用户类型：">
             <Select v-model="SeniorData.type" placeholder="请选择用户类型" style="width:162px">
               <Option value="A">A</Option>
@@ -71,14 +71,20 @@
               <Option value="D">D</Option>
             </Select>
           </FormItem>
+          <FormItem label="审核状态：">
+            <Select v-model="SeniorData.sh_status" placeholder="请选择审核状态" style="width:162px">
+              <Option value="1">已通过</Option>
+              <Option value="2">未通过</Option>
+            </Select>
+          </FormItem>
           <RadioGroup class="rdo-group" v-model="SeniorData.status_bz">
-            <div class="chose-area">
+            <!--<div class="chose-area">
               <Radio label="AUDIT">审核状态：</Radio>
               <Select v-model="SeniorData.sh_status" placeholder="请选择审核状态" style="width:162px">
                 <Option value="1">已通过</Option>
                 <Option value="2">未通过</Option>
               </Select>
-            </div>
+            </div>-->
             <div class="chose-area">
               <Radio label="LOAN">交易状态：</Radio>
               <Select v-model="SeniorData.pay_status" placeholder="请选择交易状态" style="width:162px">

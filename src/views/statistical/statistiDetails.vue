@@ -176,6 +176,7 @@
       this.CountType = this.$route.query.type;
       const now = new Date();
       this.CurrentMonth = `${now.getFullYear()}-${now.getMonth()+1}`;
+
       this.CurrentYear = `${now.getFullYear()}`;
       this.Distinguish();
       this.BarWidth = this.$refs['BarTitle'].offsetWidth;
@@ -352,6 +353,7 @@
         });
       },
       pickMonth(date){
+        console.log(date);
         this.CurrentMonth = date;
         this.Distinguish();
       },
