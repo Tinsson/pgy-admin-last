@@ -599,7 +599,8 @@
       SumPass(){
         if(this.SelectData.length > 0){
           const id = this.SelectData.join(',');
-          this.UploadData('/backend/User/auditUserMore',{uid: id,status: 2}).then(()=>{
+          const admin_id = this.$getLocal('admin_id');
+          this.UploadData('/backend/User/auditUserMore',{uid: id,status: 2, admin_id}).then(()=>{
             this.SimpleSearch(0,1);
           })
         }else{
