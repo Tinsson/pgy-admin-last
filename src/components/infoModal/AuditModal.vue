@@ -318,7 +318,7 @@
                 </div>
                 <p class="info-box">
                   <!--<span class="half">放款员：{{AllInfo.jiben.info.fangkuanId}}</span>-->
-                  <span class="half">放款员：冯剑涛</span>
+                  <span class="half">放款员：{{AllInfo.jiben.info.fk_uid}}</span>
                   <span class="half">借款用途：{{AllInfo.jiben.info.money_use_to}}</span>
                 </p>
                 <p class="info-box">
