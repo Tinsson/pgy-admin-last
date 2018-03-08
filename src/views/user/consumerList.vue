@@ -77,7 +77,7 @@
               <Option value="3">未通过</Option>
             </Select>
           </FormItem>
-          <CheckboxGroup class="rdo-group" v-model="SeniorData.status_bz">
+          <CheckboxGroup v-model="CheckboxStatus"  @on-change="getCheckStatus" class="rdo-group" >
             <!--<div class="chose-area">
               <Radio label="AUDIT">审核状态：</Radio>
               <Select v-model="SeniorData.sh_status" placeholder="请选择审核状态" style="width:162px">
@@ -221,6 +221,7 @@
         CheckAll2: false,
         RenzTypeB: false,
         RenzTypeQ: false,
+        CheckboxStatus: [],
         SeniorData: {
           name: '',
           phone: '',
@@ -519,6 +520,10 @@
         for(let key in this.SeniorData){
             this.SeniorData[key] = '';
         }
+      },
+      getCheckStatus(arr){
+        //console.log(status);
+        this.SeniorData.status_bz = arr[0];
       },
       //高级筛选提交
       SeniorSearch(){
