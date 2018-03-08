@@ -73,8 +73,8 @@
           </FormItem>
           <FormItem label="审核状态：">
             <Select v-model="SeniorData.sh_status" placeholder="请选择审核状态" style="width:162px">
-              <Option value="1">已通过</Option>
-              <Option value="2">未通过</Option>
+              <Option value="2">已通过</Option>
+              <Option value="3">未通过</Option>
             </Select>
           </FormItem>
           <RadioGroup class="rdo-group" v-model="SeniorData.status_bz">
