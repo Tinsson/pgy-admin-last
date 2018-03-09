@@ -17,7 +17,7 @@
       </FormItem>
       <FormItem label="推送类型：">
         <RadioGroup v-model="Result.type">
-          <Radio :label="1">全部</Radio>
+          <Radio :label="1">当前条件全部用户</Radio>
           <Radio :label="2">
             <span>仅勾选对象</span>
           </Radio>
@@ -63,7 +63,8 @@
     props: {
       modalShow: Boolean,
       InitData: Array,
-      Count: Number
+      Count: Number,
+      Condition: Object
     },
     watch: {
       modalShow(val){
@@ -78,14 +79,10 @@
     },
     computed:{
       CountNum(){
-          if(this.InitData.length > 0){
-            if(this.Result.all){
-              return this.Count;
-            }else{
-              return this.InitData.length;
-            }
-          }else{
-            return 0;
+          if(this.Result.type === 1){
+            return this.Count;
+          }else if(this.Result.type === 2){
+            return this.InitData.length;
           }
       }
     },
@@ -96,10 +93,10 @@
         })
       },
       EditOver(){
-        console.log(this.Result.regid);
+        //console.log(this.Result.regid);
         this.$refs['Result'].validate(valid=>{
           if(valid){
-            this.$emit('UpOver',this.Result);
+            this.$emit('UpOver',{data:{...this.Result}, condition:{...this.Condition}});
           }
         })
       },

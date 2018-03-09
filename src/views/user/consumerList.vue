@@ -28,6 +28,14 @@
               <label class="form-label">检索：</label>
               <Input v-model="ScreenData.key" style="width: 200px" @on-enter="SimpleSearch"></Input>
             </div>
+            <Tag v-for="item in ScreenTag"
+                 style="margin-top: 0"
+                 :key="item.key"
+                 :name="item.key"
+                 type="dot"
+                 closable
+                 color="blue"
+                 @on-close="TagCancel">{{item.name}}</Tag>
           </div>
         </Card>
       </div>
@@ -73,68 +81,17 @@
           </FormItem>
           <FormItem label="审核状态：">
             <Select v-model="SeniorData.sh_status" placeholder="请选择审核状态" style="width:162px">
-              <Option value="2">已通过</Option>
-              <Option value="3">未通过</Option>
+              <Option :value="2">已通过</Option>
+              <Option :value="3">未通过</Option>
             </Select>
           </FormItem>
           <CheckboxGroup v-model="CheckboxStatus"  @on-change="getCheckStatus" class="rdo-group" >
-            <!--<div class="chose-area">
-              <Radio label="AUDIT">审核状态：</Radio>
-              <Select v-model="SeniorData.sh_status" placeholder="请选择审核状态" style="width:162px">
-                <Option value="1">已通过</Option>
-                <Option value="2">未通过</Option>
-              </Select>
-            </div>-->
             <div class="chose-area">
               <Checkbox label="LOAN">交易状态：</Checkbox>
               <Select v-model="SeniorData.pay_status" placeholder="请选择交易状态" style="width:162px">
-                <Option value="1">未借款</Option>
-                <Option value="2">借款已还</Option>
-                <Option value="3">正常借款中</Option>
-                <Option value="4">逾期未还</Option>
-                <Option value="5">展期中</Option>
-                <Option value="6">展期逾期未还</Option>
+                <Option v-for="(item, index) in PayArr" :key="item" :value="index + 1">{{item}}</Option>
               </Select>
             </div>
-            <!--<div class="chose-area long">
-              <Radio label="CERT" class="rz-state">认证状态：</Radio>
-              <div class="option">
-                <div class="opt-box">
-                  <Checkbox :indeterminate="Idtmte1"
-                            class="check-all1"
-                            :value="CheckAll1"
-                            @click.prevent.native="CheckAll(1)">基础认证</Checkbox>
-                  <Checkbox :indeterminate="Idtmte2"
-                            class="check-all2"
-                            :value="CheckAll2"
-                            @click.prevent.native="CheckAll(2)" :disabled="LimitState">提额认证</Checkbox>
-                </div>
-                <div class="opt-box">
-                  <div class="base">
-                    <CheckboxGroup v-model="BaseCheck" @on-change="BaseCheckChange">
-                      <Checkbox label="RG">仅注册</Checkbox>
-                      <Checkbox label="ID">身份验证</Checkbox>
-                      <Checkbox label="CB">已绑卡</Checkbox>
-                      <Checkbox label="MB">已运营商验证</Checkbox>
-                      <Checkbox label="BI">基本资料认证</Checkbox>
-                      <Checkbox label="ZM">芝麻分已认证</Checkbox>
-                    </CheckboxGroup>
-                  </div>
-                  <div class="uplimit">
-                    <CheckboxGroup v-model="UpCheck" @on-change="UpCheckChange">
-                      <Checkbox label="TB" :disabled="LimitState">淘宝已认证</Checkbox>
-                      <Checkbox label="WX" :disabled="LimitState">微信客服认证</Checkbox>
-                    </CheckboxGroup>
-                  </div>
-                </div>
-                <div class="opt-box">
-                  <div class="rdo-box">
-                    <Radio v-model="RenzTypeB">并</Radio>
-                    <Radio v-model="RenzTypeQ">且</Radio>
-                  </div>
-                </div>
-              </div>
-            </div>-->
           </CheckboxGroup>
           <FormItem label="来源渠道：">
             <Select v-model="SeniorData.qudao" placeholder="请选择来源渠道" style="width:162px">
@@ -173,6 +130,7 @@
                    @CloseModal="CloseImport"></ImportModal>
       <PushApp :modalShow="Group.AppmsgModal"
                :InitData="SelectData"
+               :Condition="SeniorData"
                :Count="Page.count"
                @CloseModal="CloseApp"
                @UpOver="AppOpt"></PushApp>
@@ -222,21 +180,19 @@
         RenzTypeB: false,
         RenzTypeQ: false,
         CheckboxStatus: [],
+        PayArr: ['未借款','借款已还','正常借款中','逾期未还','展期中','展期逾期未还'],
         SeniorData: {
-          name: '',
-          phone: '',
-          idcard: '',
           type:'',
           status_bz: '',
           pay_status: '',
           sh_status: '',
-          rz_status: '',
           start_zmop: '',
           end_zmop: '',
           start_time: '',
           end_time: '',
           qudao: ''
         },
+        ScreenTag: [],
         ImportState:{
           show: false,
           tempUrl: ''
@@ -535,6 +491,8 @@
           }else{
               this.SeniorData.rz_tag = 'or';
           }
+          this.ScreenTag = [];
+          this.AddTagTips();
           this.SeniorData.rz_status = [...this.BaseCheck,...this.UpCheck].join(',');
           this.InitData(this.SeniorData).then(()=>{
               for(let key in this.ScreenData){
@@ -545,6 +503,54 @@
         }
 
         //this.InitData(this.SeniorData);
+      },
+      //添加提示标签
+      AddTagTips(){
+        const senior = this.SeniorData;
+        if(senior.type !== ""){
+          this.ScreenTag.push({key: 'type',name: `${senior.type}类客户`});
+        }
+        if(senior.sh_status !== ""){
+          if(senior.sh_status === 2){
+            this.ScreenTag.push({key: 'sh_status',name: '已通过'});
+          }else if(senior.sh_status === 3){
+            console.log(11111);
+            this.ScreenTag.push({key: 'sh_status',name: '未通过'});
+          }
+        }
+        if(senior.status_bz === 'LOAN' && senior.pay_status !== ""){
+          this.ScreenTag.push({key: 'pay_status', name: this.PayArr[senior.pay_status - 1]});
+        }
+        if(senior.qudao !== ""){
+          this.channel.forEach(val=>{
+            if(senior.qudao === val.id){
+              this.ScreenTag.push({key: 'qudao', name: val.title});
+            }
+          })
+        }
+        if(senior.start_zmop !== "" && senior.end_zmop === ""){
+          this.ScreenTag.push({key: 'zmop', name: `${senior.start_zmop}分以上`});
+        }
+        if(senior.start_zmop === "" && senior.end_zmop !== ""){
+          this.ScreenTag.push({key: 'zmop', name: `${senior.end_zmop}分以下`});
+        }
+        if(senior.start_zmop !== "" && senior.end_zmop !== ""){
+          this.ScreenTag.push({key: 'zmop', name: `${senior.start_zmop}分~${senior.end_zmop}分`});
+        }
+
+        if(senior.start_time !== "" && senior.end_time === ""){
+          let start = senior.start_time.split(" ")[0];
+          this.ScreenTag.push({key: 'time', name: `${start}以后`});
+        }
+        if(senior.start_time === "" && senior.end_time !== ""){
+          let end = senior.end_time.split(" ")[0];
+          this.ScreenTag.push({key: 'time', name: `${end}之前`});
+        }
+        if(senior.start_time !== "" && senior.end_time !== ""){
+          let start = senior.start_time.split(" ")[0];
+          let end = senior.end_time.split(" ")[0];
+          this.ScreenTag.push({key: 'time', name: `${start}~${end}`});
+        }
       },
       //全选功能
       CheckAll(num){
@@ -639,10 +645,13 @@
       },
       AppOpt(info){
         let params = {
-          ispush: info.type,
-          arr: info.regid.join(','),
-          modid: info.tmplid
+          ispush: info.data.type,
+          arr: info.data.regid.join(','),
+          modid: info.data.tmplid
         };
+        if(info.data.type === 1){
+          params = Object.assign(params, info.condition);
+        }
         this.UploadData('/backend/User/getUserList', params).then(()=>{
           this.Group.AppmsgModal = false;
         });
@@ -681,6 +690,27 @@
         this.Page.size = 20;
         this.ScreenData.page = 1;
         this.ScreenData.num = 20;
+      },
+      TagCancel(event, name){
+        //console.log(name);
+        if(name === "zmop"){
+          this.SeniorData.start_zmop = "";
+          this.SeniorData.end_zmop = "";
+        }else if(name === "time"){
+          this.allTime = [];
+          this.SeniorData.start_time = "";
+          this.SeniorData.end_time = "";
+        }else{
+          this.SeniorData[name] = "";
+        }
+        let index = -1;
+        this.ScreenTag.forEach((val,ind)=>{
+          if(val.key === name){
+            index = ind
+          }
+        });
+        this.ScreenTag.splice(index, 1);
+        this.SeniorSearch();
       }
     }
   }
@@ -739,6 +769,7 @@
           width: 30%;
           display: flex;
           flex-direction: column;
+          flex-wrap: wrap;
           .check-all1{
             padding-top: 60px;
           }
