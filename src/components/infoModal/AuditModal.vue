@@ -279,6 +279,17 @@
               </li>-->
               <li class="single-line">
                 <p class="label">身份证正反面</p>
+                <div class="edit-box">
+                  <Button v-show="!isUpIdcard" type="success" size="large" @click="EditIdcard">修改</Button>
+                  <Upload v-show="isUpIdcard" class="upload-btn" :before-upload="HandleAvator1" action="http://apinew.pgyxwd.com/backend/Auth/adminUserUppwd">
+                    <Button type="ghost" size="large" icon="ios-cloud-upload-outline">上传正面</Button>
+                  </Upload>
+                  <Upload v-show="isUpIdcard" class="upload-btn" :before-upload="HandleAvator2" action="http://apinew.pgyxwd.com/backend/Auth/adminUserUppwd">
+                    <Button type="ghost" size="large" icon="ios-cloud-upload-outline">上传反面</Button>
+                  </Upload>
+                  <Button v-show="isUpIdcard" type="info" size="large" @click="SaveIdcard">保存图片</Button>
+                  <Button v-show="isUpIdcard" type="error" size="large" @click="CancelIdcard">取消</Button>
+                </div>
                 <p class="idcard-box" v-if="JudgeIdcard">
                   <img v-for="item in AllInfo.jiben.idcardimg" :src="item" @click="CheckBigPic(item)" :key="item" alt="">
                 </p>
@@ -687,6 +698,7 @@
     },
     data () {
       return{
+        isUpIdcard: false,
         loading: true,
         State: this.modalShow,
         ID: this.InitId,
@@ -1136,6 +1148,7 @@
         this.DetailsLive = '';
         this.IsEdit = false;
         this.Limit.status = false;
+        this.isUpIdcard = false;
       },
       CloseBtn(){
         this.ResetData();
@@ -1806,6 +1819,55 @@
       },
       UploadErrorYys(){
 
+      },
+      EditIdcard(){
+        this.isUpIdcard = true;
+      },
+      HandleAvator1(file){
+        const that = this;
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (f) {
+          console.log(this.result);
+          that.$axios.post('backend/user/upload',{img: this.result, type: 1}).then(res=>{
+            console.log(res);
+            if(res.data.status === 1){
+              that.$set(that.AllInfo.jiben.idcardimg, 0,res.data.data.longUrl);
+            }
+          })
+        };
+        return false;
+      },
+      HandleAvator2(file){
+        const that = this;
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (f) {
+          console.log(this.result);
+          that.$axios.post('backend/user/upload',{img: this.result, type: 2}).then(res=>{
+            console.log(res);
+            if(res.data.status === 1){
+              that.$set(that.AllInfo.jiben.idcardimg, 1,res.data.data.longUrl);
+            }
+          })
+        };
+        return false;
+      },
+      SaveIdcard(){
+        let img_path = [];
+        this.AllInfo.jiben.idcardimg.forEach(val=>{
+          img_path.push(val.split('com/')[1]);
+        });
+        console.log(img_path);
+        this.$axios.post('backend/user/save-idcard',{img_path, user_id: this.ID}).then(res=>{
+          this.$Message.info(res.data.message);
+          if(res.data.status === 1){
+            this.isUpIdcard = false;
+          }
+        })
+      },
+      CancelIdcard(){
+        this.isUpIdcard = false;
       }
     }
   }
@@ -2188,5 +2250,11 @@
   }
   .czr-text{
     cursor: pointer;
+  }
+  .edit-box{
+    margin-top: 10px;
+  }
+  .upload-btn{
+    display: inline-block;
   }
 </style>
