@@ -26,6 +26,10 @@
           <span class="count-all">总计：{{BarText1}}</span>
           <div id="BarChart1" class="chart-box" :style="{width: BarWidth+'px'}"></div>
         </div>
+        <div v-show="!HasSecond" class="chart-out" style="margin-top: 15px">
+          <span class="count-all">总计：{{BarText3}}</span>
+          <div id="BarChart3" class="chart-box" :style="{width: BarWidth+'px'}"></div>
+        </div>
         <div v-show="HasSecond" class="chart-out" style="margin-top: 15px">
           <span class="count-all">总计：{{BarText2}}</span>
           <div id="BarChart2" class="chart-box" :style="{width: BarWidth+'px'}"></div>
@@ -134,6 +138,48 @@
             }
           ]
         },
+        BarText3: '0',
+        BarOption3: {
+          title: {
+            text: '放款客户数',
+            subtext: '',
+            x: 'center'
+          },
+          color: ['#358AF5','#13c2c2','#52c41a'],
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+              type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          xAxis: [
+            {
+              type: 'category',
+              data: ['2017-12-24', '2017-12-25', '2017-12-26', '2017-12-27', '2017-12-28', '2017-12-29'],
+              axisTick: {
+                alignWithLabel: true
+              }
+            }
+          ],
+          yAxis: [
+            {
+              type: 'value'
+            }
+          ],
+          series: [
+            {
+              name: '',
+              type: 'bar',
+              data: [2, 3, 4, 5, 6, 7]
+            }
+          ]
+        },
         BarText2: '0',
         BarOption2: {
           title: {
@@ -183,15 +229,16 @@
       this.CurrentMonth = `${now.getFullYear()}-${now.getMonth()+1}`;
       this.auth_id = getLocal('auth_id');
       this.$post('/backend/Results/index').then(d=>{
-        this.CountData[0].count = d.audit;
-        this.CountData[1].count = d.lending;
+        this.CountData[0].count = d.fqy;
+        this.CountData[1].count = d.fjt;
         this.CountData[2].count = d.zjamount;
         this.CountData[3].count = d.zkfamount;
         if(d.status === 'all'){
           this.CountData.forEach(val=>{
             val.show = true;
           });
-          this.InitData(this.apiUrl);
+          this.InitData(this.apiUrl,{admin_id: '20'});
+          this.InitData('/backend/Results/Lending',{admin_id: '20'});
         }else{
           this.CountData.forEach(val=>{
             if(val.status === d.status){
@@ -223,20 +270,32 @@
         let params = {};
         if(month === 0){
           params.y = this.CurrentMonth.split('-')[0];
-          params.m = this.CurrentMonth.split('-')[1];
+          let month_row = this.CurrentMonth.split('-')[1];
+          if(month_row < 10){
+            month_row = '0' + String(parseInt(month_row));
+          }
+          params.m = month_row;
         }else{
           params.y = month.split('-')[0];
-          params.m = month.split('-')[1];
+          let month_row = month.split('-')[1];
+          if(month_row < 10){
+            month_row = '0' + String(parseInt(month_row));
+          }
+          params.m = month_row;
         }
         switch(type){
           case 'review':
             this.HasSecond = false;
-            this.BarOption1.title.text = '审核客户数';
+            //this.BarOption1.title.text = '审核客户数';
+            params.admin_id = '20';
             this.InitData(this.apiUrl,params);
+            this.InitData('/backend/Results/Lending',params);
             break;
           case 'loan':
             this.HasSecond = false;
-            this.BarOption1.title.text = '放款客户数';
+            //this.BarOption1.title.text = '放款客户数';
+            params.admin_id = '7';
+            this.InitData(this.apiUrl,params);
             this.InitData('/backend/Results/Lending',params);
             break;
           case 'urge':
@@ -264,22 +323,22 @@
               this.BarText2 = this.CountAll(Object.values(d.hk));
               this.CutRest();
             }else{
-              if(this.CountData[1].cur){
-                this.BarOption1.xAxis[0].data = Object.keys(d.data);
-                this.BarOption1.series[0].data = Object.values(d.data);
-                this.BarOption1.series[0].name = '总客户数';
-                this.BarOption1.series[1] = {
+              if(url === '/backend/Results/Lending'){
+                this.BarOption3.xAxis[0].data = Object.keys(d.data);
+                this.BarOption3.series[0].data = Object.values(d.data);
+                this.BarOption3.series[0].name = '总客户数';
+                this.BarOption3.series[1] = {
                   name:'新增客户',
                   type:'bar',
                   data: Object.values(d.data1)
                 };
-                this.BarOption1.series[2] = {
+                this.BarOption3.series[2] = {
                   name:'续借客户',
                   type:'bar',
                   data: Object.values(d.data2)
                 };
-                this.BarOption1.title.subtext = `新增总数：${d.fkNew} 续借总数：${d.fkXuj}`;
-                this.BarText1 = d.fkAll;
+                this.BarOption3.title.subtext = `新增总数：${d.fkNew} 续借总数：${d.fkXuj}`;
+                this.BarText3 = d.fkAll;
               }else{
                 this.BarOption1.xAxis[0].data = Object.keys(d);
                 this.BarOption1.series[0].data = Object.values(d);
@@ -311,6 +370,8 @@
       DrawChart(){
         let BarChart1 = this.$echarts.init(document.getElementById('BarChart1'));
         BarChart1.setOption(this.BarOption1,true);
+        let BarChart3 = this.$echarts.init(document.getElementById('BarChart3'));
+        BarChart3.setOption(this.BarOption3,true);
         if(this.HasSecond){
           let BarChart2 = this.$echarts.init(document.getElementById('BarChart2'));
           BarChart2.setOption(this.BarOption2);
@@ -323,9 +384,13 @@
             this.CountList(val,date);
           }
         });
-        this.$post('/backend/Results/index',{y: date.split('-')[0],m: date.split('-')[1]}).then(d=>{
-          this.CountData[0].count = d.audit;
-          this.CountData[1].count = d.lending;
+        let month = date.split('-')[1];
+        if(month < 10){
+          month = '0'+String(parseInt(month));
+        }
+        this.$post('/backend/Results/index',{y: date.split('-')[0],m: month}).then(d=>{
+          this.CountData[0].count = d.fqy;
+          this.CountData[1].count = d.fjt;
           this.CountData[2].count = d.zjamount;
           this.CountData[3].count = d.zkfamount;
         });
