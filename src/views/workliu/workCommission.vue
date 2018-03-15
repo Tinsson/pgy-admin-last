@@ -16,7 +16,7 @@
         <div ref="BarTitle" class="card-tit" slot="title">
           <h3>
             <Icon type="clipboard"></Icon>
-            数据列表
+            统计图表
           </h3>
           <div class="right-side">
             <DatePicker type="month" style="width: 120px" :value="CurrentMonth" placement="bottom-end" @on-change="pickMonth"></DatePicker>
