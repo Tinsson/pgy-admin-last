@@ -15,7 +15,7 @@ const IsZZ = 0;
 if(IsDev){
   axios.defaults.baseURL = '';
 }else if(IsTest){
-  axios.defaults.baseURL = 'f'
+  axios.defaults.baseURL = 'https://wxapitest.pgyxwd.com'
 }else if(IsProd){
   axios.defaults.baseURL = 'https://apinew.pgyxwd.com';
 };
