@@ -214,8 +214,8 @@
       },
       AddOver(data,isEdit){
         const url = isEdit.status?'/backend/Autopush/modelUp':'/backend/Autopush/modelAdd';
-        data.title = data.title.join('');
-        data.content = data.content.join('');
+        //data.title = data.title.join('');
+        //data.content = data.content.join('');
         if(isEdit.status){
           data.id = isEdit.id;
         }
