@@ -216,6 +216,7 @@
         const url = isEdit.status?'/backend/Autopush/modelUp':'/backend/Autopush/modelAdd';
         //data.title = data.title.join('');
         //data.content = data.content.join('');
+        console.log(isEdit);
         if(isEdit.status){
           data.id = isEdit.id;
         }
@@ -248,7 +249,7 @@
           status: row.status
         };
         this.ModeModal.isEdit.status = true;
-        this.ModeModal.id = row.id;
+        this.ModeModal.isEdit.id = row.id;
         this.ModeModal.modal = true;
       },
       //删除模版
