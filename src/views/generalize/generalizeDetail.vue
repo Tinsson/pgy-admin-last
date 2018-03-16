@@ -28,11 +28,6 @@
         </div>
         <div class="opt-box">
           <Form :model="ScreenData" inline :label-width="85">
-            <!--<FormItem label="渠道：">
-              <Select v-model="ScreenData.src" style="width: 150px">
-                <Option v-for="item in SrcData" :value="item.id" :key="item.id">{{ item.title }}</Option>
-              </Select>
-            </FormItem>-->
             <FormItem label="时间：">
               <DatePicker type="datetimerange"
                           placeholder="选择日期和时间"
@@ -41,6 +36,9 @@
                           :value="allTime"
                           @on-change="PickDate"
                           style="width: 280px"></DatePicker>
+            </FormItem>
+            <FormItem label="手机号：">
+              <Input v-model="ScreenData.phone" style="width: 150px"/>
             </FormItem>
             <!--
             <FormItem label="总人数：">
