@@ -325,7 +325,7 @@
         }
       },
       isPotential(){
-        return this.CountData2[2].cur
+        return this.CountData2[2].cur || this.ScreenData.type === 'all';
       }
     },
     watch:{
