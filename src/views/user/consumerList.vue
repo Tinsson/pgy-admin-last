@@ -652,7 +652,8 @@
         if(info.data.type === 1){
           params = Object.assign(params, info.condition);
         }
-        this.UploadData('/backend/User/getUserList', params).then(()=>{
+        this.UploadData('/backend/User/getUserList', params).then((res)=>{
+          this.$Message.info(res.data.message);
           this.Group.AppmsgModal = false;
         });
       },

@@ -60,6 +60,7 @@
               <Option :value="1">李义</Option>
               <Option :value="2">张晓成</Option>
             </Select></span>
+            <Button v-show="isPotential" type="info" icon="chatbox" @click="GroupAppOpt">群发消息</Button>
             <Button v-show="!fangKuan" :type="HangType" icon="pin" @click="ShowHang">{{HangText}}</Button>
             <Button type="warning" v-show="PassShow" icon="checkmark" @click="SumPass">一键通过</Button>
           </div>
@@ -85,18 +86,26 @@
                 :UniqueId="Audit.id"
                 :AllId="Audit.allId"
                 @CloseModal="AuditCancel"></AuditModal>
+    <PushApp :modalShow="Group.AppmsgModal"
+             :InitData="SelectData"
+             :Condition="SeniorData"
+             :Count="Page.count"
+             @CloseModal="CloseApp"
+             @UpOver="AppOpt"></PushApp>
   </div>
 </template>
 
 <script>
   import { getLocal } from '@/util/util'
   import AuditModal from '@/components/infoModal/AuditModal'
+  import PushApp from '@/components/groupModal/PushApp'
   import Clipboard from 'clipboard'
 
   export default {
     name: 'ReviewPanel',
     components: {
-      AuditModal
+      AuditModal,
+      PushApp
     },
     data () {
       return {
@@ -255,6 +264,13 @@
         BtnData: [],      //按钮数据
         //群选打钩后操作
         SelectData: [],
+        Group: {
+          SmsModal: false,
+          AppmsgModal: false
+        },
+        SeniorData: {
+          type: 'potential_customers'
+        },
         //初始分页信息
         Page: {
           count: 0,
@@ -307,6 +323,9 @@
         }else{
           return false;
         }
+      },
+      isPotential(){
+        return this.CountData2[2].cur
       }
     },
     watch:{
@@ -606,7 +625,28 @@
         }else{
           this.$Message.error('请先勾选需要通过的用户！');
         }
-      }
+      },
+      //App推送
+      GroupAppOpt(){
+        this.Group.AppmsgModal = true;
+      },
+      CloseApp(){
+        this.Group.AppmsgModal = false;
+      },
+      AppOpt(info){
+        let params = {
+          ispush: info.data.type,
+          arr: info.data.regid.join(','),
+          modid: info.data.tmplid
+        };
+        if(info.data.type === 1){
+          params = Object.assign(params, info.condition);
+        }
+        this.UploadData('/backend/User/getUserList', params).then((res)=>{
+          this.$Message.info(res.data.message);
+          this.Group.AppmsgModal = false;
+        });
+      },
     }
   }
 </script>
