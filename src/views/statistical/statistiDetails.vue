@@ -244,9 +244,11 @@
         };
         this.InitData(this.apiUrl,params).then(res=>{
           this.BarText1 = res.regAll;
+          this.BarText2 = res.passALl;
           this.BarOption1.xAxis[0].data = Object.keys(res.data);
           this.BarOption2.xAxis[0].data = Object.keys(res.data);
           this.BarOption1.series[0].data = Object.values(res.data);
+          this.BarOption2.series[0].data = Object.values(res.data_);
           this.DrawChart();
         });
       },
