@@ -193,6 +193,13 @@
           })
         })
       },
+      MonthNum(m){
+        if(parseInt(m) < 10){
+          return '0' + String(parseInt(m));
+        }else{
+          return m;
+        }
+      },
       DrawChart(){
         let BarChart1 = this.$echarts.init(document.getElementById('BarChart1'));
         let BarChart2 = this.$echarts.init(document.getElementById('BarChart2'));
@@ -233,7 +240,7 @@
         let params = {
           status: 'reg',
           y: this.CurrentMonth.split('-')[0],
-          m: this.CurrentMonth.split('-')[1]
+          m: this.MonthNum(this.CurrentMonth.split('-')[1])
         };
         this.InitData(this.apiUrl,params).then(res=>{
           this.BarText1 = res.regAll;
@@ -251,7 +258,7 @@
         let params = {
           status: 'loan',
           y: this.CurrentMonth.split('-')[0],
-          m: this.CurrentMonth.split('-')[1]
+          m: this.MonthNum(this.CurrentMonth.split('-')[1])
         };
         this.InitData(this.apiUrl,params).then(res=>{
           this.BarText1 = res.amountAll;
@@ -287,7 +294,7 @@
         let params = {
           status: 'delay',
           y: this.CurrentMonth.split('-')[0],
-          m: this.CurrentMonth.split('-')[1]
+          m: this.MonthNum(this.CurrentMonth.split('-')[1])
         };
         this.InitData(this.apiUrl,params).then(res=>{
           this.BarText1 = res.amountAll;
@@ -310,7 +317,7 @@
         let params = {
           status: 'yuqi',
           y: this.CurrentMonth.split('-')[0],
-          m: this.CurrentMonth.split('-')[1]
+          m: this.MonthNum(this.CurrentMonth.split('-')[1])
         };
         this.InitData(this.apiUrl,params).then(res=>{
           this.BarText1 = res.amountAll;
