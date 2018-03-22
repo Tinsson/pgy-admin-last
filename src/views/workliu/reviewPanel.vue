@@ -269,7 +269,7 @@
           AppmsgModal: false
         },
         SeniorData: {
-          type: 'potential_customers'
+          type: ''
         },
         //初始分页信息
         Page: {
@@ -325,7 +325,7 @@
         }
       },
       isPotential(){
-        return this.CountData2[2].cur || this.CountData[1].cur || this.CountData[2].cur || this.ScreenData.type === 'all';
+        return this.CountData[1].cur || this.CountData[2].cur || this.ScreenData.type === 'all';
       }
     },
     watch:{
@@ -448,6 +448,7 @@
       CountList(status){
         this.loading = true;
         this.ScreenData.type = status;
+        this.SeniorData.type = status;
         this.CardType = 1;
         this.SelectData = [];
         let sinfo = this.RemoveObserve(this.ScreenData);
@@ -646,7 +647,7 @@
         if(info.data.type === 1){
           params = Object.assign(params, info.condition);
         }
-        this.UploadData('/backend/User/getUserList', params).then((res)=>{
+        this.UploadData('/backend/loan-audit/list', params).then((res)=>{
           this.Group.AppmsgModal = false;
         });
       },
