@@ -645,9 +645,8 @@
           arr: info.data.regid.join(','),
           modid: info.data.tmplid
         };
-        if(info.data.type === 1){
-          params = Object.assign(params, info.condition);
-        }
+        params = Object.assign(params, info.condition);
+
         this.$axios.get(`/backend/loan-audit/list?${qs.stringify(params)}`).then((res)=>{
           this.$Message.info(res.data.message);
           this.Group.AppmsgModal = false;
