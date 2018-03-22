@@ -100,6 +100,7 @@
   import AuditModal from '@/components/infoModal/AuditModal'
   import PushApp from '@/components/groupModal/PushApp'
   import Clipboard from 'clipboard'
+  import qs from 'qs'
 
   export default {
     name: 'ReviewPanel',
@@ -647,7 +648,8 @@
         if(info.data.type === 1){
           params = Object.assign(params, info.condition);
         }
-        this.UploadData('/backend/loan-audit/list', params).then((res)=>{
+        this.$axios.get(`/backend/loan-audit/list?${qs.stringify(params)}`).then((res)=>{
+          this.$Message.info(res.data.message);
           this.Group.AppmsgModal = false;
         });
       },
