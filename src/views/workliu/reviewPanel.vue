@@ -325,7 +325,7 @@
         }
       },
       isPotential(){
-        return this.CountData2[2].cur || this.ScreenData.type === 'all';
+        return this.CountData2[2].cur || this.CountData[1].cur || this.CountData[2].cur || this.ScreenData.type === 'all';
       }
     },
     watch:{
@@ -356,6 +356,7 @@
       },
       //多选打钩绑定数据
       SelectTable(data){
+        console.log(data);
         let idarr = [];
         if(data.length > 0){
           data.forEach(val=>{
@@ -448,6 +449,7 @@
         this.loading = true;
         this.ScreenData.type = status;
         this.CardType = 1;
+        this.SelectData = [];
         let sinfo = this.RemoveObserve(this.ScreenData);
         sinfo.page = 1;
         sinfo.num = 20;
@@ -467,6 +469,7 @@
         this.loading = true;
         this.ScreenData.type = status;
         this.CardType = 2;
+        this.SelectData = [];
         let sinfo = this.RemoveObserve(this.ScreenData);
         sinfo.page = 1;
         sinfo.num = 20;
@@ -550,9 +553,10 @@
       UploadData(url,info){
         return new Promise((resolve)=>{
           this.$post(url,info).then((d)=>{
+            console.log(d);
             if(d.status === 1){
               this.$Message.success(d.message);
-              resolve(d.data);
+              resolve(d);
             }else{
               this.$Message.error(d.message);
             }
@@ -643,7 +647,6 @@
           params = Object.assign(params, info.condition);
         }
         this.UploadData('/backend/User/getUserList', params).then((res)=>{
-          this.$Message.info(res.data.message);
           this.Group.AppmsgModal = false;
         });
       },

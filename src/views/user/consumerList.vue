@@ -446,15 +446,18 @@
       },
       //提交信息操作
       UploadData(url,info){
-        this.$post(url,info).then((d)=>{
-          if(d.status === 1){
-            this.$Message.success(d.message);
-            this.InitData();
-          }else{
-            this.$Message.error(d.message);
-          }
-        }).catch((err)=>{
-          this.$Message.error('服务器繁忙，请稍后再试！');
+        return new Promise((resolve,reject)=>{
+          this.$post(url,info).then((d)=>{
+            if(d.status === 1){
+              this.$Message.success(d.message);
+              resolve(d);
+              this.InitData();
+            }else{
+              this.$Message.error(d.message);
+            }
+          }).catch((err)=>{
+            this.$Message.error('服务器繁忙，请稍后再试！');
+          })
         })
       },
       //添加部门
@@ -653,7 +656,6 @@
           params = Object.assign(params, info.condition);
         }
         this.UploadData('/backend/User/getUserList', params).then((res)=>{
-          this.$Message.info(res.data.message);
           this.Group.AppmsgModal = false;
         });
       },
