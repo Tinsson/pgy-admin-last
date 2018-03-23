@@ -96,7 +96,7 @@
 </template>
 
 <script>
-  import { getLocal } from '@/util/util'
+  import { getLocal,saveLocal } from '@/util/util'
   import AuditModal from '@/components/infoModal/AuditModal'
   import PushApp from '@/components/groupModal/PushApp'
   import Clipboard from 'clipboard'
