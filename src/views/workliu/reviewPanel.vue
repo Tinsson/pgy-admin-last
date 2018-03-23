@@ -326,7 +326,7 @@
         }
       },
       isPotential(){
-        return this.CountData[1].cur || this.CountData[2].cur || this.ScreenData.type === 'all';
+        return this.CountData2[2].cur || this.CountData[1].cur || this.CountData[2].cur //|| this.ScreenData.type === 'all';
       }
     },
     watch:{
@@ -470,6 +470,7 @@
       CountList2(status){
         this.loading = true;
         this.ScreenData.type = status;
+        this.SeniorData.type = status;
         this.CardType = 2;
         this.SelectData = [];
         let sinfo = this.RemoveObserve(this.ScreenData);
@@ -646,8 +647,14 @@
           modid: info.data.tmplid
         };
         params = Object.assign(params, info.condition);
-
-        this.$axios.get(`/backend/loan-audit/list?${qs.stringify(params)}`).then((res)=>{
+        let sendUrl = this.apiUrl;
+        this.CountData2.forEach(val=>{
+          if(val.cur){
+            sendUrl = this.apiUrl2;
+          }
+        });
+        console.log(sendUrl,params);
+        this.$axios.get(sendUrl + qs.stringify(params)).then((res)=>{
           this.$Message.info(res.data.message);
           this.Group.AppmsgModal = false;
         });
