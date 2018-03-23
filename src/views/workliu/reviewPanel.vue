@@ -288,6 +288,7 @@
     },
     created(){
       this.auth_id = getLocal('auth_id');
+      this.Owner = parseInt(getLocal('owner'));
       this.InitData(this.apiUrl,{type: 'check_waiting'});
     },
     mounted(){
