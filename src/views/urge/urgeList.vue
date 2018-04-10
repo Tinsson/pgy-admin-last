@@ -68,7 +68,7 @@
           <Page :current="Page.cur"
                 :page-size="Page.size"
                 :total="Page.count"
-                :page-size-opts="[20,30,40,50]"
+                :page-size-opts="[60,80,100,150]"
                 placement="top"
                 @on-change="ChangePage"
                 @on-page-size-change="ChangeSize" show-sizer></Page>
@@ -299,7 +299,7 @@
         Page: {
           count: 0,
           cur: 1,
-          size: 50,
+          size: 100,
         },
         //审核面板
         Audit:{
@@ -331,7 +331,11 @@
     },
     created(){
       this.auth_id = getLocal('auth_id');
-      this.InitData('/backend/Collection/CollectionList',{check: 4},1);
+      this.InitData('/backend/Collection/CollectionList',{
+        page: this.Page.cur,
+        num: this.Page.size,
+        check: 4,
+      },1);
     },
     mounted(){
       //剪切板功能
@@ -680,9 +684,9 @@
       //重置页码
       ResetPageNum(){
         this.Page.cur = 1;
-        this.Page.size = 50;
+        this.Page.size = 100;
         this.ScreenData.page = 1;
-        this.ScreenData.num = 50;
+        this.ScreenData.num = 100;
       },
       //渲染备注功能
       SetRemarkState(arr){
